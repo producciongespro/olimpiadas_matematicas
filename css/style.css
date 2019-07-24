@@ -19,7 +19,7 @@ h3, h4 {
     color: #FE2E2E;
 }
 
-#logo {width: 70px; height: 55px;}
+#logo {width: 70px; height: 43px;}
 
 .doc {color: #0431B4;}
 
@@ -31,8 +31,7 @@ h3, h4 {
     margin-bottom: 25px;
     width: 110%;
     height: 110%;
-    opacity: 0.7;
-}
+  }
 .person:hover {
     border-color: #f1f1f1;
 }
