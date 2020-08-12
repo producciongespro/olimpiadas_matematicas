@@ -19,12 +19,13 @@
 	<title>Olimpiadas Matem&aacute;tica</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="img/ico.jpg" rel="icon" type="image/jpg" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="css\style.css" rel="stylesheet" />
 	<script src="js\main.js" charset="utf-8"></script>
 	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
 	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css" />
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
@@ -34,25 +35,38 @@
 		<!-- Barra de menú -->
 	</p>
 
-	<nav class="navbar navbar-default navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header"><button class="navbar-toggle" data-target="#myNavbar" data-toggle="collapse"
-					type="button"></button><img class="img-responsive" id="logo" src="img/logo.png" /></div>
 
-			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav navbar-right">
-					<!-- <li><a href="#myPage">FOTOGRAFIAS</a></li> -->
-					<li><a href="#olimpiadas">OLIMPIADAS</a></li>
-					<li><a href="#cuadernillos-2016">CUADERNILLOS-2016</a></li>
-					<li><a href="#cuadernillos-2017">CUADERNILLOS-2017</a></li>
-					<li><a href="#cuadernillos-2018">CUADERNILLOS-2018</a></li>
-					<li><a href="#cuadernillos-2019">CUADERNILLOS-2019</a></li>
-					<li><a href="#cuadernillos-2020">CUADERNILLOS-2020</a></li>
-					<li><a href="#contact">CONTACTO</a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+		  <div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse-1" aria-expanded="false">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+			  </button>
+			  <a href="#"><img class="img-responsive" id="logo" src="img/logo.png" /></a>
+		  </div>
+		  <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+			  <ul class="nav navbar-nav">
+				<li><a href="#olimpiadas">OLIMPIADAS</a></li>
+				  <li class="dropdown">
+					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CUADERNILLOS-A&Ntilde;OS ANTERIORES <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						<li><a href="#cuadernillos-2016">CUADERNILLOS-2016</a></li>
+						<li><a href="#cuadernillos-2017">CUADERNILLOS-2017</a></li>
+						<li><a href="#cuadernillos-2018">CUADERNILLOS-2018</a></li>
+						<li><a href="#cuadernillos-2019">CUADERNILLOS-2019</a></li>
+					</ul>
+				   </li>
+				   <li><a href="#cuadernillos-2020">CUADERNILLOS-2020</a></li>
+				   <li><a href="#contact">CONTACTO</a></li>
+			   </ul>
+		   </div><!-- /.navbar-collapse -->
+		</div><!-- /container -->
+	  </nav>
+
+	
 
 	<div class="carousel slide" data-ride="carousel" id="myCarousel">
 		<!-- Indicators -->
@@ -94,37 +108,42 @@
 
 		<h4>DESCARGAS</h4>
 		<div class="row">
-			<div class="col-sm-1"></div>
-			<div class="col-sm-2"><img alt="Random Name"
-				class="" height="46" src="img/iconos/nuevo-2.gif" width="98" /></div>
-			<div class="col-sm-2"></div>
-			<div class="col-sm-2"></div>
-			<div class="col-sm-2"></div>
-			<div class="col-sm-2"></div>
-			<div class="col-sm-1"></div>
+			<div class="col-sm-2 col-lg-2"></div>
+			<div class="col-sm-2 col-lg-2"><img alt="Random Name"
+				class="" height="64" src="img/iconos/GIF-Nuevo.gif" width="64" /></div>
+			<div class="col-sm-2 col-lg-2"></div>
+			<div class="col-sm-2 col-lg-2"></div>
+			<div class="col-sm-2 col-lg-2"></div>
+			<div class="col-sm-2 col-lg-2"></div>
+			
 		</div>
 		<div class="row">
 			<div class="col-sm-1"></div>
 			<div class="col-sm-2">
 				<a href="data/2020/OLCOMEP_virtual_2020.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/generico.JPG" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Boton-Olimpiada-Virtual.png" width="255" /> </a>
+					</div>
 
 			<div class="col-sm-2">
 				<a href="data/2019/boleta-inscripcion-etap-nacional.docx" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/boleta.jpg" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/boleta.jpg" width="255" /> </a>
+					</div>
 
-			<div class="col-sm-2">
+				<div class="col-sm-2">
 				<a href="data/2019/ficha-inscripcion-olcomer.docx" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/ficha-inscripcion.jpg" width="255" />
-				</a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/ficha-inscripcion.jpg" width="255" />
+				</a>
+			</div>
 
 			<div class="col-sm-2">
 				<a href="data/resultados-2015-16-17.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/resultados.jpg" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/resultados.jpg" width="255" /> </a>
+					</div>
 
 			<div class="col-sm-2">
 				<a href="data/2019/reglamento-olcomer2019.docx" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/reglamento.jpg" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/reglamento.jpg" width="255" /> </a>
+					</div>
 
 			<div class="col-sm-1"></div>
 		</div>
@@ -155,9 +174,9 @@
 		<h3 class="tit2016">Cuadernillos 2016</h3>
 
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2016/Cuadernillo-2016.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/2016.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/2016.png" width="255" /> </a>
 			</div>
 		</div>
 	</div>
@@ -167,29 +186,29 @@
 		&nbsp;
 
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo1-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-1.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-1.png" width="255" /> </a></div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo2-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-2.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-2.png" width="255" /> </a></div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo3-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-3.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-3.png" width="255" /> </a></div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo4-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-4.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-4.png" width="255" /> </a></div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo5-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-5.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-5.png" width="255" /> </a></div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2017/cuadernillo6-2017.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2017-6.png" width="255" /> </a></div>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2017-6.png" width="255" /> </a></div>
 		</div>
 	</div>
 
@@ -210,34 +229,34 @@
 		&nbsp;
 
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-1-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-1.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-1.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-doc-1-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-1.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-1.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-2-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-2.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-2.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-doc-2-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-2.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-2.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-3-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-3.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-3.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-doc-3-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-3.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-3.png" width="255" /> </a>
 			</div>
 		</div>
 	</div>
@@ -245,34 +264,34 @@
 
 	<div class="container text-center" id="band">
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-4-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-4.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-4.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-doc-4-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-4.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-4.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-5-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-5.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-5.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2018\cuadernillo-doc-5-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-5.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-5.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2018\apoyo-estudiantes-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2018-6.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2018-6.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2018\apoyo-docente-2018.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2018-6.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2018-6.png" width="255" /> </a>
 			</div>
 		</div>
 	</div>
@@ -284,34 +303,34 @@
 		&nbsp;
 
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-est-1-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-1.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-1.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-doc-1-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-1.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-1.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-est-2-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-2.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-2.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-doc-2-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-2.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-2.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-est-3-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-3.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-3.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-doc-3-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-3.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-3.png" width="255" /> </a>
 			</div>
 		</div>
 	</div>
@@ -319,34 +338,34 @@
 
 	<div class="container text-center" id="band">
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-est-4-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-4.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-4.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-doc-4-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-4.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-4.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data/2019/cuadernillo-est-5-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-5.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-5.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2019\cuadernillo-doc-5-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-5.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-5.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2019\cuadernillo-est-6-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/e-2019-6.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/e-2019-6.png" width="255" /> </a>
 			</div>
 
-			<div class="col-sm-2">
+			<div class="col-sm-2 col-lg-2">
 				<a href="data\2019\cuadernillo-doc-6-2019.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person" height="255" src="img/iconos/d-2019-6.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/d-2019-6.png" width="255" /> </a>
 			</div>
 		</div>
 	</div>
@@ -358,34 +377,34 @@
 	&nbsp;
 
 	<div class="row">
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_1er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-1.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_1er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-1.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_2do.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-2.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_2do.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-2.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_3er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-3.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_3er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-3.png" width="255" /> </a>
 		</div>
 	</div>
 </div>
@@ -393,34 +412,34 @@
 
 <div class="container text-center" id="band">
 	<div class="row">
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_4to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-4.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_4to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-4.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_5to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-5.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_5to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-5.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_6to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/e-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-6.png" width="255" /> </a>
 		</div>
 
-		<div class="col-sm-2">
+		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_docente_6to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person" height="255" src="img/iconos/d-2020-generico.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Docente-6.png" width="255" /> </a>
 		</div>
 	</div>
 </div>

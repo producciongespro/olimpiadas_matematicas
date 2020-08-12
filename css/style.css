@@ -11,6 +11,25 @@ h3, h4 {
     color: #FE642E;
 }
 
+
+/* NEW 2nd-Level Dropdown CSS START */
+.dropdown-submenu{position: relative;}
+.dropdown-submenu .caret{-webkit-transform: rotate(-90deg); transform: rotate(-90deg);}
+.dropdown-submenu > .dropdown-menu {top:0; left:100%; margin-top:-6px; margin-left:-1px;}
+.dropdown-submenu.open > a:after{border-left-color:#fff;}
+.dropdown-submenu.open > .dropdown-menu, .dropdown-submenu.open > .dropdown-menu {display: block;}
+.dropdown-submenu .dropdown-menu{margin-bottom: 8px;}
+.navbar-default .navbar-nav .open .dropdown-menu .dropdown-submenu ul{background-color: #f6f6f6;}
+.navbar-inverse .navbar-nav .open .dropdown-menu .dropdown-submenu ul{background-color:#333;}
+.navbar .navbar-nav .open .dropdown-submenu .dropdown-menu > li > a{padding-left: 30px;}
+@media screen and (min-width:992px){
+    .dropdown-submenu .dropdown-menu{margin-bottom: 2px;}
+    .navbar .navbar-nav .open .dropdown-submenu .dropdown-menu > li > a{padding-left: 25px;}
+    .navbar-default .navbar-nav .open .dropdown-menu .dropdown-submenu ul{background-color:#fff;}
+    .navbar-inverse .navbar-nav .open .dropdown-menu .dropdown-submenu ul{background-color:#fff;}
+}
+/* NEW 2nd-Level Dropdown CSS END */
+
 #subtitulo {
     margin: 10px 0 30px 0;
     letter-spacing: 6px;
@@ -21,22 +40,27 @@ h3, h4 {
 
 .tit2016{
 color: #f69f15;
+font-size: 3vw;
 }
 
 .tit2017{
 color: #14a39b;
+font-size: 3vw;
 }
 
 .tit2018{
 color: #ae5299;
+font-size: 3vw;
 }
 
 .tit2019{
 color: #eab919;
+font-size: 3vw;
 }
 
 .tit2020{
-    color: #941546;
+    color: #8CC63F;
+    font-size: 3vw;
     }
 
 #logo {width: 70px; height: 43px;}
@@ -49,8 +73,8 @@ color: #eab919;
 .person {
     border: 10px solid transparent;
     margin-bottom: 25px;
-    width: 110%;
-    height: 110%;
+    /* width: 110%;
+    height: 110%; */
   }
 .person:hover {
     border-color: #f1f1f1;
