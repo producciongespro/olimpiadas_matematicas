@@ -49,9 +49,9 @@
 		  </div>
 		  <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
 			  <ul class="nav navbar-nav">
-				<li><a href="#olimpiadas">OLIMPIADAS</a></li>
+				<li><a class="menu"  href="#olimpiadas">OLIMPIADAS</a></li>
 				  <li class="dropdown">
-					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CUADERNILLOS-A&Ntilde;OS ANTERIORES <span class="caret"></span></a>
+					  <a href="#" class="dropdown-toggle menu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CUADERNILLOS-A&Ntilde;OS ANTERIORES <span class="caret"></span></a>
 					  <ul class="dropdown-menu">
 						<li><a href="#cuadernillos-2016">CUADERNILLOS-2016</a></li>
 						<li><a href="#cuadernillos-2017">CUADERNILLOS-2017</a></li>
@@ -59,8 +59,8 @@
 						<li><a href="#cuadernillos-2019">CUADERNILLOS-2019</a></li>
 					</ul>
 				   </li>
-				   <li><a href="#cuadernillos-2020">CUADERNILLOS-2020</a></li>
-				   <li><a href="#contact">CONTACTO</a></li>
+				   <li><a class="menu"  href="#cuadernillos-2020">CUADERNILLOS-2020</a></li>
+				   <li><a class="menu"  href="#contact">CONTACTO</a></li>
 			   </ul>
 		   </div><!-- /.navbar-collapse -->
 		</div><!-- /container -->
@@ -68,22 +68,51 @@
 
 	
 
-	<div class="carousel slide" data-ride="carousel" id="myCarousel">
+	
+	  <div class="carousel slide" data-ride="carousel" id="myCarousel">
 		<!-- Indicators -->
 		<ol class="carousel-indicators">
 			<li class="active" data-slide-to="0" data-target="#myCarousel"></li>
 			<li data-slide-to="1" data-target="#myCarousel"></li>
+			<li data-slide-to="2" data-target="#myCarousel"></li>
+			<li data-slide-to="3" data-target="#myCarousel"></li>
+			<li data-slide-to="4" data-target="#myCarousel"></li>
+			<li data-slide-to="5" data-target="#myCarousel"></li>
 		</ol>
 		<!-- imagenes iniciales -->
 
 		<div class="carousel-inner" role="listbox">
-			<div class="item active"><img height="400" src="img/olimp1.jpg" width="100" />
+			<div class="item active"><img height="400" src="img/olimp5.jpg" width="100" />
 				<div class="carousel-caption">
 					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
 				</div>
 			</div>
 
+			<div class="item"><img height="400" src="img/olimp4.jpg" width="100" />
+				<div class="carousel-caption">
+					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
+				</div>
+			</div>
+			
+			<div class="item"><img height="400" src="img/olimp3.jpg" width="100" />
+				<div class="carousel-caption">
+					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
+				</div>
+			</div>
+			
+			<div class="item"><img height="400" src="img/olimp1.jpg" width="100" />
+				<div class="carousel-caption">
+					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
+				</div>
+			</div>
+			
 			<div class="item"><img height="400" src="img/olimp2.jpg" width="100" />
+				<div class="carousel-caption">
+					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
+				</div>
+			</div>
+			
+	        <div class="item"><img height="400" src="img/olimp6.jpg" width="100" />
 				<div class="carousel-caption">
 					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
 				</div>
@@ -121,7 +150,7 @@
 			<div class="col-sm-1"></div>
 			<div class="col-sm-2">
 				<a href="data/2020/OLCOMEP_virtual_2020.pdf" target="_blank"><img alt="Random Name"
-						class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Boton-Olimpiada-Virtual.png" width="255" /> </a>
+						class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiada-Virtual.png" width="255" /> </a>
 					</div>
 
 			<div class="col-sm-2">
@@ -154,7 +183,10 @@
 <a href="data/2018/reglamento-olcomer2019.pdf" id="doc" target="_blank">Reglamento OLCOMER 2019</a> -->
 
 		<h4>Sectores de aplicaci&oacute;n</h4>
-		<img alt="sectores" id="imgsectores" src="img/sectores.png" />
+		<div class="text-center">
+			<img alt="sectores" class="img-responsive" id="imgsectores" src="img/sectores.png" />
+		</div>
+		
 		<h4>Niveles de Participaci&oacute;n</h4>
 		<span class="glyphicon glyphicon-pencil"> </span> En OLCOMEP participan estudiantes desde el primer a&ntilde;o
 		hasta el sexto a&ntilde;o diurno de la Educaci&oacute;n General B&aacute;sica (EGB) que cursan.
@@ -379,7 +411,7 @@
 	<div class="row">
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_1er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-1.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-1.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">
@@ -389,7 +421,7 @@
 
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_2do.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-2.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-2.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">
@@ -399,7 +431,7 @@
 
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_3er.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-3.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-3.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">
@@ -414,7 +446,7 @@
 	<div class="row">
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_4to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-4.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-4.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">
@@ -424,7 +456,7 @@
 
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_5to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-5.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-5.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">
@@ -434,7 +466,7 @@
 
 		<div class="col-sm-2 col-lg-2">
 			<a href="data/2020/Cuadernillo_estudiante_6to.grado.pdf" target="_blank"><img alt="Random Name"
-					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Estudiante-6.png" width="255" /> </a>
+					class="img-circle person img-responsive" height="255" src="img/iconos/Olimpiadas-Mate-Alumno-6.png" width="255" /> </a>
 		</div>
 
 		<div class="col-sm-2 col-lg-2">

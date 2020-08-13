@@ -38,6 +38,10 @@ h3, h4 {
     color: #FE2E2E;
 }
 
+.menu{
+    color: rgb(0, 0, 0) !important;
+}
+
 .tit2016{
 color: #f69f15;
 font-size: 3vw;
@@ -71,10 +75,11 @@ font-size: 3vw;
     padding: 80px 120px;
 }
 .person {
+    max-width: 121% !important;
     border: 10px solid transparent;
     margin-bottom: 25px;
-    /* width: 110%;
-    height: 110%; */
+    width: 110%;
+    height: 110%;
   }
 .person:hover {
     border-color: #f1f1f1;
