@@ -73,9 +73,24 @@ color: #fa9f83;
 font-size: 3vw;
 }
 
+
+.tit2022{
+    color: #4eaa75;
+    font-size: 3vw;
+    }
     
 
 #logo {width: 70px; height: 43px;}
+
+#logoOlimp {
+    width: 100px;
+    height: 128px;
+}
+
+.logoyoutube {
+    width: 180px;
+    height: 184px;
+}
 
 .doc {color: #0431B4;}
 
