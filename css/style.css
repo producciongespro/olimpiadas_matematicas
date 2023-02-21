@@ -36,7 +36,7 @@ h3, h4 {
     letter-spacing: 6px;
     font-size: 17px;
     font-weight: bold;
-    color: #FE2E2E;
+    color: #c12efe;
 }
 
 .menu{
@@ -80,7 +80,7 @@ font-size: 3vw;
     }
     
 
-#logo {width: 70px; height: 43px;}
+
 
 #logoOlimp {
     width: 100px;
@@ -177,9 +177,10 @@ font-size: 3vw;
 .navbar {
     font-family: Montserrat, sans-serif;
     margin-bottom: 0;
-    background-color: #FAAC58;
+    background-color: #cf7bd3;
     border: 0;
-    font-size: 11px !important;
+    font-size: 12px !important;
+    font-weight: bold;
     letter-spacing: 4px;
     opacity: 1;
 }
@@ -227,3 +228,31 @@ textarea {
 }
 
 #imgsectores {width: 350px; height: 300px;}
+
+p
+{
+    font-size: 20px;
+}
+
+.navbar-nav>li>a {
+    padding-top: 33px;
+    padding-bottom: 33px;
+}
+
+
+#logo
+ {
+    width: 70px; 
+    height: 43px;
+    display:block;
+    margin-top:20px;
+}
+
+
+
+  .calificame  {
+    margin-left: 5px;
+    width: 140px;
+    height: 72px;
+    margin-top: 5px;
+}
