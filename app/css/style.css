@@ -24,6 +24,9 @@ h3, h4 {
   /* Carrusel*/
 
 
+  .mt-1 { margin-top: -6% !important; }
+  .mt-2 { margin-top: -15% !important; }
+
 
 
 
@@ -118,9 +121,9 @@ font-size: 3vw;
 .person {
     max-width: 121% !important;
     border: 10px solid transparent;
-    margin-bottom: 25px;
+   /*  margin-bottom: 25px;*/
     width: 180px;
-    height: 160px;
+    height: 150px;
   }
 .person:hover {
     border-color: #f1f1f1;
