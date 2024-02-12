@@ -11,6 +11,20 @@ h3, h4 {
     color: #FE642E;
 }
 
+/* Carrusel*/
+.carousel-inner .row > div {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .carousel-inner .row > div img {
+    max-width: 100%; 
+    height: auto; 
+  }
+  /* Carrusel*/
+
+
+
 
 
 /* NEW 2nd-Level Dropdown CSS START */
@@ -105,8 +119,8 @@ font-size: 3vw;
     max-width: 121% !important;
     border: 10px solid transparent;
     margin-bottom: 25px;
-    width: 110%;
-    height: 110%;
+    width: 180px;
+    height: 160px;
   }
 .person:hover {
     border-color: #f1f1f1;
@@ -188,8 +202,8 @@ font-size: 3vw;
     letter-spacing: 4px;
     opacity: 1;
 }
-.
- li a, .navbar .navbar-brand {
+
+.li a, .navbar .navbar-brand {
     color: #d5d5d5 !important;
 }
 .navbar-nav li a:hover {

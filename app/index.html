@@ -72,63 +72,65 @@
 		   </div><!-- /.navbar-collapse -->
 		</div><!-- /container -->
 	  </nav>
+	  <br><br>
 
 	
 
+		  <!-- Carrusel de imagenes -->
+
 	
-	  <div class="carousel slide" data-ride="carousel" id="myCarousel">
-		<!-- Indicators -->
+	  <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 		<ol class="carousel-indicators">
-			<li class="active" data-slide-to="0" data-target="#myCarousel"></li>
-			<li data-slide-to="1" data-target="#myCarousel"></li>
-			<li data-slide-to="2" data-target="#myCarousel"></li>
-			<li data-slide-to="3" data-target="#myCarousel"></li>
-			<li data-slide-to="4" data-target="#myCarousel"></li>
-			<li data-slide-to="5" data-target="#myCarousel"></li>
+		  <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+		  <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+		  <li data-target="#carousel-example-generic" data-slide-to="2"></li>
 		</ol>
-		<!-- imagenes iniciales -->
+	  
 
 		<div class="carousel-inner" role="listbox">
-			<div class="item active"><img height="400" src="img/olimp5.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
-			</div>
 
-			<div class="item"><img height="400" src="img/olimp4.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
+
+		  <div class="item active">
+			<div class="row">
+				<div class="col-xs-4"><img src="./img/olimp1.jpg" class="img-responsive"></div>
+				<div class="col-xs-4"><img src="./img/olimp2.jpg" class="img-responsive"></div>
+				<div class="col-xs-4"><img src="./img/olimp3.jpg" class="img-responsive"></div>
 			</div>
-			
-			<div class="item"><img height="400" src="img/olimp3.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
+		  </div>
+	  
+
+
+		  <div class="item">
+			<div class="row">
+			  <div class="col-xs-4"><img src="./img/olimp1.jpg" class="img-responsive"></div>
+			  <div class="col-xs-4"><img src="./img/olimp2.jpg" class="img-responsive"></div>
+			  <div class="col-xs-4"><img src="./img/olimp3.jpg" class="img-responsive"></div>
 			</div>
-			
-			<div class="item"><img height="400" src="img/olimp1.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
+		  </div>
+	  
+		  <div class="item">
+			<div class="row">
+			  <div class="col-xs-4"><img src="./img/olimp1.jpg" class="img-responsive"></div>
+			  <div class="col-xs-4"><img src="./img/olimp2.jpg" class="img-responsive"></div>
+			  <div class="col-xs-4"><img src="./img/olimp3.jpg" class="img-responsive"></div>
 			</div>
-			
-			<div class="item"><img height="400" src="img/olimp2.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
-			</div>
-			
-	        <div class="item"><img height="400" src="img/olimp6.jpg" width="100" />
-				<div class="carousel-caption">
-					<h3>Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria</h3>
-				</div>
-			</div>
+		  </div>
+
+		  
 		</div>
-		<!-- Controles izquierdo y derecho --><a class="left carousel-control" data-slide="prev" href="#myCarousel"
-			role="button"><strong class="sr-only">Previous</strong> </a> <a class="right carousel-control" data-slide="next"
-			href="#myCarousel" role="button"> <strong class="sr-only">Next</strong> </a>
-	</div> <br> <br>
+	  
+		<!-- Controles de carrusel -->
+		<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+		  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		  <span class="sr-only">Anterior</span>
+		</a>
+		<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+		  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		  <span class="sr-only">Siguiente</span>
+		</a>
+	  </div>
+	  
+
 
 
 
@@ -140,10 +142,10 @@
 	<!--Seccion de olimpiadas) -->
 	
 
-	<div class="container text-center" id="olimpiadas">
+	<div class="container" id="olimpiadas">
 
-		<div class="col-sm-12">
-			<img src="img/2023/ninos.png" alt="Niños jugando"><br><br>
+		<div class="col-sm-12  text-center">
+			<img class="img-responsive" src="img/2023/ninos.png" alt="Niños jugando"><br><br>
 		</div>
 
 		<h3 id="subtitulo">IX Edici&oacute;n de la Olimpiada Costarricense de Matem&aacute;tica para Educaci&oacute;n Primaria OLCOMEP-2023</h3>
@@ -171,25 +173,25 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<a href="data/2023/olimpiadas-2023.zip" target="_blank"><img alt="Imagen icono Olimpiadas 2023"
-						class="img-circle person img-responsive" height="255" src="img/iconos/olimpiada-virtual-2023.png" width="255" /> </a>
+						class="img-circle person img-responsive"  src="img/iconos/olimpiada-virtual-2023.png" /> </a>
 					</div>
 
 			<div class="col-sm-3">
 				<a href="data/resultados-2015-16-17.pdf" target="_blank"><img alt="Imagen Resultados 2015-2016-2017"
-						class="img-circle person img-responsive" height="255" src="img/iconos/resultados.jpg" width="255" /> </a>
+						class="img-circle person img-responsive"  src="img/iconos/resultados.jpg"  /> </a>
 					</div>
 
 			<div class="col-sm-3">
-				<a href="data/2019/reglamento-olcomer2019.docx" target="_blank"><img alt="Imagen Reglamento"
-						class="img-circle person img-responsive" height="255" src="img/iconos/reglamento.jpg" width="255" /> </a>
+				<a href="data/2024/reglamento.pdf" target="_blank"><img alt="Imagen Reglamento"
+						class="img-circle person  img-responsive" src="img/iconos/reglamento.jpg"/> </a>
 			</div>
 			<div class="col-sm-3">
-				<img src="img/2023/logo.png" alt="logo"><br><br>
+				<img class="img-responsive" src="img/2023/logo.png" alt="logo"><br><br>
 			</div>
 		</div>
 
 <div class="row">
-	<p><img src="img/flecha.gif" alt="Flecha"><a href  ="https://forms.gle/bimEgaKCCSvD2Pgf6" class="inscri" target="_blank">Inscripci&oacute;n OLCOMEP 2023 <strong>(&uacute;nicamente del d&iacute;a 24 de abril al 05 de mayo)</strong></a></p>
+	<p><img src="img/flecha.gif" alt="Flecha"><a href  ="https://forms.gle/bimEgaKCCSvD2Pgf6" class="inscri" target="_blank">Inscripci&oacute;n OLCOMEP 2023 <strong>(&uacute;nicamente del d&iacute;a 16 al 23 de abril)</strong></a></p>
 </div>
 				
 		<br><h4>Niveles de Participaci&oacute;n</h4>
@@ -260,17 +262,9 @@
 		</div>
 	</div>
 
-	<p></p>
 
-	<p></p>
-
-	<p><br />
 		<!-- Segunda fila de CUADERNILLOS -->
-	</p>
 
-	<p></p>
-
-	<p></p>
 
 	<div class="container text-center" id="cuadernillos-2018">
 		<h3 class="tit2018">Cuadernillos 2018</h3>
@@ -279,7 +273,7 @@
 		<div class="row">
 			<div class="col-sm-2 col-lg-2">
 				<a href="data/2018/cuadernillo-est-1-2018.pdf" target="_blank"><img alt="Imagen Cuadernillos est 1 -2018"
-						class="img-circle person img-responsive" height="255" src="img/iconos/2018/e-2018-1.png" width="255" /> </a>
+						class="img-circle person img-responsive"  src="img/iconos/2018/e-2018-1.png"  /> </a>
 			</div>
 
 			<div class="col-sm-2 col-lg-2">
