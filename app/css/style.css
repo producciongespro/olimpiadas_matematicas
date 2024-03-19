@@ -126,6 +126,10 @@ font-size: 3vw;
     height: 150px;
   }
 
+  .olcomer{
+    width: 180px;
+    height: 150px; 
+  }
 
   .person-1 {
     max-width: 121% !important;
