@@ -1,0 +1,37 @@
+# Copie este archivo como .env y reemplace los valores de ejemplo.
+# Nunca confirme .env ni secretos reales en Git.
+CI_ENVIRONMENT = development
+
+app.baseURL = 'http://localhost:8080/'
+app.forceGlobalSecureRequests = false
+
+database.default.hostname = localhost
+database.default.database = olcomep
+database.default.username = root
+database.default.password = ''
+database.default.DBDriver = MySQLi
+database.default.DBDebug = false
+database.default.strictOn = true
+
+api.allowedOrigins = 'http://localhost:5173,http://localhost:5174'
+api.allowedMethods = 'GET,POST,PUT,PATCH,DELETE,OPTIONS'
+api.allowedHeaders = 'Authorization,Content-Type,Accept,X-Requested-With'
+api.rateLimitRequests = 120
+api.rateLimitWindowSeconds = 60
+
+# Active la auditoría después de ejecutar las migraciones.
+audit.enabled = false
+audit.ipHashSalt = ''
+
+# Registro de la API en Microsoft Entra ID.
+azure.tenantId = ''
+azure.clientId = ''
+azure.issuer = 'https://login.microsoftonline.com/{tenantId}/v2.0'
+azure.jwksUri = 'https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys'
+azure.expectedAudience = 'api://<API_CLIENT_ID>'
+azure.requiredScope = 'access_as_user'
+azure.adminRoles = 'api.admin'
+
+# Client IDs de las SPA autorizadas a solicitar tokens para esta API.
+azure.allowedClientIds = ''
+auth.jwtValidationEnabled = true

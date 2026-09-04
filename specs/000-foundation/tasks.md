@@ -1,0 +1,18 @@
+# Plan de migración
+
+- [x] Crear la estructura base del monorepo.
+- [x] Preservar el sitio estático existente como referencia.
+- [x] Registrar requisitos y arquitectura iniciales.
+- [x] Generar el inventario completo de secciones, enlaces y activos públicos.
+- [x] Definir el contrato visual y los tokens a partir del sitio vigente.
+- [x] Migrar la primera versión de navegación, cabecera y galería.
+- [x] Migrar contenido y descargas de la edición vigente.
+- [x] Migrar cuadernillos 2025 para estudiantes y docentes.
+- [x] Migrar cuadernillos históricos de 2024 a 2016.
+- [x] Migrar y verificar cuadernillos interactivos de 2020 a 2022.
+- [x] Migrar contacto, pie de página y enlaces externos.
+- [x] Verificar accesibilidad, responsive y paridad funcional.
+- [x] Integrar la base de CodeIgniter 4 proporcionada, sin su historial Git.
+- [x] Configurar los valores de entorno local de OLCOMEP.
+- [x] Definir el modelo de datos y las migraciones propias del proyecto.
+- [x] Instalar dependencias y ejecutar la prueba de salud de la API.

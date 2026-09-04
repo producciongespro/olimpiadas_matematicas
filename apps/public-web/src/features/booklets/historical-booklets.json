@@ -1,0 +1,530 @@
+{
+    "2024": [
+        {
+            "grade": 1,
+            "href": "/data/2024/cuadernillo_estudiante_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2024/cuadernillo_estudiante_2er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2024/cuadernillo_estudiante_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2024/cuadernillo_estudiante_4er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2024/cuadernillo_estudiante_5er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2024/cuadernillo_estudiante_6er.grado.pdf",
+            "image": "/assets/legacy/booklets/2024/alumno-6.png",
+            "role": "estudiante"
+        }
+    ],
+    "2023": [
+        {
+            "grade": 1,
+            "href": "/data/2023/cuadernillo_estudiante_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2023/cuadernillo_docente_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2023/cuadernillo_estudiante_2er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2023/cuadernillo_docente_2er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2023/cuadernillo_estudiante_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2023/cuadernillo_docente_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2023/cuadernillo_estudiante_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2023/cuadernillo_docente_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2023/cuadernillo_estudiante_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2023/cuadernillo_docente_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2023/cuadernillo_estudiante_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/alumno-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2023/cuadernillo_docente_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2023/docente-6.png",
+            "role": "docente"
+        }
+    ],
+    "2022": [
+        {
+            "grade": 1,
+            "href": "/data/2022/cuadernillo_estudiante_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2022/cuadernillo_docente_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_estudiante_2er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_docente_2er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2022/cuadernillo_estudiante_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2022/cuadernillo_docente_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2022/cuadernillo_estudiante_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_docente_4to.grado-2.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_estudiante_5to.grado-2.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_docente_5to.grado-2.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2022/cuadernillo_estudiante_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2022/alumno-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2022/cuadernillo_docente_6to.grado-2.pdf",
+            "image": "/assets/legacy/booklets/2022/docente-6.png",
+            "role": "docente"
+        }
+    ],
+    "2021": [
+        {
+            "grade": 1,
+            "href": "/data/2021/cuadernillo_estudiante_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2021/cuadernillo_docente_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2021/cuadernillo_estudiante_2do.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2021/cuadernillo_docente_2do.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2021/cuadernillo_estudiante_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2021/cuadernillo_docente_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2021/cuadernillo_estudiante_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2021/cuadernillo_docente_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2021/cuadernillo_estudiante_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2021/cuadernillo_docente_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2021/cuadernillo_estudiante_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/alumno-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2021/cuadernillo_docente_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2021/docente-6.png",
+            "role": "docente"
+        }
+    ],
+    "2020": [
+        {
+            "grade": 1,
+            "href": "/data/2020/Cuadernillo_estudiante_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2020/Cuadernillo_docente_1er.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2020/Cuadernillo_estudiante_2do.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2020/Cuadernillo_docente_2do.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2020/Cuadernillo_estudiante_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2020/Cuadernillo_docente_3er.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2020/Cuadernillo_estudiante_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2020/Cuadernillo_docente_4to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2020/Cuadernillo_estudiante_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2020/Cuadernillo_docente_5to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2020/Cuadernillo_estudiante_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2020/Cuadernillo_docente_6to.grado.pdf",
+            "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-6.png",
+            "role": "docente"
+        }
+    ],
+    "2019": [
+        {
+            "grade": 1,
+            "href": "/data/2019/cuadernillo-est-1-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2019/cuadernillo-doc-1-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2019/cuadernillo-est-2-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2019/cuadernillo-doc-2-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2019/cuadernillo-est-3-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2019/cuadernillo-doc-3-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2019/cuadernillo-est-4-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2019/cuadernillo-doc-4-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2019/cuadernillo-est-5-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2019/cuadernillo-doc-5-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2019/cuadernillo-est-6-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/e-2019-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2019/cuadernillo-doc-6-2019.pdf",
+            "image": "/assets/legacy/booklets/2019/d-2019-6.png",
+            "role": "docente"
+        }
+    ],
+    "2018": [
+        {
+            "grade": 1,
+            "href": "/data/2018/cuadernillo-est-1-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 1,
+            "href": "/data/2018/cuadernillo-doc-1-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-1.png",
+            "role": "docente"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2018/cuadernillo-est-2-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2018/cuadernillo-doc-2-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-2.png",
+            "role": "docente"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2018/cuadernillo-est-3-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2018/cuadernillo-doc-3-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-3.png",
+            "role": "docente"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2018/cuadernillo-est-4-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2018/cuadernillo-doc-4-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-4.png",
+            "role": "docente"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2018/cuadernillo-est-5-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2018/cuadernillo-doc-5-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-5.png",
+            "role": "docente"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2018/apoyo-estudiantes-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/e-2018-6.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2018/apoyo-docente-2018.pdf",
+            "image": "/assets/legacy/booklets/2018/d-2018-6.png",
+            "role": "docente"
+        }
+    ],
+    "2017": [
+        {
+            "grade": 1,
+            "href": "/data/2017/cuadernillo1-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-1.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 2,
+            "href": "/data/2017/cuadernillo2-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-2.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 3,
+            "href": "/data/2017/cuadernillo3-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-3.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 4,
+            "href": "/data/2017/cuadernillo4-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-4.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 5,
+            "href": "/data/2017/cuadernillo5-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-5.png",
+            "role": "estudiante"
+        },
+        {
+            "grade": 6,
+            "href": "/data/2017/cuadernillo6-2017.pdf",
+            "image": "/assets/legacy/booklets/2017/e-2017-6.png",
+            "role": "estudiante"
+        }
+    ],
+    "2016": [
+        {
+            "grade": null,
+            "href": "/data/2016/Cuadernillo-2016.pdf",
+            "image": "/assets/legacy/booklets/2016/2016.png",
+            "role": "general"
+        }
+    ]
+}
