@@ -16,3 +16,6 @@
 - [x] Configurar los valores de entorno local de OLCOMEP.
 - [x] Definir el modelo de datos y las migraciones propias del proyecto.
 - [x] Instalar dependencias y ejecutar la prueba de salud de la API.
+- [x] Crear y verificar el dato inicial de la edición 2026.
+- [x] Aplicar y verificar las migraciones en MySQL/MariaDB local.
+- [x] Especificar el carrusel principal y la galería histórica administrable.

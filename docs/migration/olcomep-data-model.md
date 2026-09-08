@@ -53,3 +53,15 @@ erDiagram
 - Proceso de revisión, corrección y aprobación de inscripciones.
 - Modelo de resultados y premiación.
 - Fuente maestra para centros educativos y códigos oficiales.
+
+## Datos iniciales
+
+El seeder `OlcomepInitialSeeder` carga únicamente la edición con periodo de inscripción del 8 de abril al 6 de mayo de 2026. No carga direcciones regionales ni datos personales porque la inscripción continúa en el formulario externo vigente.
+
+```bash
+php spark db:seed OlcomepInitialSeeder
+```
+
+El proceso sincroniza por año de edición. Una segunda ejecución conserva los valores existentes cuando ya coinciden.
+
+Las tablas relacionadas con inscripciones permanecen vacías y reservadas. No se crearán endpoints ni pantallas para utilizarlas sin una nueva especificación aprobada.

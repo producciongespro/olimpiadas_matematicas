@@ -6,6 +6,7 @@ import { CurrentEdition } from '../features/current-edition/CurrentEdition.jsx'
 import { ContactSection } from '../features/contact/ContactSection.jsx'
 import { PhotoGallery } from '../features/gallery/PhotoGallery.jsx'
 import { InteractiveBooklets } from '../features/interactive-booklets/InteractiveBooklets.jsx'
+import { MainCarousel } from '../features/carousel/MainCarousel.jsx'
 
 export function HomePage() {
   return (
@@ -14,15 +15,19 @@ export function HomePage() {
       <SiteHeader />
 
       <main id="contenido-principal">
+        <MainCarousel />
         <section className="overflow-hidden bg-brand-primary text-white" aria-labelledby="titulo-principal">
           <div className="mx-auto grid max-w-content grid-cols-[minmax(0,1fr)] items-end gap-10 px-5 pb-0 pt-12 sm:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:pt-16">
             <div className="min-w-0 pb-12 lg:pb-16">
-              <p className="eyebrow text-brand-highlight">Olimpiada nacional de primaria</p>
+              <p className="eyebrow text-brand-highlight">OLCOMEP · Costa Rica</p>
               <h1 id="titulo-principal" className="mt-4 max-w-3xl text-4xl font-black leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-                Matemáticas para imaginar, resolver y crecer
+                Olimpiada de Matemática para Primaria
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/90">
-                La Olimpiada Costarricense de Matemáticas para la Educación Primaria impulsa el talento y la resolución de problemas mediante una competencia sana entre estudiantes de todo el país.
+              <p className="mt-5 inline-flex rounded-full border border-white/35 px-4 py-2 text-sm font-black uppercase tracking-[0.08em] text-white">
+                Para estudiantes de 1.º a 6.º año
+              </p>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-white/90">
+                Imaginar, resolver y crecer mediante una competencia sana que impulsa el talento y la resolución de problemas en estudiantes de Educación Primaria de todo el país.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a className="button-primary" href="#edicion-vigente">Ver edición 2026</a>

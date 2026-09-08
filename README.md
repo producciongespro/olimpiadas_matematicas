@@ -16,6 +16,8 @@ El sitio estático vigente permanece en `app/` y continúa siendo la referencia 
 - `specs/`: requisitos, arquitectura, contratos y criterios de aceptación.
 - `docs/`: inventarios y documentación de la migración.
 
+El estado consolidado para retomar el trabajo se mantiene en `specs/estadoProyecto.md`.
+
 ## Desarrollo frontend
 
 Requiere Node.js 20 o superior. Después de instalar las dependencias en la raíz:

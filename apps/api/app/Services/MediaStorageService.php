@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Services;
+
+use CodeIgniter\HTTP\Files\UploadedFile;
+use RuntimeException;
+
+class MediaStorageService
+{
+    private const MIMES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+
+    public function store(UploadedFile $file, string $directory): array
+    {
+        if (! $file->isValid() || $file->hasMoved()) {
+            throw new RuntimeException('La imagen cargada no es válida.');
+        }
+        $maxBytes = (int) env('media.maxBytes', 8 * 1024 * 1024);
+        $minDimension = (int) env('media.minDimension', 640);
+        $maxDimension = (int) env('media.maxDimension', 6000);
+        if ($file->getSize() < 1 || $file->getSize() > $maxBytes) {
+            throw new RuntimeException('La imagen debe pesar como máximo 8 MB.');
+        }
+        $info = @getimagesize($file->getTempName());
+        $mime = is_array($info) ? ($info['mime'] ?? '') : '';
+        if (! isset(self::MIMES[$mime])) {
+            throw new RuntimeException('Solo se permiten imágenes JPEG, PNG o WebP válidas.');
+        }
+        [$width, $height] = $info;
+        if (min($width, $height) < $minDimension || max($width, $height) > $maxDimension) {
+            throw new RuntimeException('La imagen debe medir entre 640 y 6000 píxeles por lado.');
+        }
+        $uuid = $this->uuid();
+        $relative = trim($directory, '/') . '/' . $uuid . '.' . self::MIMES[$mime];
+        $target = WRITEPATH . 'uploads/' . dirname($relative);
+        if (! is_dir($target) && ! mkdir($target, 0775, true) && ! is_dir($target)) {
+            throw new RuntimeException('No fue posible preparar el almacenamiento.');
+        }
+        $file->move($target, basename($relative));
+        $absolute = WRITEPATH . 'uploads/' . $relative;
+        return [
+            'uuid' => $uuid, 'storage_path' => str_replace('\\', '/', $relative),
+            'original_name' => mb_substr(basename($file->getClientName()), 0, 255),
+            'mime_type' => $mime, 'size_bytes' => filesize($absolute),
+            'width' => $width, 'height' => $height, 'checksum_sha256' => hash_file('sha256', $absolute),
+            'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function delete(string $relativePath): void
+    {
+        $root = realpath(WRITEPATH . 'uploads');
+        $path = realpath(WRITEPATH . 'uploads/' . ltrim($relativePath, '/'));
+        if ($root !== false && $path !== false && str_starts_with($path, $root . DIRECTORY_SEPARATOR) && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    private function uuid(): string
+    {
+        $hex = bin2hex(random_bytes(16));
+        return substr($hex, 0, 8) . '-' . substr($hex, 8, 4) . '-4' . substr($hex, 13, 3) . '-' . dechex((hexdec($hex[16]) & 3) | 8) . substr($hex, 17, 3) . '-' . substr($hex, 20);
+    }
+}

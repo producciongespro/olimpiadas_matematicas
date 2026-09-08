@@ -32,6 +32,8 @@ body {
   min-height: 100vh;
 }
 
+.header-logo { height: 3.45rem; }
+
 button,
 a {
   -webkit-tap-highlight-color: transparent;
@@ -98,6 +100,19 @@ a {
 }
 
 .icon-button:hover { border-color: #4a245f; background: #f8f2fa; }
+
+.carousel-button { display: inline-flex; min-height: 2.75rem; min-width: 2.75rem; align-items: center; justify-content: center; border-radius: 9999px; background: rgb(15 23 42 / 78%); color: #ffffff; }
+.carousel-button:hover { background: #4a245f; }
+
+.main-carousel-image { height: 9rem; }
+
+@media (min-width: 640px) {
+  .main-carousel-image { height: 11rem; }
+}
+
+@media (min-width: 1024px) {
+  .main-carousel-image { height: 13rem; }
+}
 
 :focus-visible {
   outline: 3px solid #f6b52c;

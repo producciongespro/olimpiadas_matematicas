@@ -1,0 +1,167 @@
+openapi: 3.1.0
+info:
+  title: API de medios OLCOMEP
+  version: 1.0.0
+  description: Contrato del carrusel principal y las galerías históricas.
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /carousel:
+    get:
+      summary: Lista las diapositivas publicadas
+      responses:
+        '200': { $ref: '#/components/responses/Carousel' }
+  /events:
+    get:
+      summary: Lista los eventos publicados con su portada
+      responses:
+        '200': { $ref: '#/components/responses/Events' }
+  /events/{slug}:
+    get:
+      summary: Obtiene un evento publicado y sus fotografías
+      parameters: [ { $ref: '#/components/parameters/Slug' } ]
+      responses:
+        '200': { $ref: '#/components/responses/Event' }
+        '404': { $ref: '#/components/responses/Error' }
+  /media/{uuid}:
+    get:
+      summary: Entrega una imagen asociada con contenido publicado
+      parameters: [ { $ref: '#/components/parameters/Uuid' } ]
+      responses:
+        '200':
+          description: Imagen JPEG, PNG o WebP
+          headers:
+            ETag: { schema: { type: string } }
+          content:
+            image/jpeg: { schema: { type: string, contentEncoding: binary } }
+            image/png: { schema: { type: string, contentEncoding: binary } }
+            image/webp: { schema: { type: string, contentEncoding: binary } }
+        '404': { $ref: '#/components/responses/Error' }
+  /admin/carousel:
+    get:
+      security: [ { entraBearer: [] } ]
+      summary: Lista todas las diapositivas
+      responses: { '200': { $ref: '#/components/responses/Carousel' }, '401': { $ref: '#/components/responses/Error' }, '403': { $ref: '#/components/responses/Error' } }
+    post:
+      security: [ { entraBearer: [] } ]
+      summary: Crea una diapositiva
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: { $ref: '#/components/schemas/SlideForm' }
+      responses: { '201': { description: Creada }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/carousel/order:
+    put:
+      security: [ { entraBearer: [] } ]
+      summary: Reordena todas las diapositivas
+      requestBody: { $ref: '#/components/requestBodies/Order' }
+      responses: { '200': { $ref: '#/components/responses/Carousel' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/carousel/{id}:
+    put:
+      security: [ { entraBearer: [] } ]
+      summary: Actualiza metadatos o estado de una diapositiva
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { $ref: '#/components/requestBodies/SlideUpdate' }
+      responses: { '200': { description: Actualizada }, '422': { $ref: '#/components/responses/Error' } }
+    post:
+      security: [ { entraBearer: [] } ]
+      summary: Actualiza o reemplaza una diapositiva mediante multipart
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { required: true, content: { multipart/form-data: { schema: { $ref: '#/components/schemas/SlideForm' } } } }
+      responses: { '200': { description: Actualizada }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      security: [ { entraBearer: [] } ]
+      summary: Archiva una diapositiva
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { description: Archivada } }
+  /admin/events:
+    get:
+      security: [ { entraBearer: [] } ]
+      summary: Lista eventos de todos los estados
+      responses: { '200': { $ref: '#/components/responses/Events' } }
+    post:
+      security: [ { entraBearer: [] } ]
+      summary: Crea un evento en borrador
+      requestBody: { $ref: '#/components/requestBodies/Event' }
+      responses: { '201': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/events/{id}:
+    get:
+      security: [ { entraBearer: [] } ]
+      summary: Obtiene el detalle administrativo
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { $ref: '#/components/responses/Event' } }
+    put:
+      security: [ { entraBearer: [] } ]
+      summary: Actualiza o publica un evento
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { $ref: '#/components/requestBodies/Event' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      security: [ { entraBearer: [] } ]
+      summary: Archiva un evento
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { $ref: '#/components/responses/Event' } }
+  /admin/events/{id}/images:
+    post:
+      security: [ { entraBearer: [] } ]
+      summary: Carga una fotografía en el evento
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: { $ref: '#/components/schemas/ImageForm' }
+      responses: { '201': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/events/{id}/images/order:
+    put:
+      security: [ { entraBearer: [] } ]
+      summary: Reordena las fotografías del evento
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { $ref: '#/components/requestBodies/Order' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/event-images/{id}:
+    put:
+      security: [ { entraBearer: [] } ]
+      summary: Actualiza metadatos o portada
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ImageUpdate' } } } }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    post:
+      security: [ { entraBearer: [] } ]
+      summary: Reemplaza una fotografía mediante multipart
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      requestBody: { required: true, content: { multipart/form-data: { schema: { $ref: '#/components/schemas/ImageForm' } } } }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      security: [ { entraBearer: [] } ]
+      summary: Retira una fotografía
+      parameters: [ { $ref: '#/components/parameters/Id' } ]
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+components:
+  securitySchemes:
+    entraBearer: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+    Slug: { name: slug, in: path, required: true, schema: { type: string } }
+    Uuid: { name: uuid, in: path, required: true, schema: { type: string, format: uuid } }
+  requestBodies:
+    Order: { required: true, content: { application/json: { schema: { type: object, required: [ids], properties: { ids: { type: array, items: { type: integer } } } } } } }
+    Event: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/EventInput' } } } }
+    SlideUpdate: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/SlideInput' } } } }
+  responses:
+    Error: { description: Error seguro, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Carousel: { description: Colección de diapositivas, content: { application/json: { schema: { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Slide' } } } } } } }
+    Events: { description: Colección de eventos, content: { application/json: { schema: { type: object, properties: { data: { type: array, items: { $ref: '#/components/schemas/Event' } } } } } } }
+    Event: { description: Evento, content: { application/json: { schema: { type: object, properties: { data: { $ref: '#/components/schemas/Event' } } } } } }
+  schemas:
+    Status: { type: string, enum: [draft, published, archived] }
+    SlideInput: { type: object, properties: { title: { type: [string, 'null'], maxLength: 180 }, alt_text: { type: string, maxLength: 255 }, link_url: { type: [string, 'null'] }, link_label: { type: [string, 'null'] }, status: { $ref: '#/components/schemas/Status' } } }
+    SlideForm: { allOf: [ { $ref: '#/components/schemas/SlideInput' }, { type: object, required: [image, alt_text], properties: { image: { type: string, contentEncoding: binary } } } ] }
+    Slide: { allOf: [ { $ref: '#/components/schemas/SlideInput' }, { type: object, properties: { id: { type: integer }, sort_order: { type: integer }, media_uuid: { type: string, format: uuid }, media_url: { type: string, format: uri }, width: { type: integer }, height: { type: integer } } } ] }
+    EventInput: { type: object, properties: { name: { type: string, maxLength: 180 }, slug: { type: string }, event_date: { type: [string, 'null'], format: date }, description: { type: [string, 'null'] }, status: { $ref: '#/components/schemas/Status' } } }
+    Event: { allOf: [ { $ref: '#/components/schemas/EventInput' }, { type: object, properties: { id: { type: integer }, uuid: { type: string, format: uuid }, images: { type: array, items: { $ref: '#/components/schemas/Image' } } } } ] }
+    ImageForm: { type: object, required: [image, alt_text], properties: { image: { type: string, contentEncoding: binary }, alt_text: { type: string, maxLength: 255 }, caption: { type: [string, 'null'] }, is_cover: { type: boolean } } }
+    ImageUpdate: { type: object, properties: { alt_text: { type: string }, caption: { type: [string, 'null'] }, is_cover: { type: boolean } } }
+    Image: { allOf: [ { $ref: '#/components/schemas/ImageUpdate' }, { type: object, properties: { id: { type: integer }, sort_order: { type: integer }, media_uuid: { type: string, format: uuid }, media_url: { type: string, format: uri }, width: { type: integer }, height: { type: integer } } } ] }
+    Error: { type: object, required: [message], properties: { message: { type: string } } }

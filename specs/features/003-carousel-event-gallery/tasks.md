@@ -1,0 +1,20 @@
+# Plan de implementación
+
+- [x] Definir alcance, roles, almacenamiento y criterios de aceptación.
+- [x] Aprobar límites de archivo, dimensiones, cantidades y eliminación definitiva.
+- [x] Definir el contrato OpenAPI completo.
+- [x] Crear migraciones para medios, carrusel, eventos y fotografías.
+- [x] Implementar almacenamiento seguro conservando el archivo validado.
+- [x] Implementar servicios y repositorios del dominio.
+- [x] Implementar endpoints públicos.
+- [x] Implementar endpoints administrativos protegidos.
+- [x] Agregar pruebas de esquema, publicación, archivos heredados y consistencia.
+- [x] Importar las 15 fotografías heredadas como diapositivas del carrusel.
+- [x] Implementar el módulo administrativo del carrusel.
+- [x] Implementar el módulo administrativo de eventos y fotografías.
+- [x] Conectar el carrusel público a la API.
+- [x] Reducir la altura y agregar rotación automática accesible al carrusel.
+- [x] Conectar la galería histórica a la API.
+- [x] Verificar build, accesibilidad estructural, responsive y estados de error.
+- [ ] Documentar respaldo, restauración y despliegue persistente.
+- [ ] Aprobar paridad y retirar el respaldo estático.

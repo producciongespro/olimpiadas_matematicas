@@ -19,6 +19,11 @@ api.allowedHeaders = 'Authorization,Content-Type,Accept,X-Requested-With'
 api.rateLimitRequests = 120
 api.rateLimitWindowSeconds = 60
 
+# Límites de imágenes del carrusel y las galerías.
+media.maxBytes = 8388608
+media.minDimension = 640
+media.maxDimension = 6000
+
 # Active la auditoría después de ejecutar las migraciones.
 audit.enabled = false
 audit.ipHashSalt = ''

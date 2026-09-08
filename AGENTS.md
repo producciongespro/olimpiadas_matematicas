@@ -5,7 +5,9 @@ Estas instrucciones aplican a la vista pública, la vista administrativa, la API
 ## Desarrollo guiado por especificaciones
 
 - Antes de implementar una capacidad, revisar la especificación vigente en `specs/`.
+- Leer `specs/estadoProyecto.md` al retomar el proyecto desde una nueva conversación o computadora.
 - Si cambia una regla estable, actualizar primero o junto con el código su especificación, criterios de aceptación y tareas.
+- Actualizar `specs/estadoProyecto.md` después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 - Preservar `app/` como referencia heredada mientras continúa la reingeniería.
 - No inventar contratos entre frontend y backend; documentarlos y mantenerlos sincronizados.
 

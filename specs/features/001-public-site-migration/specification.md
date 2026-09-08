@@ -42,6 +42,8 @@ El encabezado y sus menús serán operables con teclado, tendrán foco visible y
 
 Las imágenes informativas tendrán texto alternativo útil y las decorativas usarán `alt=""`.
 
+El header utiliza el activo institucional `public/logotipo MEP.png` con una altura visual aproximada de 55 px; el logotipo funciona como parte del enlace cuyo nombre accesible es “OLCOMEP, inicio”, por lo que conserva alternativa vacía para evitar duplicación.
+
 ### PUB-006 — Enlaces externos
 
 Los enlaces que abran otra pestaña usarán `rel="noopener noreferrer"` y comunicarán claramente su destino.
@@ -49,6 +51,10 @@ Los enlaces que abran otra pestaña usarán `rel="noopener noreferrer"` y comuni
 ### PUB-007 — Movimiento
 
 La galería tendrá controles explícitos y respetará `prefers-reduced-motion`; no será necesario conservar la reproducción automática si perjudica el acceso al contenido.
+
+### PUB-008 — Enfoque en Educación Primaria
+
+El header, el título principal y los metadatos identifican a OLCOMEP como la Olimpiada Costarricense de Matemática para la Educación Primaria. El primer viewport comunica explícitamente que está dirigida a estudiantes de 1.º a 6.º año. La navegación denomina los cuadernillos como práctica por nivel para facilitar su comprensión.
 
 ## Fuera de alcance de esta iteración
 

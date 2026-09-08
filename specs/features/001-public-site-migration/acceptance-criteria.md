@@ -1,6 +1,8 @@
 # Criterios de aceptación
 
 - Existe un solo título principal `h1`.
+- El `h1`, el header y el título del documento hacen explícito el enfoque en Matemática para Educación Primaria.
+- El primer viewport informa que la población estudiantil corresponde de 1.º a 6.º año.
 - Todos los destinos del menú son válidos y únicos.
 - La navegación puede abrirse, recorrerse y cerrarse con teclado.
 - No existe desbordamiento horizontal en 320 px, 768 px y 1280 px.

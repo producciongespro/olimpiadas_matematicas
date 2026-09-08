@@ -28,3 +28,15 @@ La configuración versionada vive en `apps/api/env`. Cada desarrollador crea `ap
 - La base local sugerida se llama `olcomep`; su esquema se creará mediante migraciones en el siguiente paso.
 - La auditoría está desactivada hasta ejecutar esas migraciones para evitar intentos de escritura sobre una tabla inexistente.
 - La validación JWT permanece activa. Los identificadores de Microsoft Entra ID se completarán con los registros reales de las aplicaciones, sin incluir secretos en el repositorio.
+
+## Validación en MariaDB
+
+El 08-09-2026 se creó la base local `olcomep` en MariaDB 10.4.32 con `utf8mb4_unicode_ci`. Las cinco migraciones disponibles se aplicaron, revirtieron y aplicaron nuevamente de forma correcta.
+
+El estado final contiene:
+
+- Las ocho tablas funcionales y de auditoría esperadas, además de la tabla de control de migraciones.
+- Una edición OLCOMEP 2026 publicada, con inscripción del 8 de abril al 6 de mayo.
+- Cero direcciones regionales, centros, estudiantes, personas tutoras e inscripciones cargadas; esos datos continúan fuera del sistema.
+- Cuatro llaves foráneas en `registrations`.
+- Ninguna columna de identificación personal en texto plano.

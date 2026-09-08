@@ -6,6 +6,8 @@ API de OLCOMEP construida sobre la base institucional de CodeIgniter 4 y PHP 8.2
 
 - Rutas explícitas, con auto-routing deshabilitado.
 - `GET /api/v1/health` para verificación de disponibilidad.
+- Rutas públicas para carrusel, eventos y entrega controlada de imágenes.
+- CRUD administrativo de diapositivas, eventos, fotografías, portada y orden.
 - CORS definido por variables de entorno y respuesta `OPTIONS` para preflight.
 - Filtros `jwt-auth` y `role` para rutas administrativas.
 - Validación de JWT RS256: firma, JWKS, emisor, audiencia, tenant, aplicación cliente autorizada y scope.
@@ -31,6 +33,7 @@ La clase `App\Repositories\BaseRepository` es el punto de partida para los repos
 composer install
 copy env .env
 php spark migrate
+php spark db:seed OlcomepInitialSeeder
 php spark serve
 ```
 
@@ -45,6 +48,10 @@ Edite `.env` con los valores del entorno. Nunca publique ese archivo ni credenci
 - Base MySQL sugerida: `olcomep`
 
 La plantilla `env` autoriza por CORS únicamente las dos SPA locales. La auditoría queda desactivada hasta crear la base y ejecutar las migraciones; después debe activarse con `audit.enabled = true`.
+
+El seeder `OlcomepInitialSeeder` registra la edición 2026 e importa las 15 fotografías heredadas como diapositivas publicadas del carrusel. No crea eventos: sus fotografías se cargarán desde administración. Es idempotente y puede ejecutarse nuevamente sin duplicar datos.
+
+El contrato de medios está documentado en `../../docs/api/media-v1.openapi.yaml`. Los archivos se almacenan en `writable/uploads`, que debe desplegarse como volumen persistente y respaldarse coordinadamente con la base de datos.
 
 ## Microsoft Entra ID
 

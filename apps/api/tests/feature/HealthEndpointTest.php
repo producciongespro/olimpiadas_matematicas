@@ -22,4 +22,9 @@ final class HealthEndpointTest extends CIUnitTestCase
             ],
         ]);
     }
+
+    public function testAdministrativeMediaRoutesRequireAuthentication(): void
+    {
+        $this->get('/api/v1/admin/events')->assertStatus(401);
+    }
 }
