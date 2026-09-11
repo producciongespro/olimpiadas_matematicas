@@ -6,8 +6,8 @@ Fecha de verificación: 2026-09-04.
 
 | Servicio | URL local |
 | --- | --- |
-| API CodeIgniter | `http://localhost:8080` |
-| Salud | `http://localhost:8080/api/v1/health` |
+| API CodeIgniter | `http://localhost:3600` |
+| Salud | `http://localhost:3600/api/v1/health` |
 | Vista pública | `http://localhost:5173` |
 | Administración | `http://localhost:5174` |
 

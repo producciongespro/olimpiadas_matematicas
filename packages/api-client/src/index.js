@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = 'http://localhost:8080/api/v1'
+const DEFAULT_BASE_URL = 'http://localhost:3600/api/v1'
 
 export function createApiClient({ baseUrl = import.meta.env?.VITE_API_URL || DEFAULT_BASE_URL, getToken = () => null } = {}) {
   const request = async (path, options = {}) => {

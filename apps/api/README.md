@@ -1,5 +1,7 @@
 # API OLCOMEP
 
+<img alt="Logotipo oficial de OLCOMEP" src="public/assets/logo-olcomep.png" width="180">
+
 API de OLCOMEP construida sobre la base institucional de CodeIgniter 4 y PHP 8.2+. Incluye CORS configurable, limitación de solicitudes, bitácora de auditoría y protección de rutas administrativas con Microsoft Entra ID.
 
 ## Incluye
@@ -34,17 +36,17 @@ composer install
 copy env .env
 php spark migrate
 php spark db:seed OlcomepInitialSeeder
-php spark serve
+php spark serve --port 3600
 ```
 
 Edite `.env` con los valores del entorno. Nunca publique ese archivo ni credenciales reales.
 
 ### Entorno local del monorepo
 
-- API: `http://localhost:8080`
+- API: `http://localhost:3600`
 - Vista pública: `http://localhost:5173`
 - Administración: `http://localhost:5174`
-- Salud: `GET http://localhost:8080/api/v1/health`
+- Salud: `GET http://localhost:3600/api/v1/health`
 - Base MySQL sugerida: `olcomep`
 
 La plantilla `env` autoriza por CORS únicamente las dos SPA locales. La auditoría queda desactivada hasta crear la base y ejecutar las migraciones; después debe activarse con `audit.enabled = true`.

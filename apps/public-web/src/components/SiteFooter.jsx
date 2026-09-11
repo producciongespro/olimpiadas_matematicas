@@ -5,8 +5,12 @@ export function SiteFooter() {
     <footer className="bg-slate-950 py-10 text-white">
       <div className="mx-auto grid max-w-content gap-8 px-5 sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
         <div>
-          <img alt="Ministerio de Educación Pública" className="h-14 w-auto" height="45" src="/assets/legacy/brand/logo-mep.png" width="71" />
-          <p className="mt-5 font-black">Olimpiadas Matemáticas OLCOMEP</p>
+          <div className="inline-flex max-w-full items-center gap-3" aria-hidden="true">
+            <img alt="" className="h-11 w-auto sm:h-14" height="79" src="/logotipo%20MEP.png" width="288" />
+            <span className="h-12 w-px bg-white/25 sm:h-16" />
+            <img alt="" className="h-16 w-auto rounded-sm sm:h-20" height="690" src="/logo-olcomep.png" width="690" />
+          </div>
+          <p className="mt-4 font-black">Olimpiadas Matemáticas OLCOMEP</p>
           <p className="mt-1 text-sm text-slate-300">Ministerio de Educación Pública de Costa Rica</p>
         </div>
         <nav className="flex flex-col items-start gap-3 text-sm font-bold md:items-end" aria-label="Enlaces institucionales">

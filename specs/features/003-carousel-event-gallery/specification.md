@@ -14,6 +14,7 @@ Dirección inicial:
 - Movimiento: 2/10.
 - Densidad: 5/10.
 - Identidad: institucional, clara y cercana, basada en los tokens y activos existentes.
+- La administración identifica el producto mediante una copia íntegra de `Logo OLCOMEP V2.png`; la documentación de la API referencia el mismo activo desde su directorio público.
 
 ## 3. Conceptos separados
 

@@ -4,7 +4,11 @@
 - El `h1`, el header y el título del documento hacen explícito el enfoque en Matemática para Educación Primaria.
 - El primer viewport informa que la población estudiantil corresponde de 1.º a 6.º año.
 - Todos los destinos del menú son válidos y únicos.
+- La navegación incluye un destino “Acerca de” que conduce a la sección “Acerca de nosotros”.
+- La navegación incluye un destino “Regionales” que conduce a “Coordinaciones regionales”.
+- La navegación incluye un destino “Información” que conduce a “Información general”.
 - La navegación puede abrirse, recorrerse y cerrarse con teclado.
+- El menú utiliza su versión compacta mientras las marcas y todos los destinos no puedan coexistir sin recorte o desbordamiento.
 - No existe desbordamiento horizontal en 320 px, 768 px y 1280 px.
 - Los enlaces y recursos identificados en el inventario tienen correspondencia verificable.
 - El catálogo permite distinguir claramente año, grado y tipo de usuario sin depender únicamente de la imagen.
@@ -12,4 +16,11 @@
 - Los enlaces con `target="_blank"` incluyen `rel="noopener noreferrer"`.
 - La galería tiene nombres accesibles en imágenes y controles.
 - La experiencia conserva los logotipos, fotografías, contenido y carácter institucional del sitio vigente.
+- “Acerca de nosotros” sintetiza los antecedentes institucionales en una secuencia cronológica, conserva fechas, cifras, alcance regional, universidades participantes y visión educativa sin introducir datos no comprobados.
+- “Coordinaciones regionales” muestra las 27 regiones, permite buscar por región, persona o correo, genera enlaces `mailto:` únicamente para direcciones inequívocas y señala cualquier contacto pendiente de confirmación.
+- “Información general” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes mediante destinos válidos y contenido propio de OLCOMEP.
+- Las preguntas frecuentes pueden abrirse con teclado y no ocultan información esencial exclusivamente detrás de hover.
+- El header presenta conjuntamente las marcas del MEP y OLCOMEP sin deformación, recorte ni duplicación en el nombre accesible del enlace de inicio.
+- La sección “Conoce OLCOMEP” utiliza el logotipo a mayor escala que el header y el footer, sin desplazar ni dificultar la lectura de su contenido en móvil o escritorio.
+- El footer cierra la página con las marcas MEP y OLCOMEP; el MEP conserva contraste sobre el fondo oscuro y ambas permanecen sin deformación, desbordamiento en 320 px ni lectura redundante por tecnología de asistencia.
 - `app/` permanece disponible hasta aprobar la paridad funcional.

@@ -32,7 +32,13 @@ body {
   min-height: 100vh;
 }
 
-.header-logo { height: 3.45rem; }
+.header-logo { height: 2.6rem; }
+.header-olcomep-logo { height: 3rem; }
+
+@media (min-width: 640px) {
+  .header-logo { height: 3.45rem; }
+  .header-olcomep-logo { height: 3.75rem; }
+}
 
 button,
 a {

@@ -2,7 +2,7 @@
 # Nunca confirme .env ni secretos reales en Git.
 CI_ENVIRONMENT = development
 
-app.baseURL = 'http://localhost:8080/'
+app.baseURL = 'http://localhost:3600/'
 app.forceGlobalSecureRequests = false
 
 database.default.hostname = localhost

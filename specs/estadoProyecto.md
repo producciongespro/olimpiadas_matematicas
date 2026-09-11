@@ -4,7 +4,7 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **08-09-2026**.
+Última actualización: **11-09-2026**.
 
 ## 2. Repositorio y rama activa
 
@@ -35,9 +35,15 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 ### Vista pública
 
 - La nueva aplicación vive en `apps/public-web`.
-- El header utiliza el activo institucional `public/logotipo MEP.png` con una altura aproximada de 55 px.
+- El header presenta conjuntamente el activo institucional `public/logotipo MEP.png` y la versión oficial más reciente `Logo OLCOMEP V2.png`, publicada como `public/logo-olcomep.png` con el fondo exterior convertido a transparencia.
+- La sección “Conoce OLCOMEP” utiliza el logotipo oficial como aparición principal dentro del contenido, a mayor escala que en el header y el footer.
+- El footer reutiliza ambas marcas como firma institucional de cierre; fuera de “Conoce OLCOMEP”, se evita repetir el logotipo en el hero, carrusel, galería y demás secciones.
+- Los logotipos suministrados de TEC, UCR, UNA, UNED y UTN están preparados con fondo transparente en `apps/public-web/public`, junto a `logo-olcomep.png`, para su posterior incorporación en el footer.
 - El header, el `h1` y los metadatos identifican explícitamente a OLCOMEP como una Olimpiada de Matemática para Primaria; el primer viewport muestra el rango de 1.º a 6.º año.
 - Están migrados encabezado, navegación, galería, presentación institucional, edición 2026, contacto y pie de página.
+- La sección “Acerca de nosotros” sintetiza el documento institucional `Antecedentes OLCOMEP.docx` mediante una cronología desde las experiencias regionales de la primera década de 2000 hasta la alianza actual con universidades públicas, e incluye las cifras de crecimiento 2022–2024 y la visión integral, humanista y STEAM.
+- La sección “Coordinaciones regionales” publica como contenido estático las 27 fichas suministradas en `Coordinaciones regionales OLCOMEP sitio web.docx`, con búsqueda por región, persona o correo. No carga regionales en la base ni altera la inscripción externa; el correo duplicado de Allan Pérez Calderón permanece marcado como pendiente de confirmación.
+- La sección “Información general” funciona como un centro de orientación hacia Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Adapta la arquitectura observada en la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
 - El carrusel principal consume diapositivas publicadas desde la API y aparece inmediatamente debajo del header.
 - El carrusel respeta el contenedor central de 1200 px, usa alturas explícitas de 144, 176 y 208 px según el viewport, avanza automáticamente cada 6 segundos y se pausa con hover, foco, interacción manual o movimiento reducido.
 - La galería permite seleccionar eventos publicados y define estados de carga, vacío, error y éxito.
@@ -54,6 +60,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - La base de la aplicación vive en `apps/admin-web`.
 - El workspace React/Vite/Tailwind compila correctamente.
 - Incluye módulos funcionales para administrar diapositivas, eventos y fotografías.
+- Su encabezado incorpora el logotipo oficial de OLCOMEP con dimensiones reservadas y alternativa vacía porque el nombre aparece como texto adyacente.
 - Permite crear, publicar, ocultar, archivar, ordenar y definir portadas mediante controles operables por teclado.
 - Consume las rutas protegidas de la API con un token Bearer de Microsoft Entra ID conservado durante la sesión.
 - La integración de inicio de sesión interactivo con MSAL queda pendiente de configurar las App Registrations reales.
@@ -68,6 +75,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Tiene CORS configurable para las SPA locales, limitación de solicitudes, cabeceras seguras y auditoría.
 - Las rutas administrativas están preparadas para filtros JWT y rol mediante Microsoft Entra ID.
 - La arquitectura acordada es `Controller → Service → Repository → Database`.
+- El README y el contrato OpenAPI identifican visualmente la API mediante `public/assets/logo-olcomep.png`.
 - Las dependencias PHP están fijadas en `composer.lock`; `vendor/` no se confirma en Git.
 
 ### Modelo de datos
@@ -119,8 +127,8 @@ Los workspaces se administran desde la raíz mediante npm.
 
 ### API
 
-- URL local: `http://localhost:8080`
-- Salud: `http://localhost:8080/api/v1/health`
+- URL local: `http://localhost:3600`
+- Salud: `http://localhost:3600/api/v1/health`
 - Base MySQL sugerida: `olcomep`
 - Plantilla versionada: `apps/api/env`
 - Configuración privada local: `apps/api/.env`
@@ -144,7 +152,7 @@ Luego:
 2. Crear la base MySQL `olcomep` y completar las credenciales locales.
 3. Ejecutar `php apps/api/spark migrate --all`.
 4. Ejecutar `php apps/api/spark db:seed OlcomepInitialSeeder`.
-5. Iniciar la API con `php apps/api/spark serve`.
+5. Iniciar la API con `php apps/api/spark serve --port 3600`.
 6. Iniciar las SPA con `npm run dev:public` y `npm run dev:admin`.
 
 No se debe ejecutar la migración contra una base con datos existentes sin revisar primero su estado y contar con respaldo.
@@ -178,6 +186,20 @@ Verificaciones del 08-09-2026:
 - La migración de medios fue aplicada, revertida y reaplicada en MariaDB local.
 - El seeder se ejecutó dos veces sin duplicar las 15 diapositivas heredadas y sin crear eventos.
 - Las consultas reales devolvieron salud `ok`, 15 diapositivas, cero eventos e imágenes JPEG con HTTP 200.
+
+Decisión local del 11-09-2026:
+
+- El puerto oficial de desarrollo de la API cambió de `8080` a `3600`; el cliente compartido, la plantilla de entorno, CodeIgniter, el contrato OpenAPI y la documentación quedaron alineados.
+- `Logo OLCOMEP V2.png` sustituyó al activo heredado como versión oficial más reciente y se copió sin alteraciones a las vistas pública y administrativa y al directorio público de la API.
+- `npm run build`: correctos los builds de `public-web` y `admin-web` después de integrar el logotipo y ajustar su escala responsive desde 320 px.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de incorporar “Acerca de nosotros”, su destino de navegación y la cronología adaptada desde `Antecedentes OLCOMEP.docx`.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de actualizar “Coordinaciones regionales” con las 27 fichas y la búsqueda del directorio institucional.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de incorporar “Información general”, sus accesos a reglamento, participación, calendario y preguntas frecuentes, y ajustar la navegación compacta para evitar desbordamiento horizontal.
+- Revisión visual de escritorio: la sección conserva jerarquía editorial, enlaces legibles y navegación sin recortes; en resoluciones menores a 1536 px el encabezado utiliza el menú compacto.
+- `composer --working-dir=apps/api test`: 13 pruebas y 41 aserciones correctas después de incorporar el activo a la documentación pública de la API.
+- `npm run build --workspace=@olcomep/public-web` y `npm run build --workspace=@olcomep/admin-web`: correctos después de sustituir el logotipo por `Logo OLCOMEP V2.png`; las tres copias publicadas conservan el mismo hash SHA-256.
+- `composer --working-dir=apps/api test`: 13 pruebas y 41 aserciones correctas después de actualizar el logotipo expuesto por la documentación de la API.
+- El fondo exterior del logotipo se extrajo a transparencia sin alterar los píxeles visibles; las tres superficies conservan una copia PNG idéntica con 297 757 píxeles transparentes y esquinas alfa 0.
 
 ## 9. Regla de commits y sincronización
 

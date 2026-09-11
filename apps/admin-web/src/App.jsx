@@ -79,7 +79,15 @@ export function AdminApp() {
   }
 
   return <div className="min-h-screen bg-slate-50 text-slate-900">
-    <header className="border-b border-slate-200 bg-brand-primary text-white"><div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8"><div><p className="text-xs font-black uppercase tracking-[.16em] text-brand-highlight">OLCOMEP</p><h1 className="mt-1 text-2xl font-black">Administración de medios</h1></div><span className="text-sm font-bold">Contenido institucional</span></div></header>
+    <header className="border-b border-slate-200 bg-brand-primary text-white">
+      <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
+        <div className="flex items-center gap-4">
+          <img alt="" className="h-16 w-auto rounded-sm bg-white" height="690" src="/logo-olcomep.png" width="690" />
+          <div><p className="text-xs font-black uppercase tracking-[.16em] text-brand-highlight">OLCOMEP</p><h1 className="mt-1 text-2xl font-black">Administración de medios</h1></div>
+        </div>
+        <span className="text-sm font-bold">Contenido institucional</span>
+      </div>
+    </header>
     <main className="mx-auto max-w-content px-5 py-8 sm:px-8">
       <section className="panel" aria-labelledby="acceso"><div><h2 id="acceso" className="text-xl font-black">Acceso administrativo</h2><p className="mt-1 text-sm text-slate-600">Utilice un token Bearer vigente emitido por Microsoft Entra ID. Se conserva únicamente durante esta sesión.</p></div><form className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]" onSubmit={connect}><Field label="Token de acceso"><input className="control" onChange={(e) => setToken(e.target.value)} required type="password" value={token}/></Field><button className="button self-end" disabled={busy} type="submit"><LogIn aria-hidden="true"/>Conectar</button></form></section>
       <Notice notice={notice}/>

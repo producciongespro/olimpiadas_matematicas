@@ -33,10 +33,10 @@ La API usa PHP 8.2 o superior y se configura localmente en `apps/api/.env`:
 
 ```bash
 composer --working-dir=apps/api install
-php apps/api/spark serve
+php apps/api/spark serve --port 3600
 ```
 
-El endpoint de verificación es `http://localhost:8080/api/v1/health`. La plantilla versionada de configuración se encuentra en `apps/api/env`; el archivo `.env` local no se publica.
+El endpoint de verificación es `http://localhost:3600/api/v1/health`. La plantilla versionada de configuración se encuentra en `apps/api/env`; el archivo `.env` local no se publica.
 
 ## Convención de commits
 

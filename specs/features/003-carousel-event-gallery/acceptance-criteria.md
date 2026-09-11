@@ -28,6 +28,7 @@
 
 ## Administración
 
+- El encabezado muestra el logotipo oficial de OLCOMEP sin deformarlo y mantiene visible el título de la herramienta.
 - Solo una identidad autenticada con rol administrativo puede modificar carrusel y eventos.
 - El administrador puede crear, editar, publicar, ocultar, archivar y ordenar diapositivas.
 - El administrador puede crear, editar, publicar, ocultar y archivar eventos.
@@ -40,6 +41,7 @@
 
 ## API y almacenamiento
 
+- El README y el contrato OpenAPI identifican la API con el logotipo oficial servido desde `public/assets/logo-olcomep.png`.
 - Los archivos se guardan bajo `apps/api/writable/uploads/carousel` o `apps/api/writable/uploads/events/{event-uuid}`.
 - Ningún archivo cargado aparece en Git.
 - La base almacena rutas relativas y metadatos, no binarios ni base64.
