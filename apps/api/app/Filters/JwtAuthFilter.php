@@ -2,11 +2,12 @@
 
 namespace App\Filters;
 
+use App\Services\MicrosoftJwtValidator;
+use App\Services\AdminUserService;
+use App\Exceptions\ForbiddenException;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use Firebase\JWT\JWK;
-use Firebase\JWT\JWT;
 use RuntimeException;
 use Throwable;
 
@@ -24,16 +25,19 @@ class JwtAuthFilter implements FilterInterface
 
         try {
             $claims = $this->validate(trim(substr($header, 7)));
-            $roles = $this->roles($claims);
-            $adminRoles = $this->adminRoles();
         } catch (Throwable $exception) {
             return $this->error(401, $exception->getMessage());
         }
 
+        try { $user = (new AdminUserService())->authenticate($claims); }
+        catch (ForbiddenException $exception) { return $this->error(403, $exception->getMessage()); }
+        catch (Throwable $exception) { log_message('error', 'No se pudo resolver la autorización local: {message}', ['message' => $exception->getMessage()]); return service('response')->setStatusCode(500)->setJSON(['message' => 'No fue posible validar la autorización local.']); }
+
         service('request')->jwtClaims = $claims;
-        service('request')->azureRoles = $roles;
-        service('request')->azureIsAdmin = $this->hasAnyRole($roles, $adminRoles);
+        service('request')->azureRoles = [$user['role']];
+        service('request')->azureIsAdmin = true;
         service('request')->azureClientId = $this->clientApplicationId($claims);
+        service('request')->localAdminUser = $user;
 
         return null;
     }
@@ -58,78 +62,10 @@ class JwtAuthFilter implements FilterInterface
         }
         $jwks = $this->jwks($jwksUri, $token);
 
-        $decoded = JWT::decode($token, JWK::parseKeySet($jwks, 'RS256'));
-        $claims = json_decode(json_encode($decoded), true);
-        if (! is_array($claims)) {
-            throw new RuntimeException('El contenido del token no es válido.');
-        }
-
-        if (! hash_equals($this->normalize($this->config('azure.issuer')), $this->normalize((string) ($claims['iss'] ?? '')))) {
-            throw new RuntimeException('El emisor del token no es válido.');
-        }
-        $expectedAudience = $this->config('azure.expectedAudience');
-        $audiences = is_array($claims['aud'] ?? null) ? $claims['aud'] : [$claims['aud'] ?? ''];
-        if ($expectedAudience === '' || ! in_array($expectedAudience, $audiences, true)) {
-            throw new RuntimeException('La audiencia del token no es válida.');
-        }
-
-        $this->validateTenant($claims);
-        $this->validateClientApplication($claims);
-
-        $requiredScope = $this->config('azure.requiredScope');
-        if ($requiredScope === '') {
-            throw new RuntimeException('El alcance requerido de Azure no está configurado.');
-        }
-        $scopes = explode(' ', (string) ($claims['scp'] ?? ''));
-        if (! in_array($requiredScope, $scopes, true)) {
-            throw new RuntimeException('El token no incluye el alcance requerido.');
-        }
-
-        return $claims;
-    }
-
-    private function roles(array $claims): array
-    {
-        $roles = $claims['roles'] ?? [];
-        $roles = is_string($roles) ? [$roles] : (is_array($roles) ? $roles : []);
-
-        return array_values(array_filter(array_map(
-            static fn (mixed $role): string => is_string($role) ? trim($role) : '',
-            $roles,
-        )));
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function adminRoles(): array
-    {
-        $roles = $this->csvEnv('azure.adminRoles');
-
-        if ($roles === []) {
-            throw new RuntimeException('Los roles administrativos de Azure no están configurados.');
-        }
-
-        return $roles;
-    }
-
-    private function validateTenant(array $claims): void
-    {
-        $tenantId = trim((string) env('azure.tenantId', ''));
-        $tokenTenantId = trim((string) ($claims['tid'] ?? ''));
-
-        if ($tenantId === '' || $tokenTenantId === '' || ! hash_equals($tenantId, $tokenTenantId)) {
-            throw new RuntimeException('El tenant del token no es válido.');
-        }
-    }
-
-    private function validateClientApplication(array $claims): void
-    {
-        $clientId = $this->clientApplicationId($claims);
-
-        if ($clientId === null || ! in_array($clientId, $this->allowedClientIds(), true)) {
-            throw new RuntimeException('La aplicación cliente del token no está autorizada.');
-        }
+        return (new MicrosoftJwtValidator(
+            $this->config('azure.tenantId'), $this->config('azure.expectedAudience'), $this->config('azure.requiredScope'),
+            $jwks, (int) env('azure.clockSkewSeconds', 300), $this->allowedClientIds(),
+        ))->validate($token);
     }
 
     private function clientApplicationId(array $claims): ?string
@@ -207,30 +143,10 @@ class JwtAuthFilter implements FilterInterface
         return array_values(array_unique(array_filter($items, static fn (string $item): bool => $item !== '')));
     }
 
-    /**
-     * @param list<string> $actualRoles
-     * @param list<string> $expectedRoles
-     */
-    private function hasAnyRole(array $actualRoles, array $expectedRoles): bool
-    {
-        foreach ($expectedRoles as $role) {
-            if (in_array($role, $actualRoles, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private function config(string $key): string
     {
         $value = trim((string) env($key, ''));
         return str_replace('{tenantId}', trim((string) env('azure.tenantId', '')), trim($value, " \t\n\r\0\x0B'\""));
-    }
-
-    private function normalize(string $value): string
-    {
-        return rtrim($value, '/');
     }
 
     private function error(int $status, string $message): ResponseInterface

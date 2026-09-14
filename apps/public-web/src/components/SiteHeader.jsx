@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const navigation = [
   { href: '#informacion-general', label: 'Información' },
+  { href: '#calendario', label: 'Calendario' },
   { href: '#acerca-de-nosotros', label: 'Acerca' },
   { href: '#coordinaciones-regionales', label: 'Regionales' },
   { href: '#edicion-vigente', label: 'Edición 2026' },

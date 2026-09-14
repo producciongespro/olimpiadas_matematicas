@@ -10,7 +10,8 @@ class RoleFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null): ?ResponseInterface
     {
-        if (service('request')->azureIsAdmin === true) {
+        $user = service('request')->localAdminUser ?? null;
+        if (is_array($user) && ($user['status'] ?? null) === 'active' && in_array($user['role'] ?? null, ['master', 'admin', 'editor'], true)) {
             return null;
         }
 

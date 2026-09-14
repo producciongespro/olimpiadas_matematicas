@@ -4,7 +4,7 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **11-09-2026**.
+Última actualización: **14-09-2026**.
 
 ## 2. Repositorio y rama activa
 
@@ -44,6 +44,12 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - La sección “Acerca de nosotros” sintetiza el documento institucional `Antecedentes OLCOMEP.docx` mediante una cronología desde las experiencias regionales de la primera década de 2000 hasta la alianza actual con universidades públicas, e incluye las cifras de crecimiento 2022–2024 y la visión integral, humanista y STEAM.
 - La sección “Coordinaciones regionales” publica como contenido estático las 27 fichas suministradas en `Coordinaciones regionales OLCOMEP sitio web.docx`, con búsqueda por región, persona o correo. No carga regionales en la base ni altera la inscripción externa; el correo duplicado de Allan Pérez Calderón permanece marcado como pendiente de confirmación.
 - La sección “Información general” funciona como un centro de orientación hacia Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Adapta la arquitectura observada en la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
+- La sección “Calendario” publica las 12 actividades suministradas en `Cronograma OLCOMEP 2026.docx`, desde la inscripción del 8 de abril hasta la Premiación Nacional del 3 de diciembre; detalla la distribución de niveles para las pruebas y enlaza al manual institucional para consultar sus condiciones completas.
+- La sección “Colaboradores y patrocinadores” reconoce a UCR, UNED, UNA, TEC y UTN como universidades públicas colaboradoras y al Centro Cultural Costarricense Norteamericano como patrocinador de OLCOMEP 2026; este último se presenta sin imagen hasta contar con un activo autorizado.
+- Los logotipos de las universidades aplican un zoom de 6 % al pasar el puntero, sin alterar la retícula y respetando `prefers-reduced-motion`.
+- Los logotipos colaboradores utilizan un área visual ampliada y no repiten sus siglas debajo de la imagen; el nombre completo se conserva como alternativa accesible.
+- La retícula de colaboradores utiliza espaciado abierto, sin bordes grises alrededor de cada marca.
+- La portada principal es el primer componente conectado al gestor de contenido: conserva valores locales de respaldo, consume su publicación desde la API y comparte el mismo componente React con la vista previa administrativa.
 - El carrusel principal consume diapositivas publicadas desde la API y aparece inmediatamente debajo del header.
 - El carrusel respeta el contenedor central de 1200 px, usa alturas explícitas de 144, 176 y 208 px según el viewport, avanza automáticamente cada 6 segundos y se pausa con hover, foco, interacción manual o movimiento reducido.
 - La galería permite seleccionar eventos publicados y define estados de carga, vacío, error y éxito.
@@ -60,10 +66,13 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - La base de la aplicación vive en `apps/admin-web`.
 - El workspace React/Vite/Tailwind compila correctamente.
 - Incluye módulos funcionales para administrar diapositivas, eventos y fotografías.
+- Incluye el primer módulo de “Contenido del sitio”, con edición estructurada de la portada, reemplazo de imagen, vista previa móvil/escritorio, guardado de borrador y publicación confirmada.
 - Su encabezado incorpora el logotipo oficial de OLCOMEP con dimensiones reservadas y alternativa vacía porque el nombre aparece como texto adyacente.
 - Permite crear, publicar, ocultar, archivar, ordenar y definir portadas mediante controles operables por teclado.
 - Consume las rutas protegidas de la API con un token Bearer de Microsoft Entra ID conservado durante la sesión.
-- La integración de inicio de sesión interactivo con MSAL queda pendiente de configurar las App Registrations reales.
+- La integración de inicio de sesión interactivo con MSAL está implementada; queda pendiente proporcionar los identificadores reales de las App Registrations exclusivamente mediante variables privadas de cada ambiente.
+- El ingreso manual de tokens fue retirado. `admin-web` usa MSAL con redirect, caché de sesión, adquisición silenciosa del scope de la API, identidad visible y cierre de sesión; sin configuración Entra muestra un estado seguro y no monta los módulos.
+- El acceso utiliza roles locales `master`, `admin` y `editor`: Master gestiona los tres roles, Administrador únicamente Editores y Editor solo contenido. El módulo “Usuarios” respeta esas capacidades y permite activar o desactivar autorizaciones.
 
 ### API
 
@@ -71,9 +80,13 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Expone `GET /api/v1/health`.
 - Expone consultas públicas para carrusel, eventos y archivos publicados.
 - Expone operaciones administrativas protegidas para diapositivas, eventos, fotografías, orden y portada.
+- Expone el contenido público agregado mediante `GET /api/v1/site/home` y rutas protegidas para consultar, guardar borradores y publicar secciones.
+- Las tablas `content_sections` y `content_revisions` separan catálogo, borrador, publicación e historial; las imágenes editables referencian `media_files.id` y se almacenan bajo `writable/uploads/sections/{section-key}`.
 - Valida JPEG, PNG y WebP de hasta 8 MB y almacena sus binarios bajo `writable/uploads` con nombres internos aleatorios.
 - Tiene CORS configurable para las SPA locales, limitación de solicitudes, cabeceras seguras y auditoría.
 - Las rutas administrativas están preparadas para filtros JWT y rol mediante Microsoft Entra ID.
+- El filtro JWT delega en un validador probado que comprueba firma RS256/JWKS, vigencia, tenant, emisor Microsoft v1/v2, audiencia GUID o `api://GUID`, scope y Client ID autorizado; `RoleFilter` exige una autorización local activa con rol reconocido.
+- La tabla `admin_users` vincula correo MEP con `oid`, rol y estado. La API impide cambiar el rol/estado propio o dejar cero Masters activos; el primer Master solo puede incorporarse mediante el correo privado `auth.bootstrapMasterEmail` cuando la tabla está vacía.
 - La arquitectura acordada es `Controller → Service → Repository → Database`.
 - El README y el contrato OpenAPI identifican visualmente la API mediante `public/assets/logo-olcomep.png`.
 - Las dependencias PHP están fijadas en `composer.lock`; `vendor/` no se confirma en Git.
@@ -106,6 +119,8 @@ El seeder inicial registra de forma idempotente únicamente la edición OLCOMEP 
 - Migración pública: `specs/features/001-public-site-migration/`.
 - Dominio inicial de inscripciones: `specs/features/002-registration-domain/`.
 - Carrusel y galería de eventos: `specs/features/003-carousel-event-gallery/`.
+- Administración del contenido público: `specs/features/004-content-management/`.
+- Inicio de sesión administrativo con cuenta MEP: `specs/features/005-admin-entra-authentication/`.
 - Modelo y decisiones de datos: `docs/migration/olcomep-data-model.md`.
 - Entorno local de la API: `docs/migration/api-local-environment.md`.
 - Inicialización de MariaDB: `docs/migration/mysql-initialization.md`.
@@ -201,6 +216,28 @@ Decisión local del 11-09-2026:
 - `composer --working-dir=apps/api test`: 13 pruebas y 41 aserciones correctas después de actualizar el logotipo expuesto por la documentación de la API.
 - El fondo exterior del logotipo se extrajo a transparencia sin alterar los píxeles visibles; las tres superficies conservan una copia PNG idéntica con 297 757 píxeles transparentes y esquinas alfa 0.
 
+Verificaciones del 14-09-2026:
+
+- `npm run build --workspace=@olcomep/public-web`: correcto después de incorporar la sección “Calendario” con las 12 actividades oficiales de la edición 2026.
+- Auditoría visual en escritorio y móvil: una sola sección `#calendario`, 12 actividades, 15 elementos `time`, un único `h1` y sin desbordamiento horizontal a 360 px.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de incorporar “Colaboradores y patrocinadores”.
+- Auditoría visual en escritorio y móvil: una sola sección de alianzas, cinco logotipos informativos, patrocinador textual, un único `h1` y sin desbordamiento horizontal a 360 px.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de añadir el zoom sutil y la reducción de movimiento a los logotipos colaboradores.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de eliminar las siglas repetidas y ampliar el área visible de los cinco logotipos colaboradores.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de retirar los bordes individuales de la retícula de colaboradores.
+- `composer --working-dir=apps/api test`: 14 pruebas y 46 aserciones correctas después de incorporar el modelo y el flujo editorial de la portada; la prueba de esquema aplica y revierte la migración nueva en SQLite temporal.
+- `npm run build --workspace=@olcomep/public-web`: correcto con la portada compartida, consumo público y respaldo local.
+- `npm run build --workspace=@olcomep/admin-web`: correcto con el editor, carga y vista previa responsive de la portada.
+- `php apps/api/spark migrate --all`: migración `CreateContentManagement` aplicada correctamente en MariaDB local después de levantar XAMPP; `PublicContentSeeder` registró la portada y vinculó su imagen inicial mediante `media_file_id`.
+- Verificación real en `GET /api/v1/site/home`: portada publicada con revisión 1; la imagen se entregó desde `/api/v1/media/{uuid}` como `image/png`, HTTP 200 y 109 603 bytes.
+- `composer --working-dir=apps/api test`: 21 pruebas y 53 aserciones correctas después de extraer y cubrir el validador JWT de Microsoft; no quedaron pruebas omitidas.
+- `npm run build --workspace=@olcomep/admin-web`: correcto después de integrar `@azure/msal-browser` y `@azure/msal-react`.
+- `npm run build --workspace=@olcomep/public-web`: correcto después de permitir adquisición asíncrona de tokens en el cliente API compartido; la vista pública continúa sin depender de MSAL.
+- `composer --working-dir=apps/api test`: 25 pruebas y 60 aserciones correctas después de incorporar roles locales, creación jerárquica y protección del último Master.
+- `npm run build --workspace=@olcomep/admin-web`: correcto después de incorporar el perfil autorizado y el módulo de gestión de usuarios.
+- `php apps/api/spark migrate --all`: migración `CreateAdminUsers` aplicada correctamente en MariaDB local.
+- `BootstrapMasterSeeder` ejecutado dos veces de forma idempotente: existe exactamente un Master activo inicial, configurado mediante el `.env` privado, pendiente únicamente de vincular su `oid` en el primer inicio de sesión Microsoft.
+
 ## 9. Regla de commits y sincronización
 
 - Formato obligatorio: `DD-MM-YYYY Descripción amplia en español`.
@@ -226,7 +263,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 11. Próximo paso recomendado
 
-Configurar Microsoft Entra ID por ambiente e integrar MSAL en `apps/admin-web`; después validar el flujo administrativo completo con una identidad autorizada y definir la estrategia de respaldo de base y `writable/uploads`.
+Validar con una identidad administrativa el flujo real de borrador/publicación de la portada. Después, extender el patrón a “Conoce OLCOMEP” y configurar Microsoft Entra ID por ambiente para sustituir el ingreso manual del token.
 
 ## 12. Prompt para retomar con Codex
 

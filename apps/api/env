@@ -35,8 +35,9 @@ azure.issuer = 'https://login.microsoftonline.com/{tenantId}/v2.0'
 azure.jwksUri = 'https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys'
 azure.expectedAudience = 'api://<API_CLIENT_ID>'
 azure.requiredScope = 'access_as_user'
-azure.adminRoles = 'api.admin'
-
 # Client IDs de las SPA autorizadas a solicitar tokens para esta API.
 azure.allowedClientIds = ''
+azure.clockSkewSeconds = 300
 auth.jwtValidationEnabled = true
+auth.bootstrapMasterEmail = ''
+auth.allowedEmailDomains = 'mep.go.cr'

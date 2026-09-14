@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^4.25.1",
+    "@azure/msal-react": "^3.0.20",
     "@olcomep/api-client": "0.1.0",
+    "@olcomep/shared": "0.1.0",
     "@olcomep/ui": "0.1.0",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",

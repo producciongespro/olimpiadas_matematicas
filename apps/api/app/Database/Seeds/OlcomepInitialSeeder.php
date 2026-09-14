@@ -10,5 +10,6 @@ class OlcomepInitialSeeder extends Seeder
     {
         $this->call(Edition2026Seeder::class);
         $this->call(LegacyCarouselSeeder::class);
+        $this->call(PublicContentSeeder::class);
     }
 }

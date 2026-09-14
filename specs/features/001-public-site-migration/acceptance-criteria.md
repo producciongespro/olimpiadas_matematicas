@@ -19,6 +19,15 @@
 - “Acerca de nosotros” sintetiza los antecedentes institucionales en una secuencia cronológica, conserva fechas, cifras, alcance regional, universidades participantes y visión educativa sin introducir datos no comprobados.
 - “Coordinaciones regionales” muestra las 27 regiones, permite buscar por región, persona o correo, genera enlaces `mailto:` únicamente para direcciones inequívocas y señala cualquier contacto pendiente de confirmación.
 - “Información general” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes mediante destinos válidos y contenido propio de OLCOMEP.
+- La navegación y “Información general” conducen a una sección “Calendario” única y reconocible.
+- “Calendario” presenta en orden cronológico las 12 actividades confirmadas de abril a diciembre de 2026, diferencia fechas exactas de meses sin día confirmado y enlaza al manual oficial.
+- El cronograma conserva lectura lineal, fechas semánticas, contraste suficiente y ausencia de desbordamiento horizontal en móvil y escritorio.
+- “Colaboradores y patrocinadores” diferencia las cinco universidades públicas del patrocinador de la edición 2026.
+- Los logotipos de UCR, UNED, UNA, TEC y UTN conservan proporción, tienen nombres accesibles y se adaptan sin recorte ni desbordamiento desde 320 px.
+- Las siglas no se repiten debajo de las marcas y el espacio liberado aumenta el área visible de los logotipos.
+- Los logotipos se presentan sin bordes individuales y conservan separación suficiente mediante el espaciado de la retícula.
+- En dispositivos con puntero, cada logotipo aplica un zoom sutil sin desplazar elementos; la transición se desactiva cuando `prefers-reduced-motion` está activo.
+- El Centro Cultural Costarricense Norteamericano aparece mediante su nombre completo y no utiliza un logotipo provisional o inventado.
 - Las preguntas frecuentes pueden abrirse con teclado y no ocultan información esencial exclusivamente detrás de hover.
 - El header presenta conjuntamente las marcas del MEP y OLCOMEP sin deformación, recorte ni duplicación en el nombre accesible del enlace de inicio.
 - La sección “Conoce OLCOMEP” utiliza el logotipo a mayor escala que el header y el footer, sin desplazar ni dificultar la lectura de su contenido en móvil o escritorio.

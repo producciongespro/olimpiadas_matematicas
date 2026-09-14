@@ -1,0 +1,79 @@
+openapi: 3.0.3
+info:
+  title: API de contenido público OLCOMEP
+  version: 0.1.0
+servers:
+  - url: http://localhost:3600/api/v1
+paths:
+  /site/home:
+    get:
+      summary: Obtiene las secciones publicadas de la página principal
+      responses:
+        '200':
+          description: Mapa de contenido publicado por clave de sección
+  /admin/site/sections:
+    get:
+      summary: Lista el estado editorial de las secciones
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Secciones administrativas }
+  /admin/site/sections/{key}:
+    get:
+      summary: Obtiene el borrador y la publicación de una sección
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/SectionKey'
+      responses:
+        '200': { description: Estado editorial de la sección }
+        '422': { description: Clave inexistente o inválida }
+  /admin/site/sections/{key}/draft:
+    post:
+      summary: Guarda una revisión como borrador
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/SectionKey'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HeroDraft'
+      responses:
+        '200': { description: Borrador guardado }
+        '422': { description: Contenido o imagen inválidos }
+  /admin/site/sections/{key}/publish:
+    post:
+      summary: Publica el borrador vigente de una sección
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/SectionKey'
+      responses:
+        '200': { description: Sección publicada }
+        '422': { description: No existe un borrador publicable }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    SectionKey:
+      in: path
+      name: key
+      required: true
+      schema: { type: string, enum: [hero] }
+  schemas:
+    HeroDraft:
+      type: object
+      required: [eyebrow, title, audience, description, primary_label, primary_href, secondary_label, secondary_href, image_alt]
+      properties:
+        eyebrow: { type: string, maxLength: 80 }
+        title: { type: string, maxLength: 120 }
+        audience: { type: string, maxLength: 100 }
+        description: { type: string, maxLength: 420 }
+        primary_label: { type: string, maxLength: 60 }
+        primary_href: { type: string, maxLength: 512 }
+        secondary_label: { type: string, maxLength: 60 }
+        secondary_href: { type: string, maxLength: 512 }
+        image_alt: { type: string, maxLength: 255 }
+        image: { type: string, format: binary, description: JPEG, PNG o WebP validado por la API }

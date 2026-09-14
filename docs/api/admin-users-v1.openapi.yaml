@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  title: API de autorizaciones administrativas OLCOMEP
+  version: 0.1.0
+servers:
+  - url: http://localhost:3600/api/v1
+security: [{ bearerAuth: [] }]
+paths:
+  /admin/profile:
+    get:
+      summary: Obtiene la autorización local de la identidad activa
+      responses:
+        '200': { description: Perfil, rol y capacidades }
+        '401': { description: Token Microsoft inválido }
+        '403': { description: Cuenta sin autorización local activa }
+  /admin/users:
+    get:
+      summary: Lista usuarios administrables por la identidad activa
+      responses:
+        '200': { description: Lista filtrada por jerarquía }
+        '403': { description: El rol no gestiona usuarios }
+    post:
+      summary: Crea una autorización para una cuenta MEP existente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserInput' }
+      responses:
+        '201': { description: Autorización creada }
+        '403': { description: Asignación fuera de la jerarquía }
+        '422': { description: Datos inválidos o correo duplicado }
+  /admin/users/{id}:
+    put:
+      summary: Modifica rol, estado o nombre de referencia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserInput' }
+      responses:
+        '200': { description: Autorización actualizada }
+        '403': { description: Operación fuera de la jerarquía o sobre la propia cuenta }
+        '422': { description: Operación dejaría cero Masters activos o contiene datos inválidos }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  schemas:
+    UserInput:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        display_name: { type: string, maxLength: 180, nullable: true }
+        role: { type: string, enum: [master, admin, editor] }
+        status: { type: string, enum: [active, inactive] }

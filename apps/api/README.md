@@ -57,7 +57,7 @@ El contrato de medios está documentado en `../../docs/api/media-v1.openapi.yaml
 
 ## Microsoft Entra ID
 
-Registre una aplicación para la API y una aplicación independiente para cada SPA autorizada. En la API, exponga el scope configurado en `azure.requiredScope` y defina el rol administrativo configurado en `azure.adminRoles`.
+Registre una aplicación para la API y una aplicación independiente para cada SPA autorizada. En la API, exponga el scope configurado en `azure.requiredScope`; OLCOMEP administra localmente los roles `master`, `admin` y `editor` después de validar la identidad institucional.
 
 La SPA obtiene un *access token* mediante MSAL con Authorization Code Flow + PKCE y solicita el scope de la API. Debe enviar el token en cada llamada administrativa:
 

@@ -18,6 +18,8 @@ Reproducir en React la experiencia pública existente de OLCOMEP, conservando su
 - Sección institucional “Acerca de nosotros”.
 - Sección “Coordinaciones regionales”.
 - Sección “Información general”.
+- Sección “Calendario”.
+- Sección “Colaboradores y patrocinadores”.
 - Información, inscripción y descargas de la edición vigente.
 - Cuadernillos por año, nivel y tipo de usuario.
 - Cuadernillos interactivos.
@@ -91,6 +93,20 @@ Los datos se mantienen como contenido estático de la vista pública: no se carg
 La vista pública incluye un punto de entrada que organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes. La taxonomía toma como referencia la arquitectura de información de `https://www.obm.org.br/informacoes-gerais/`, sin copiar textos, reglas ni procesos de la olimpiada brasileña.
 
 El contenido OLCOMEP se construye exclusivamente con datos confirmados en el sitio heredado, documentos institucionales y especificaciones vigentes: población de primero a sexto año, inscripción mediante formulario externo, periodo del 8 de abril al 6 de mayo de 2026, manual y reglamento 2026, materiales de preparación y directorio regional. Los temas conducen a documentos o anclas existentes, los PDF se identifican claramente y las preguntas frecuentes utilizan controles nativos operables con teclado.
+
+### PUB-012 — Calendario
+
+La vista pública incluye una sección “Calendario” con el cronograma oficial de la XII edición OLCOMEP 2026, suministrado en `Cronograma OLCOMEP 2026.docx` y contrastado con el manual institucional. Presenta en orden cronológico inscripción, inauguración, talleres de preparación, pruebas de Primera y Segunda Etapa, publicaciones de resultados, Etapa Final y Premiación Nacional. Las pruebas de las dos primeras etapas conservan la distribución indicada: quinto y sexto año el primer día, tercero y cuarto el segundo, y primero y segundo el tercero.
+
+Las fechas se marcan semánticamente con elementos `time`, los intervalos conservan inicio y cierre, y las actividades sin día confirmado muestran únicamente el mes. La sección no inventa horarios ni fechas de talleres: comunica que esos detalles serán publicados en los canales oficiales. Incluye un enlace claramente identificado al manual 2026 para consultar observaciones y condiciones completas.
+
+### PUB-013 — Colaboradores y patrocinadores
+
+La vista pública diferencia las instituciones colaboradoras de los patrocinadores. UCR, UNED, UNA, TEC y UTN se presentan como universidades públicas colaboradoras de la Comisión Central OLCOMEP mediante los logotipos oficiales suministrados, conservados en PNG con fondo transparente y sin deformación.
+
+El Centro Cultural Costarricense Norteamericano se identifica como patrocinador de OLCOMEP 2026 mediante su nombre completo. Mientras no exista un activo gráfico autorizado, la interfaz no inventa ni sustituye su logotipo. Cada marca universitaria cuenta con un texto alternativo informativo y dimensiones reservadas. No se repiten siglas debajo de los logotipos ni se encierran las marcas en bordes individuales: el espacio abierto se destina a ampliar los logotipos sin recortarlos, mientras sus nombres completos permanecen disponibles para tecnología de asistencia.
+
+Al pasar el puntero por cada institución, únicamente su logotipo aumenta hasta un 6 % durante 300 ms. La transición no modifica el flujo ni las dimensiones de la retícula y se omite mediante `prefers-reduced-motion` cuando la persona usuaria solicita reducir el movimiento.
 
 ## Fuera de alcance de esta iteración
 

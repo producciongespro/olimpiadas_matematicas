@@ -18,11 +18,10 @@ const informationRoutes = [
   },
   {
     description: 'El periodo de inscripción publicado para 2026 estuvo habilitado del 8 de abril al 6 de mayo.',
-    href: '/data/2026/manual-OLCOMEP-primaria-2026.pdf',
+    href: '#calendario',
     icon: CalendarDays,
-    label: 'Abrir el manual 2026 con la información de la edición',
+    label: 'Consultar el calendario oficial de OLCOMEP 2026',
     title: 'Calendario',
-    external: true,
   },
   {
     description: 'Respuestas rápidas sobre población participante, inscripción, preparación y consultas regionales.',
