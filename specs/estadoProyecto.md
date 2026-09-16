@@ -4,7 +4,7 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **14-09-2026**.
+Última actualización: **16-09-2026**.
 
 ## 2. Repositorio y rama activa
 
@@ -252,18 +252,17 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Configurar las App Registrations reales e integrar el inicio de sesión interactivo del administrador.
+1. Crear y configurar por ambiente las App Registrations exclusivas para la API y la SPA administrativa, y validar con una identidad MEP real el inicio de sesión interactivo ya implementado.
 2. Ejecutar una revisión visual y de accesibilidad con API, base y archivos levantados conjuntamente.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
-5. Crear App Registrations exclusivas para la API y las SPA y configurar Entra ID por ambiente.
-6. Validar la vista pública con lector de pantalla real y herramienta especializada de contraste antes de producción.
-7. Definir la estrategia de almacenamiento y despliegue de documentos históricos.
-8. Mantener este archivo actualizado después de cada iteración importante.
+5. Validar la vista pública con lector de pantalla real y herramienta especializada de contraste antes de producción.
+6. Definir la estrategia de almacenamiento y despliegue de documentos históricos.
+7. Mantener este archivo actualizado después de cada iteración importante.
 
 ## 11. Próximo paso recomendado
 
-Validar con una identidad administrativa el flujo real de borrador/publicación de la portada. Después, extender el patrón a “Conoce OLCOMEP” y configurar Microsoft Entra ID por ambiente para sustituir el ingreso manual del token.
+Configurar Microsoft Entra ID por ambiente y validar con una identidad administrativa MEP el inicio de sesión interactivo y el flujo real de borrador/publicación de la portada. El ingreso manual de tokens ya fue retirado. Después, extender el patrón editorial a “Conoce OLCOMEP”.
 
 ## 12. Prompt para retomar con Codex
 
