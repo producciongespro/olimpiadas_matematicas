@@ -4,16 +4,16 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **16-09-2026**.
+Última actualización: **17-09-2026**.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `03481d0`
-- Mensaje: `04-09-2026 Configura el monorepo y establece la base funcional de OLCOMEP`
-- Estado observado el 08-09-2026: rama local alineada con su upstream, sin commits adelantados ni atrasados antes de esta actualización documental.
+- Commit de referencia: `5cb0fb4`
+- Mensaje: `16-09-2026 Actualiza el estado y los próximos pasos del proyecto`
+- Estado observado el 17-09-2026: rama local alineada con `origin/devUlate`, sin commits adelantados ni atrasados antes de esta actualización documental.
 
 El hash es una referencia local del momento de esta actualización. Antes de continuar se debe ejecutar `git fetch` y comprobar la relación con la rama remota.
 
@@ -125,7 +125,7 @@ El seeder inicial registra de forma idempotente únicamente la edición OLCOMEP 
 - Entorno local de la API: `docs/migration/api-local-environment.md`.
 - Inicialización de MariaDB: `docs/migration/mysql-initialization.md`.
 
-Las tareas fundacionales registradas en `specs/000-foundation/tasks.md` están completadas. Esto no significa que el producto completo esté terminado: la administración, los endpoints de negocio y el despliegue continúan pendientes.
+Las tareas fundacionales registradas en `specs/000-foundation/tasks.md` están completadas. La administración ya cubre contenido, medios y usuarios, y la API dispone de los endpoints relacionados; continúan pendientes la ampliación de capacidades de negocio, la configuración real de Entra ID, las validaciones integrales y el despliegue.
 
 ## 6. Configuración local
 
@@ -246,6 +246,7 @@ Verificaciones del 14-09-2026:
 - El hook `.githooks/commit-msg` se activa mediante `core.hooksPath=.githooks`.
 - Nunca se debe utilizar `--no-verify`.
 - Después de cada commit se debe comprobar `git log -1 --pretty=%s`.
+- Antes de preparar cualquier commit solicitado, se debe revisar y actualizar este archivo con todo el estado vigente de la iteración.
 - Antes de sincronizar, ejecutar `git fetch`, revisar el upstream y comparar adelantos y atrasos.
 
 El estado exacto de archivos pendientes debe obtenerse siempre mediante `git status`; este documento no mantiene una lista estática de cambios sin confirmar.

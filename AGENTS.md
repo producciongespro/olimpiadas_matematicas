@@ -39,19 +39,20 @@ Estas instrucciones aplican a la vista pública, la vista administrativa, la API
 Cuando la persona usuaria solicite crear un commit:
 
 1. Leer completamente esta sección antes de ejecutar `git commit`.
-2. Revisar `git status --short` y todos los cambios que se incluirán.
-3. Preparar solo archivos de una intención coherente. No usar `git add .` cuando existan cambios de tareas distintas.
-4. Revisar `git diff --cached --stat` y `git diff --cached --check`.
-5. Usar exactamente este encabezado:
+2. Revisar y actualizar `specs/estadoProyecto.md` con todo el estado vigente de la iteración antes de preparar el commit.
+3. Revisar `git status --short` y todos los cambios que se incluirán.
+4. Preparar solo archivos de una intención coherente. No usar `git add .` cuando existan cambios de tareas distintas.
+5. Revisar `git diff --cached --stat` y `git diff --cached --check`.
+6. Usar exactamente este encabezado:
 
    ```text
    DD-MM-YYYY Descripción amplia en español
    ```
 
-6. La fecha debe ser la fecha local actual de `America/Guatemala`, con dos dígitos para día y mes.
-7. No anteponer `feat:`, `fix:`, `docs:`, `chore:` ni ningún otro prefijo.
-8. No usar `git commit --no-verify` ni desactivar el hook.
-9. Después del commit, ejecutar `git log -1 --pretty=%s` y comprobar el encabezado. Si no cumple y no fue publicado, corregirlo antes de informar éxito.
+7. La fecha debe ser la fecha local actual de `America/Guatemala`, con dos dígitos para día y mes.
+8. No anteponer `feat:`, `fix:`, `docs:`, `chore:` ni ningún otro prefijo.
+9. No usar `git commit --no-verify` ni desactivar el hook.
+10. Después del commit, ejecutar `git log -1 --pretty=%s` y comprobar el encabezado. Si no cumple y no fue publicado, corregirlo antes de informar éxito.
 
 Ejemplo válido:
 
