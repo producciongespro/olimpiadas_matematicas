@@ -31,6 +31,8 @@ Variables sin secretos:
 - `VITE_API_URL`: base de la API.
 
 La caché de MSAL usa `sessionStorage`; no se persisten access tokens en almacenamiento propio de la aplicación.
+Antes de habilitar el botón de ingreso, la SPA valida que los Client ID, Tenant ID y el identificador incluido en el scope tengan formato GUID y que el scope corresponda a `api://<api-id>/access_as_user`. Los marcadores de las plantillas se consideran configuración ausente y nunca se envían a Microsoft.
+Si MSAL falla durante su inicialización o al procesar una redirección, la SPA conserva un código seguro de diagnóstico en pantalla y consola. No registra tokens, identificadores ni valores de los archivos de entorno.
 
 ## Validación de la API
 

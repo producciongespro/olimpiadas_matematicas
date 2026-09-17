@@ -3,7 +3,8 @@
 - La vista pública no depende de MSAL ni solicita inicio de sesión.
 - El administrador sin sesión muestra una pantalla de acceso y no monta los módulos editoriales.
 - El inicio y cierre de sesión utilizan redirecciones de Microsoft Entra ID.
-- La configuración ausente produce un mensaje claro sin iniciar un flujo contra el tenant `common`.
+- La configuración ausente, con marcadores de plantilla o con identificadores inválidos produce un mensaje claro sin iniciar un flujo contra Microsoft.
+- Los errores de inicialización de MSAL muestran y registran un código de diagnóstico sin exponer identificadores, tokens ni valores privados de configuración.
 - La SPA solicita el scope propio de la API y adquiere tokens silenciosamente cuando existe una cuenta activa.
 - No existe campo para pegar tokens y la aplicación no persiste access tokens manualmente.
 - Todas las solicitudes administrativas incluyen el esquema estricto `Authorization: Bearer <token>`.

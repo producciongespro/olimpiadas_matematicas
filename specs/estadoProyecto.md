@@ -138,7 +138,7 @@ Puertos locales previstos:
 - Vista pública: `http://localhost:5173`
 - Administración: `http://localhost:5174`
 
-Los workspaces se administran desde la raíz mediante npm.
+Los workspaces se administran desde la raíz mediante npm. Vite fija ambos puertos con `strictPort` para impedir que una aplicación ocupe silenciosamente el puerto reservado a la otra.
 
 ### API
 
@@ -148,7 +148,7 @@ Los workspaces se administran desde la raíz mediante npm.
 - Plantilla versionada: `apps/api/env`
 - Configuración privada local: `apps/api/.env`
 
-La plantilla autoriza por CORS los orígenes locales `5173` y `5174`. La auditoría permanece desactivada hasta ejecutar las migraciones sobre MySQL. La validación JWT permanece activa, pero los identificadores reales de Entra ID todavía deben configurarse fuera del repositorio.
+La plantilla autoriza por CORS los orígenes locales `5173` y `5174`. La auditoría permanece desactivada hasta ejecutar las migraciones sobre MySQL. La validación JWT permanece activa. Los valores de identidad de los archivos privados de producción se copiaron literalmente a la configuración local ignorada por Git. Microsoft devuelve `invalid_client` para el Client ID administrativo suministrado, por lo que debe confirmarse que sea el Id. de aplicación (cliente) de una SPA existente en el tenant MEP y no un Id. de objeto u otro registro.
 
 ## 7. Preparación en una computadora nueva
 
@@ -238,6 +238,18 @@ Verificaciones del 14-09-2026:
 - `php apps/api/spark migrate --all`: migración `CreateAdminUsers` aplicada correctamente en MariaDB local.
 - `BootstrapMasterSeeder` ejecutado dos veces de forma idempotente: existe exactamente un Master activo inicial, configurado mediante el `.env` privado, pendiente únicamente de vincular su `oid` en el primer inicio de sesión Microsoft.
 
+Verificaciones del 17-09-2026:
+
+- `composer --working-dir=apps/api test`: 25 pruebas y 60 aserciones correctas.
+- `npm run build`: correctos los builds de `public-web` y `admin-web` después de configurar localmente el tenant institucional.
+- Microsoft Entra confirmó la identidad MEP, pero rechazó la creación de registros por falta de permisos de la cuenta; no se creó ni modificó ninguna aplicación del tenant.
+- La SPA administrativa rechaza marcadores de plantilla e identificadores Entra inválidos antes de iniciar una redirección a Microsoft.
+- Las vistas pública y administrativa publican explícitamente `favicon.ico`, evitando solicitudes 404 del navegador en desarrollo.
+- Vite reserva estrictamente `5173` para `public-web` y `5174` para `admin-web`; si el puerto correspondiente está ocupado, el servidor informa el conflicto en lugar de cambiar de puerto o intercambiar las aplicaciones.
+- Los archivos privados `.env.production` de API y administración fueron revisados sin exponer valores y excluidos explícitamente de Git. Sus valores de identidad se copiaron literalmente a `apps/api/.env` y `apps/admin-web/.env.local`, conservando las URLs, puertos y base de datos locales; las cuatro configuraciones privadas permanecen ignoradas por Git.
+- Los fallos de inicialización de MSAL ya no se ocultan: la pantalla y la consola muestran un código seguro de diagnóstico sin registrar identificadores ni tokens.
+- La prueba interactiva llegó a Microsoft, que respondió `invalid_client` antes de emitir un token o contactar la API. La base local conserva un único usuario Master activo, todavía sin `entra_oid` ni primer inicio de sesión registrado.
+
 ## 9. Regla de commits y sincronización
 
 - Formato obligatorio: `DD-MM-YYYY Descripción amplia en español`.
@@ -253,7 +265,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Crear y configurar por ambiente las App Registrations exclusivas para la API y la SPA administrativa, y validar con una identidad MEP real el inicio de sesión interactivo ya implementado.
+1. Confirmar en Entra que `VITE_ENTRA_CLIENT_ID` sea el Id. de aplicación (cliente) de la SPA administrativa registrada en el tenant MEP, corregir el archivo privado de producción si corresponde y volver a sincronizar la configuración local.
 2. Ejecutar una revisión visual y de accesibilidad con API, base y archivos levantados conjuntamente.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
@@ -263,7 +275,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 11. Próximo paso recomendado
 
-Configurar Microsoft Entra ID por ambiente y validar con una identidad administrativa MEP el inicio de sesión interactivo y el flujo real de borrador/publicación de la portada. El ingreso manual de tokens ya fue retirado. Después, extender el patrón editorial a “Conoce OLCOMEP”.
+Corregir el Client ID administrativo rechazado por Microsoft y validar con una identidad MEP el inicio de sesión interactivo, la vinculación del Master y el flujo real de borrador/publicación de la portada. El ingreso manual de tokens ya fue retirado. Después, extender el patrón editorial a “Conoce OLCOMEP”.
 
 ## 12. Prompt para retomar con Codex
 
