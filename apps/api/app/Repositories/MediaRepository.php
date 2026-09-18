@@ -62,6 +62,7 @@ class MediaRepository
                 ->whereIn('media.id', $this->db->table('carousel_slides')->select('media_file_id')->where('status', 'published'))
                 ->orWhereIn('media.id', $this->db->table('event_images images')->select('images.media_file_id')->join('events e', 'e.id = images.event_id')->where('e.status', 'published'))
                 ->orWhereIn('media.id', $this->db->table('content_revisions')->select('media_file_id')->where('status', 'published')->where('media_file_id IS NOT NULL', null, false))
+                ->orWhereIn('media.id', $this->db->table('content_revision_media links')->select('links.media_file_id')->join('content_revisions revisions', 'revisions.id = links.revision_id')->where('revisions.status', 'published'))
             ->groupEnd()->where('media.uuid', $uuid)->get()->getRowArray();
     }
 }

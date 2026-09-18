@@ -1,1 +1,8 @@
 export { HeroSection } from './HeroSection.jsx'
+export { OlcomepIntroductionSection } from './OlcomepIntroductionSection.jsx'
+export { CalendarSection } from './CalendarSection.jsx'
+export { PartnersSection } from './PartnersSection.jsx'
+export { AboutUsSection } from './AboutUsSection.jsx'
+export { GeneralInformationSection } from './GeneralInformationSection.jsx'
+export { RegionalCoordinationSection } from './RegionalCoordinationSection.jsx'
+export { CurrentEditionSection } from './CurrentEditionSection.jsx'

@@ -9,6 +9,34 @@
 - La base relaciona la revisión con `media_files.id`; no almacena base64 ni rutas absolutas.
 - La imagen solo es accesible públicamente cuando pertenece a una revisión publicada o a otro recurso público autorizado.
 - La vista previa administrativa reutiliza el componente de portada y permite evaluar el borrador en ancho móvil y escritorio.
+- La vista previa administrativa muestra el activo de respaldo aunque la vista pública no esté levantada.
+- “Conoce OLCOMEP” permite editar antetítulo, título y dos párrafos sin exponer HTML, estilos, logotipo ni anclas a edición libre.
+- La administración permite alternar entre portada y “Conoce OLCOMEP”; cada sección conserva de forma independiente su borrador, publicación y estado editorial.
+- La vista pública y la vista previa administrativa reutilizan el mismo componente para “Conoce OLCOMEP” y mantienen contenido local de respaldo cuando la API no responde.
+- El calendario permite editar sus textos, enlace al manual y actividades ordenadas mediante campos estructurados, sin edición libre de HTML.
+- Cada actividad exige fecha visible, fecha ISO, título y descripción y acepta fecha final y destaque opcionales.
+- La administración permite agregar, eliminar y mover actividades hacia arriba o abajo; el orden del borrador determina el orden publicado y no existe un límite funcional fijo de cantidad.
+- Es posible publicar un calendario vacío; la vista pública muestra un estado explícito en lugar de una lista rota.
+- La vista pública y la previsualización reutilizan el mismo componente de calendario y conservan las 12 actividades oficiales como respaldo local.
+- Colaboradores y patrocinadores se administran como listas independientes que permiten agregar, eliminar, reordenar y editar instituciones.
+- Cada institución exige nombre y acepta enlace y logotipo; los patrocinadores también aceptan descripción y pueden publicarse sin imagen.
+- Los logotipos nuevos se validan como JPEG, PNG o WebP de al menos 128 px y se relacionan con la revisión mediante `content_revision_media`.
+- Una revisión conserva los logotipos no reemplazados, las versiones históricas mantienen sus relaciones y solo los medios de publicaciones vigentes se entregan anónimamente.
+- La vista pública y la previsualización reutilizan el mismo componente y mantienen las cinco universidades y el patrocinador textual como respaldo local.
+- “Acerca de nosotros” permite administrar párrafos introductorios, hitos cronológicos y párrafos de cierre como colecciones dinámicas.
+- Los hitos pueden agregarse, eliminarse y reordenarse y exigen periodo, título y descripción.
+- La vista pública y la previsualización comparten el componente de historia institucional y conservan el contenido confirmado como respaldo local.
+- Información general permite agregar, editar, eliminar y reordenar rutas y preguntas frecuentes.
+- Los iconos se limitan al catálogo documentado y los enlaces se validan como anclas, rutas internas o HTTP(S).
+- La vista pública y la previsualización comparten el componente y muestran estados explícitos cuando una colección está vacía.
+- Coordinaciones regionales permite agregar, editar, eliminar y reordenar regiones y sus contactos, además de administrar varios correos por contacto.
+- Los nombres de región y contacto son obligatorios; los correos no vacíos se validan y normalizan en minúsculas.
+- La búsqueda pública filtra por región, persona o correo y la vista pública muestra estados explícitos para directorios, regiones o contactos vacíos.
+- La vista pública y la previsualización comparten el componente regional; los datos públicos vigentes se conservan como respaldo local hasta la primera publicación editorial.
+- Edición vigente permite administrar el estado de inscripción, la descarga masiva y la promoción audiovisual mediante campos estructurados y enlaces validados.
+- Los documentos oficiales pueden agregarse, editarse, eliminarse y reordenarse; sus iconos pertenecen al catálogo cerrado y una colección vacía muestra un estado explícito.
+- La imagen promocional se valida, almacena en la API y permanece asociada a la revisión; si no se reemplaza, el borrador conserva el medio vigente.
+- La vista pública y la previsualización comparten el componente de edición vigente y conservan contenido local de respaldo cuando la API no responde.
 - Guardar y publicar tienen acciones, mensajes y estados claramente diferenciados.
 - Las rutas administrativas conservan autenticación JWT, autorización por rol y auditoría.
 - Los builds de ambas SPA, las pruebas de API y la aplicación/reversión de la nueva migración finalizan correctamente.

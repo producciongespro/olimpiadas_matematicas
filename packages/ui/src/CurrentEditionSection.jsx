@@ -1,0 +1,20 @@
+import { CalendarX, Download, ExternalLink, FileArchive, FileSpreadsheet, FileText } from 'lucide-react'
+
+const resourceIcons = { file: FileText, archive: FileArchive, spreadsheet: FileSpreadsheet }
+const externalProps = (href) => /^https?:\/\//i.test(href) ? { rel: 'noopener noreferrer', target: '_blank' } : {}
+
+export function CurrentEditionSection({ content }) {
+  return <section id="edicion-vigente" className="scroll-mt-28 bg-brand-soft py-16 sm:py-20" aria-labelledby="titulo-edicion">
+    <div className="mx-auto max-w-content px-5 sm:px-8">
+      <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+        <div><p className="eyebrow text-brand-primary">{content.eyebrow}</p><h2 id="titulo-edicion" className="section-title mt-3">{content.title}</h2><p className="mt-5 max-w-xl text-lg leading-8 text-slate-700">{content.description}</p>
+          <aside className="mt-8 border-l-4 border-brand-highlight bg-white px-5 py-5" aria-labelledby="estado-inscripcion"><div className="flex gap-4"><CalendarX aria-hidden="true" className="mt-1 shrink-0 text-brand-primary"/><div><h3 id="estado-inscripcion" className="font-black text-slate-900">{content.registration_title}</h3><p className="mt-1 leading-7 text-slate-600">{content.registration_description}</p><a className="mt-3 inline-flex items-center gap-2 font-bold text-brand-primary underline decoration-2 underline-offset-4 hover:text-brand-accent" href={content.registration_href} {...externalProps(content.registration_href)}>{content.registration_label}<ExternalLink aria-hidden="true" size={17}/></a></div></div></aside>
+        </div>
+        <div className="overflow-hidden rounded-xl border border-line bg-white"><h3 className="sr-only">Documentos de la edición</h3>{content.resources.length === 0 ? <p className="p-8 text-center text-slate-600">No hay documentos publicados para esta edición.</p> : <ul className="divide-y divide-line">{content.resources.map((resource) => { const Icon = resourceIcons[resource.icon] || FileText; return <li className="group" key={resource.key}><a className="grid min-h-28 grid-cols-[auto_1fr_auto] items-center gap-4 px-5 py-5 hover:bg-brand-soft sm:px-6" href={resource.href} {...externalProps(resource.href)}><span className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-soft text-brand-primary group-hover:bg-white"><Icon aria-hidden="true"/></span><span><span className="block font-black text-slate-900">{resource.title}</span><span className="mt-1 block text-sm leading-6 text-slate-600">{resource.description}</span><span className="mt-2 block text-xs font-bold uppercase tracking-wider text-brand-accent">{resource.format}</span></span><Download aria-hidden="true" className="text-brand-primary"/></a></li> })}</ul>}</div>
+      </div>
+      <div className="mt-12 grid items-center gap-8 border-t border-brand-primary/20 pt-10 lg:grid-cols-[1fr_0.8fr]"><div><p className="eyebrow text-brand-primary">{content.bulk_eyebrow}</p><h3 className="mt-3 text-2xl font-black text-slate-900">{content.bulk_title}</h3><p className="mt-3 max-w-2xl leading-7 text-slate-700">{content.bulk_description}</p><a className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg bg-brand-primary px-5 py-3 font-bold text-white hover:bg-brand-primary/90" href={content.bulk_href} {...externalProps(content.bulk_href)}><FileSpreadsheet aria-hidden="true"/>{content.bulk_label}</a></div>
+        <div className="overflow-hidden rounded-xl bg-white p-3">{content.image_url ? <img alt={content.image_alt} className="h-auto w-full rounded-lg" height={content.image_height} loading="lazy" src={content.image_url} width={content.image_width}/> : <p className="rounded-lg bg-brand-soft p-8 text-center text-slate-600">Imagen promocional no disponible.</p>}<a className="mt-3 inline-flex min-h-11 items-center gap-2 px-2 font-bold text-brand-primary underline decoration-2 underline-offset-4 hover:text-brand-accent" href={content.promotion_href} {...externalProps(content.promotion_href)}>{content.promotion_label}<ExternalLink aria-hidden="true" size={17}/></a></div>
+      </div>
+    </div>
+  </section>
+}

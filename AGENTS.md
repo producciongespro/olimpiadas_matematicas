@@ -10,6 +10,8 @@ Estas instrucciones aplican a la vista pública, la vista administrativa, la API
 - Actualizar `specs/estadoProyecto.md` después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 - Preservar `app/` como referencia heredada mientras continúa la reingeniería.
 - No inventar contratos entre frontend y backend; documentarlos y mantenerlos sincronizados.
+- Toda sección pública nueva debe contar, antes de su implementación, con una especificación propia en `specs/features/004-content-management/sections/` que defina campos editables, campos protegidos, colecciones dinámicas, validaciones, estados y criterios de aceptación.
+- Cuando cambie el comportamiento, contrato, validación o capacidad editorial de una sección existente, actualizar en la misma iteración su especificación individual y los criterios generales relacionados. Un cambio funcional sin su actualización de spec se considera incompleto.
 
 ## Seguridad y datos
 

@@ -4,16 +4,16 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **17-09-2026**.
+Última actualización: **18-09-2026**.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `5cb0fb4`
-- Mensaje: `16-09-2026 Actualiza el estado y los próximos pasos del proyecto`
-- Estado observado el 17-09-2026: rama local alineada con `origin/devUlate`, sin commits adelantados ni atrasados antes de esta actualización documental.
+- Commit de referencia: `6c9cf85`
+- Mensaje: `17-09-2026 Fortalece la configuración local y el diagnóstico de acceso administrativo`
+- Estado observado el 18-09-2026: rama local alineada con `origin/devUlate`, sin commits adelantados ni atrasados antes de esta actualización documental.
 
 El hash es una referencia local del momento de esta actualización. Antes de continuar se debe ejecutar `git fetch` y comprobar la relación con la rama remota.
 
@@ -42,7 +42,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - El header, el `h1` y los metadatos identifican explícitamente a OLCOMEP como una Olimpiada de Matemática para Primaria; el primer viewport muestra el rango de 1.º a 6.º año.
 - Están migrados encabezado, navegación, galería, presentación institucional, edición 2026, contacto y pie de página.
 - La sección “Acerca de nosotros” sintetiza el documento institucional `Antecedentes OLCOMEP.docx` mediante una cronología desde las experiencias regionales de la primera década de 2000 hasta la alianza actual con universidades públicas, e incluye las cifras de crecimiento 2022–2024 y la visión integral, humanista y STEAM.
-- La sección “Coordinaciones regionales” publica como contenido estático las 27 fichas suministradas en `Coordinaciones regionales OLCOMEP sitio web.docx`, con búsqueda por región, persona o correo. No carga regionales en la base ni altera la inscripción externa; el correo duplicado de Allan Pérez Calderón permanece marcado como pendiente de confirmación.
+- La sección “Coordinaciones regionales” conserva como respaldo local las 27 fichas suministradas, con búsqueda por región, persona o correo; el gestor editorial permite publicar el directorio sin alterar las tablas de inscripción externa.
 - La sección “Información general” funciona como un centro de orientación hacia Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Adapta la arquitectura observada en la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
 - La sección “Calendario” publica las 12 actividades suministradas en `Cronograma OLCOMEP 2026.docx`, desde la inscripción del 8 de abril hasta la Premiación Nacional del 3 de diciembre; detalla la distribución de niveles para las pruebas y enlaza al manual institucional para consultar sus condiciones completas.
 - La sección “Colaboradores y patrocinadores” reconoce a UCR, UNED, UNA, TEC y UTN como universidades públicas colaboradoras y al Centro Cultural Costarricense Norteamericano como patrocinador de OLCOMEP 2026; este último se presenta sin imagen hasta contar con un activo autorizado.
@@ -50,6 +50,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Los logotipos colaboradores utilizan un área visual ampliada y no repiten sus siglas debajo de la imagen; el nombre completo se conserva como alternativa accesible.
 - La retícula de colaboradores utiliza espaciado abierto, sin bordes grises alrededor de cada marca.
 - La portada principal es el primer componente conectado al gestor de contenido: conserva valores locales de respaldo, consume su publicación desde la API y comparte el mismo componente React con la vista previa administrativa.
+- “Conoce OLCOMEP” consume su propia revisión publicada desde la API y conserva el contenido institucional local como respaldo; el logotipo, la composición y el ancla permanecen controlados por código.
 - El carrusel principal consume diapositivas publicadas desde la API y aparece inmediatamente debajo del header.
 - El carrusel respeta el contenedor central de 1200 px, usa alturas explícitas de 144, 176 y 208 px según el viewport, avanza automáticamente cada 6 segundos y se pausa con hover, foco, interacción manual o movimiento reducido.
 - La galería permite seleccionar eventos publicados y define estados de carga, vacío, error y éxito.
@@ -67,6 +68,13 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - El workspace React/Vite/Tailwind compila correctamente.
 - Incluye módulos funcionales para administrar diapositivas, eventos y fotografías.
 - Incluye el primer módulo de “Contenido del sitio”, con edición estructurada de la portada, reemplazo de imagen, vista previa móvil/escritorio, guardado de borrador y publicación confirmada.
+- “Contenido del sitio” también administra “Conoce OLCOMEP”: el selector permite alternar secciones, editar antetítulo, título y dos párrafos, guardar un borrador independiente, previsualizar con el componente público compartido y publicar explícitamente.
+- El calendario es la tercera sección editorial: permite modificar textos generales y enlace al manual, además de agregar, eliminar, reordenar y editar cualquier cantidad de actividades mediante campos estructurados, con fechas semánticas ISO, destaque opcional, borrador y publicación independiente.
+- “Colaboradores y patrocinadores” es la cuarta sección editorial: administra listas independientes con altas, bajas, orden, enlaces, descripciones y logotipos opcionales vinculados a cada revisión.
+- “Acerca de nosotros” es la quinta sección editorial: administra párrafos introductorios, cronología y párrafos de cierre; los hitos y textos pueden agregarse, eliminarse y reordenarse dentro de un borrador independiente.
+- “Información general” es la sexta sección editorial: administra rutas informativas y preguntas frecuentes con altas, bajas y orden, destinos validados e iconos seleccionados desde un catálogo controlado.
+- “Coordinaciones regionales” es la séptima sección editorial: administra encabezados, regiones, contactos y múltiples correos con altas, bajas y orden; la búsqueda pública filtra por región, persona o correo.
+- “Edición vigente” es la octava sección editorial: administra estado de inscripción, documentos descargables dinámicos, inscripción masiva, promoción audiovisual e imagen versionada.
 - Su encabezado incorpora el logotipo oficial de OLCOMEP con dimensiones reservadas y alternativa vacía porque el nombre aparece como texto adyacente.
 - Permite crear, publicar, ocultar, archivar, ordenar y definir portadas mediante controles operables por teclado.
 - Consume las rutas protegidas de la API con un token Bearer de Microsoft Entra ID conservado durante la sesión.
@@ -87,6 +95,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Las rutas administrativas están preparadas para filtros JWT y rol mediante Microsoft Entra ID.
 - El filtro JWT delega en un validador probado que comprueba firma RS256/JWKS, vigencia, tenant, emisor Microsoft v1/v2, audiencia GUID o `api://GUID`, scope y Client ID autorizado; `RoleFilter` exige una autorización local activa con rol reconocido.
 - La tabla `admin_users` vincula correo MEP con `oid`, rol y estado. La API impide cambiar el rol/estado propio o dejar cero Masters activos; el primer Master solo puede incorporarse mediante el correo privado `auth.bootstrapMasterEmail` cuando la tabla está vacía.
+- La identidad validada se comparte mediante un contexto de autenticación tipado y reiniciado por solicitud; filtros, auditoría y controladores ya no agregan propiedades dinámicas a `IncomingRequest` bajo PHP 8.2.
 - La arquitectura acordada es `Controller → Service → Repository → Database`.
 - El README y el contrato OpenAPI identifican visualmente la API mediante `public/assets/logo-olcomep.png`.
 - Las dependencias PHP están fijadas en `composer.lock`; `vendor/` no se confirma en Git.
@@ -131,6 +140,8 @@ Las tareas fundacionales registradas en `specs/000-foundation/tasks.md` están c
 
 Los archivos `.env` no se almacenan en Git. Nunca deben copiarse secretos reales a este documento.
 
+La convención privada es `.env.development` para desarrollo y `.env.production` para producción en `admin-web` y `api`. Vite realiza la selección por modo; los puntos de entrada de CodeIgniter cargan el archivo de desarrollo por defecto y el de producción cuando el proceso define `CI_ENVIRONMENT=production`. La antigua `.env.example` del administrador fue eliminada y `apps/api/env` permanece como única plantilla versionada del backend.
+
 ### Frontend
 
 Puertos locales previstos:
@@ -146,9 +157,9 @@ Los workspaces se administran desde la raíz mediante npm. Vite fija ambos puert
 - Salud: `http://localhost:3600/api/v1/health`
 - Base MySQL sugerida: `olcomep`
 - Plantilla versionada: `apps/api/env`
-- Configuración privada local: `apps/api/.env`
+- Configuración privada local: `apps/api/.env.development`
 
-La plantilla autoriza por CORS los orígenes locales `5173` y `5174`. La auditoría permanece desactivada hasta ejecutar las migraciones sobre MySQL. La validación JWT permanece activa. Los valores de identidad de los archivos privados de producción se copiaron literalmente a la configuración local ignorada por Git. Microsoft devuelve `invalid_client` para el Client ID administrativo suministrado, por lo que debe confirmarse que sea el Id. de aplicación (cliente) de una SPA existente en el tenant MEP y no un Id. de objeto u otro registro.
+La plantilla autoriza por CORS los orígenes locales `5173` y `5174`. La auditoría permanece desactivada hasta ejecutar las migraciones sobre MySQL. La validación JWT permanece activa. Los valores de identidad de los archivos privados de producción se copiaron literalmente a la configuración local ignorada por Git. La App Registration real expone `api.read`; la SPA acepta el nombre de scope delegado configurado y la API exige ese mismo valor mediante `azure.requiredScope`.
 
 ## 7. Preparación en una computadora nueva
 
@@ -163,7 +174,7 @@ composer --working-dir=apps/api install
 
 Luego:
 
-1. Copiar `apps/api/env` como `apps/api/.env`.
+1. Copiar `apps/api/env` como `apps/api/.env.development` y crear `apps/admin-web/.env.development` con las variables Vite requeridas.
 2. Crear la base MySQL `olcomep` y completar las credenciales locales.
 3. Ejecutar `php apps/api/spark migrate --all`.
 4. Ejecutar `php apps/api/spark db:seed OlcomepInitialSeeder`.
@@ -246,9 +257,50 @@ Verificaciones del 17-09-2026:
 - La SPA administrativa rechaza marcadores de plantilla e identificadores Entra inválidos antes de iniciar una redirección a Microsoft.
 - Las vistas pública y administrativa publican explícitamente `favicon.ico`, evitando solicitudes 404 del navegador en desarrollo.
 - Vite reserva estrictamente `5173` para `public-web` y `5174` para `admin-web`; si el puerto correspondiente está ocupado, el servidor informa el conflicto en lugar de cambiar de puerto o intercambiar las aplicaciones.
-- Los archivos privados `.env.production` de API y administración fueron revisados sin exponer valores y excluidos explícitamente de Git. Sus valores de identidad se copiaron literalmente a `apps/api/.env` y `apps/admin-web/.env.local`, conservando las URLs, puertos y base de datos locales; las cuatro configuraciones privadas permanecen ignoradas por Git.
+- Los archivos privados `.env.production` de API y administración fueron revisados sin exponer valores y excluidos explícitamente de Git. Sus valores de identidad se copiaron a `apps/api/.env.development` y `apps/admin-web/.env.development`, conservando las URLs, puertos y base de datos locales; las cuatro configuraciones privadas permanecen ignoradas por Git.
 - Los fallos de inicialización de MSAL ya no se ocultan: la pantalla y la consola muestran un código seguro de diagnóstico sin registrar identificadores ni tokens.
 - La prueba interactiva llegó a Microsoft, que respondió `invalid_client` antes de emitir un token o contactar la API. La base local conserva un único usuario Master activo, todavía sin `entra_oid` ni primer inicio de sesión registrado.
+
+Diagnóstico del 18-09-2026:
+
+- Los Client ID y Tenant ID locales tienen formato válido y coinciden literalmente con sus archivos privados de producción.
+- El bloqueo local se aisló al scope real `api.read`: la SPA lo rechazaba por exigir de forma rígida `access_as_user`, mientras la API privada esperaba incorrectamente `User.Read` de Microsoft Graph.
+- El contrato, las plantillas y la configuración privada de la API quedaron alineados con `api://<API_CLIENT_ID>/api.read`; queda pendiente repetir el flujo interactivo después de reiniciar los servicios.
+- `npm run build --workspace=@olcomep/admin-web`: correcto después de permitir el nombre de scope delegado configurado.
+- `composer --working-dir=apps/api test`: 25 pruebas y 60 aserciones correctas con el scope privado alineado.
+- La vista previa administrativa incluye su propia copia del activo de respaldo de la portada y ya no intenta obtenerlo desde `localhost:5173` cuando la vista pública está apagada.
+- La sesión administrativa estabiliza la cuenta mediante `homeAccountId`; las adquisiciones silenciosas de MSAL ya no recrean periódicamente el cliente API ni alternan el estado `busy` de los botones.
+- `npm run build --workspace=@olcomep/admin-web`: correcto después de estabilizar la identidad de sesión y las dependencias de carga.
+- El inicio de sesión real alcanzó las rutas administrativas y reveló advertencias `DEPRECATED` de PHP 8.2 por propiedades dinámicas en `IncomingRequest`; el contexto de autenticación fue extraído a un servicio tipado que se reinicia en cada solicitud.
+- `composer --working-dir=apps/api test`: 26 pruebas y 69 aserciones correctas después de incorporar y cubrir el contexto de autenticación por solicitud y retirar la comprobación heredada del nombre `.env`.
+- Los archivos privados locales fueron renombrados a `.env.development`; Git confirmó que las configuraciones de desarrollo y producción permanecen ignoradas. `php apps/api/spark env` informó el ambiente `development` mediante el cargador nuevo.
+- `npm run build --workspace=@olcomep/admin-web`: correcto después de adoptar la convención por ambiente.
+- `PublicContentSeeder` registró idempotentemente `olcomep-introduction` en la base local; `GET /api/v1/site/home` confirmó las publicaciones `hero` y `olcomep-introduction`.
+- `composer --working-dir=apps/api test`: 27 pruebas y 73 aserciones correctas con el ciclo de borrador y publicación de “Conoce OLCOMEP”.
+- `npm run build --workspace=@olcomep/public-web` y `npm run build --workspace=@olcomep/admin-web`: correctos con el componente compartido y el selector de secciones editoriales.
+- `PublicContentSeeder` registró idempotentemente `calendar`; el endpoint público confirmó tres secciones y 12 actividades publicadas.
+- `composer --working-dir=apps/api test`: 28 pruebas y 76 aserciones correctas con el contrato estructurado del calendario.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente después de compartir el componente de calendario entre ambas superficies.
+- El editor del calendario permite agregar, eliminar y reordenar actividades sin un máximo funcional fijo; también admite publicar una lista vacía con estado público explícito.
+- `composer --working-dir=apps/api test`: 29 pruebas y 78 aserciones correctas después de cubrir altas, bajas, orden y calendario vacío.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con los controles dinámicos del cronograma.
+- La migración `CreateContentRevisionMedia` fue aplicada en MariaDB local y permite múltiples logotipos trazables por revisión editorial.
+- `PublicContentSeeder` registró `partners`, importó los cinco logotipos universitarios y conservó el patrocinador textual; el endpoint público confirmó cuatro secciones, cinco colaboradores y un patrocinador.
+- `composer --working-dir=apps/api test`: 30 pruebas y 85 aserciones correctas, incluida aplicación/reversión de la migración y conservación de logotipos entre publicación y borrador.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente compartido y las listas administrativas dinámicas.
+- `PublicContentSeeder` registró idempotentemente `about`; el endpoint público confirmó cinco secciones, seis hitos y dos párrafos introductorios.
+- `composer --working-dir=apps/api test`: 31 pruebas y 88 aserciones correctas con altas, bajas y orden de la historia institucional.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente compartido de “Acerca de nosotros”.
+- `AGENTS.md` exige desde esta iteración una spec individual previa para cada sección editorial y su actualización obligatoria ante cualquier cambio funcional; las ocho secciones vigentes cuentan con archivo propio en `specs/features/004-content-management/sections/`.
+- `PublicContentSeeder` registró `general-information`; el endpoint público confirmó seis secciones, cuatro rutas informativas y cuatro preguntas frecuentes.
+- `composer --working-dir=apps/api test`: 32 pruebas y 91 aserciones correctas con edición dinámica de rutas y preguntas.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente compartido de Información general.
+- `PublicContentSeeder` registra `regional-coordinations` sin duplicar en la base los contactos institucionales de respaldo; la primera publicación administrativa persiste el directorio editado dentro de su revisión.
+- `composer --working-dir=apps/api test`: 33 pruebas y 95 aserciones correctas con altas, bajas, orden, correos normalizados y ciclo de publicación del directorio regional.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente regional compartido; el build administrativo mantiene únicamente la advertencia no bloqueante por un chunk superior a 500 kB.
+- `PublicContentSeeder` registró idempotentemente `current-edition` e importó la imagen promocional heredada como medio principal de la revisión.
+- `composer --working-dir=apps/api test`: 34 pruebas y 100 aserciones correctas con documentos dinámicos, enlaces internos/HTTP(S), conservación de imagen y publicación de Edición vigente.
+- Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente compartido de Edición vigente; permanece la advertencia no bloqueante sobre el tamaño del bundle administrativo.
 
 ## 9. Regla de commits y sincronización
 
@@ -265,7 +317,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Confirmar en Entra que `VITE_ENTRA_CLIENT_ID` sea el Id. de aplicación (cliente) de la SPA administrativa registrada en el tenant MEP, corregir el archivo privado de producción si corresponde y volver a sincronizar la configuración local.
+1. Validar interactivamente el ciclo editorial de las ocho secciones, incluyendo carga de logotipos, cronología, rutas informativas, directorio regional y Edición vigente.
 2. Ejecutar una revisión visual y de accesibilidad con API, base y archivos levantados conjuntamente.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
@@ -275,7 +327,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 11. Próximo paso recomendado
 
-Corregir el Client ID administrativo rechazado por Microsoft y validar con una identidad MEP el inicio de sesión interactivo, la vinculación del Master y el flujo real de borrador/publicación de la portada. El ingreso manual de tokens ya fue retirado. Después, extender el patrón editorial a “Conoce OLCOMEP”.
+Reiniciar ambas SPA y validar con una identidad MEP el flujo real de las ocho secciones editoriales. Después de confirmar el ciclo completo, especificar y extender el patrón a “Contacto”.
 
 ## 12. Prompt para retomar con Codex
 

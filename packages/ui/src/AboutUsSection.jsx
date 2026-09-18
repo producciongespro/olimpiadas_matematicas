@@ -1,0 +1,7 @@
+export function AboutUsSection({ content }) {
+  return <section id="acerca-de-nosotros" className="scroll-mt-28 bg-brand-soft py-16 sm:py-20" aria-labelledby="titulo-acerca-de-nosotros"><div className="mx-auto max-w-content px-5 sm:px-8">
+    <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16"><div><p className="eyebrow text-brand-primary">{content.eyebrow}</p><h2 id="titulo-acerca-de-nosotros" className="section-title mt-3">{content.title}</h2><div className="mt-6 max-w-xl space-y-5 text-lg leading-8 text-slate-700">{content.introduction.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div></div>
+    <ol className="border-y border-brand-primary/20">{content.milestones.map(({ description, key, period, title }) => <li className="grid gap-2 border-b border-brand-primary/20 py-6 last:border-b-0 sm:grid-cols-[9rem_1fr] sm:gap-6" key={key}><p className="font-black text-brand-primary">{period}</p><div><h3 className="text-xl font-black text-slate-900">{title}</h3><p className="mt-2 leading-7 text-slate-700">{description}</p></div></li>)}</ol></div>
+    <div className="mt-12 border-t-4 border-brand-highlight pt-8 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:gap-16"><h3 className="text-2xl font-black text-slate-900">{content.closing_title}</h3><div className="mt-4 space-y-4 leading-7 text-slate-700 lg:mt-0">{content.closing_paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div></div>
+  </div></section>
+}

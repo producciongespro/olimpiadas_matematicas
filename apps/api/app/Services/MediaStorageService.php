@@ -9,13 +9,13 @@ class MediaStorageService
 {
     private const MIMES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
-    public function store(UploadedFile $file, string $directory): array
+    public function store(UploadedFile $file, string $directory, ?int $minimumDimension = null): array
     {
         if (! $file->isValid() || $file->hasMoved()) {
             throw new RuntimeException('La imagen cargada no es válida.');
         }
         $maxBytes = (int) env('media.maxBytes', 8 * 1024 * 1024);
-        $minDimension = (int) env('media.minDimension', 640);
+        $minDimension = $minimumDimension ?? (int) env('media.minDimension', 640);
         $maxDimension = (int) env('media.maxDimension', 6000);
         if ($file->getSize() < 1 || $file->getSize() > $maxBytes) {
             throw new RuntimeException('La imagen debe pesar como máximo 8 MB.');
@@ -27,7 +27,7 @@ class MediaStorageService
         }
         [$width, $height] = $info;
         if (min($width, $height) < $minDimension || max($width, $height) > $maxDimension) {
-            throw new RuntimeException('La imagen debe medir entre 640 y 6000 píxeles por lado.');
+            throw new RuntimeException("La imagen debe medir entre {$minDimension} y {$maxDimension} píxeles por lado.");
         }
         $uuid = $this->uuid();
         $relative = trim($directory, '/') . '/' . $uuid . '.' . self::MIMES[$mime];
