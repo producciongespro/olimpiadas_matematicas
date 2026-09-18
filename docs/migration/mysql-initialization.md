@@ -11,7 +11,7 @@ Fecha de verificación: 08-09-2026.
 
 ## Procedimiento
 
-Con la conexión local definida en `apps/api/.env`:
+Con la conexión local definida en `apps/api/.env.development`:
 
 ```bash
 php spark migrate --all
@@ -37,5 +37,5 @@ La reversión del primer lote eliminó las ocho tablas y la reaplicación restau
 ## Advertencias
 
 - No ejecutar `migrate:rollback` en un ambiente con datos operativos sin respaldo y autorización.
-- No confirmar `apps/api/.env` ni contraseñas en Git.
+- No confirmar `apps/api/.env.development`, `apps/api/.env.production` ni contraseñas en Git.
 - En producción se debe usar un usuario de base con privilegios mínimos; `root` corresponde únicamente al entorno local actual.

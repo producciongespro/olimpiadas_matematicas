@@ -29,14 +29,14 @@ npm run dev:admin
 
 ## Desarrollo de la API
 
-La API usa PHP 8.2 o superior y se configura localmente en `apps/api/.env`:
+La API usa PHP 8.2 o superior y se configura localmente en `apps/api/.env.development`:
 
 ```bash
 composer --working-dir=apps/api install
 php apps/api/spark serve --port 3600
 ```
 
-El endpoint de verificación es `http://localhost:3600/api/v1/health`. La plantilla versionada de configuración se encuentra en `apps/api/env`; el archivo `.env` local no se publica.
+El endpoint de verificación es `http://localhost:3600/api/v1/health`. La plantilla versionada se encuentra en `apps/api/env`; los archivos privados `.env.development` y `.env.production` no se publican.
 
 ## Convención de commits
 

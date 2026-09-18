@@ -11,7 +11,7 @@ Fecha de verificación: 2026-09-04.
 | Vista pública | `http://localhost:5173` |
 | Administración | `http://localhost:5174` |
 
-La configuración versionada vive en `apps/api/env`. Cada desarrollador crea `apps/api/.env`, archivo ignorado por Git, para sus valores locales y secretos.
+La configuración versionada vive en `apps/api/env`. Cada desarrollador crea `apps/api/.env.development`, archivo ignorado por Git, para sus valores locales y secretos. El cargador de los puntos de entrada web y `spark` selecciona ese archivo en desarrollo; con `CI_ENVIRONMENT=production` selecciona `.env.production`.
 
 ## Validación realizada
 

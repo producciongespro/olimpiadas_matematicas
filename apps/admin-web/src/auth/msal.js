@@ -5,7 +5,7 @@ const tenantId = import.meta.env.VITE_ENTRA_TENANT_ID?.trim() || ''
 const apiScope = import.meta.env.VITE_ENTRA_API_SCOPE?.trim() || ''
 
 const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-const apiScopePattern = /^api:\/\/([0-9a-f-]{36})\/access_as_user$/i
+const apiScopePattern = /^api:\/\/([0-9a-f-]{36})\/([a-z0-9._-]+)$/i
 const scopeMatch = apiScope.match(apiScopePattern)
 const hasValidConfiguration = guidPattern.test(clientId)
   && guidPattern.test(tenantId)

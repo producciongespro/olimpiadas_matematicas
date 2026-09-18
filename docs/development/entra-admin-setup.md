@@ -4,8 +4,8 @@ OLCOMEP utiliza registros separados para la SPA administrativa y la API. La vist
 
 ## Registro de la API
 
-1. Registrar la API y exponer el scope delegado `access_as_user`.
-2. Registrar el tenant, audiencia, scope y Client ID permitido en el `.env` privado de `apps/api` usando como guía `apps/api/env`.
+1. Registrar la API y exponer el scope delegado `api.read`.
+2. Registrar el tenant, audiencia, scope y Client ID permitido en `apps/api/.env.development` usando como guía `apps/api/env`.
 3. Definir `auth.bootstrapMasterEmail` con el correo MEP de la persona que realizará el primer acceso.
 4. Confirmar en `auth.allowedEmailDomains` los dominios institucionales admitidos.
 5. Ejecutar `php spark db:seed BootstrapMasterSeeder` para crear la autorización inicial de forma idempotente.
@@ -15,8 +15,8 @@ OLCOMEP utiliza registros separados para la SPA administrativa y la API. La vist
 
 1. Crear un registro de tipo SPA, sin client secret.
 2. Registrar `http://localhost:5174` para desarrollo y la URL administrativa HTTPS exacta para producción.
-3. Conceder permiso delegado al scope `access_as_user` de la API.
-4. Copiar `apps/admin-web/.env.example` como `.env.local` y sustituir únicamente los valores locales.
+3. Conceder permiso delegado al scope `api.read` de la API.
+4. Crear `apps/admin-web/.env.development` con las variables `VITE_API_URL`, `VITE_ENTRA_CLIENT_ID`, `VITE_ENTRA_TENANT_ID`, `VITE_ENTRA_API_SCOPE` y `VITE_ENTRA_REDIRECT_URI`.
 
 ## Comprobación
 
@@ -24,4 +24,4 @@ Iniciar API y administrador. La pantalla debe ofrecer “Ingresar con cuenta MEP
 
 Master puede gestionar los tres roles; Administrador únicamente Editores; Editor no ve el módulo de usuarios. El backend impide modificar el rol o estado propio y dejar el sistema sin al menos un Master activo.
 
-No se deben compartir ni confirmar archivos `.env`, tokens, secretos o identificadores reales fuera de la configuración privada del ambiente.
+No se deben compartir ni confirmar archivos `.env.development`, `.env.production`, tokens, secretos o identificadores reales fuera de la configuración privada del ambiente.

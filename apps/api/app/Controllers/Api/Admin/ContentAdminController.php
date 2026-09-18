@@ -24,6 +24,6 @@ class ContentAdminController extends BaseController
 
     public function sections(): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->adminSections())); }
     public function section(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->adminSection($key))); }
-    public function saveDraft(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->saveDraft($key, $this->input(), $this->image(), service('request')->localAdminUser['email'] ?? null))); }
+    public function saveDraft(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->saveDraft($key, $this->input(), $this->image(), service('adminAuthContext')->user()['email'] ?? null, $this->request->getFiles()))); }
     public function publish(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->publish($key))); }
 }

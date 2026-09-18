@@ -33,13 +33,13 @@ La clase `App\Repositories\BaseRepository` es el punto de partida para los repos
 
 ```bash
 composer install
-copy env .env
+copy env .env.development
 php spark migrate
 php spark db:seed OlcomepInitialSeeder
 php spark serve --port 3600
 ```
 
-Edite `.env` con los valores del entorno. Nunca publique ese archivo ni credenciales reales.
+Edite `.env.development` con los valores locales. Los puntos de entrada cargan `.env.development` por defecto y `.env.production` cuando el proceso define `CI_ENVIRONMENT=production`. Nunca publique esos archivos ni credenciales reales.
 
 ### Entorno local del monorepo
 

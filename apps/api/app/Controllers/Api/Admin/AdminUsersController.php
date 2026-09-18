@@ -11,7 +11,7 @@ use Throwable;
 
 class AdminUsersController extends BaseController
 {
-    private function actor(): array { return service('request')->localAdminUser ?? []; }
+    private function actor(): array { return service('adminAuthContext')->user(); }
     private function input(): array { return $this->request->getJSON(true) ?: $this->request->getPost(); }
     private function service(): AdminUserService { return new AdminUserService(); }
     private function run(callable $action, int $status = 200): ResponseInterface

@@ -15,6 +15,7 @@ export function AuthGate({ initializationError = null }) {
   const { instance, accounts, inProgress } = useMsal()
   const authenticated = useIsAuthenticated()
   const account = instance.getActiveAccount() || accounts[0] || null
+  const accountId = account?.homeAccountId || null
   const pending = inProgress !== InteractionStatus.None
   const [profile, setProfile] = useState(null)
   const [profileError, setProfileError] = useState(null)
@@ -26,26 +27,27 @@ export function AuthGate({ initializationError = null }) {
     if (account) await instance.logoutRedirect({ account, postLogoutRedirectUri: window.location.origin })
   }
   const getAccessToken = useCallback(async () => {
-    if (!account) throw new Error('No existe una sesión administrativa activa.')
+    const tokenAccount = instance.getActiveAccount() || (accountId ? instance.getAccountByHomeId(accountId) : null)
+    if (!tokenAccount) throw new Error('No existe una sesión administrativa activa.')
     try {
-      return (await instance.acquireTokenSilent({ ...loginRequest, prompt: undefined, account })).accessToken
+      return (await instance.acquireTokenSilent({ ...loginRequest, prompt: undefined, account: tokenAccount })).accessToken
     } catch (error) {
       if (error instanceof InteractionRequiredAuthError) {
-        await instance.acquireTokenRedirect({ ...loginRequest, prompt: undefined, account })
+        await instance.acquireTokenRedirect({ ...loginRequest, prompt: undefined, account: tokenAccount })
       }
       throw error
     }
-  }, [account, instance])
+  }, [accountId, instance])
 
   useEffect(() => {
-    if (!authenticated || !account || entraConfigurationError) return
+    if (!authenticated || !accountId || entraConfigurationError) return
     let active = true
     setProfileError(null)
     createApiClient({ getToken: getAccessToken }).adminProfile()
       .then((result) => { if (active) setProfile(result) })
       .catch((error) => { if (active) setProfileError(error.message) })
     return () => { active = false }
-  }, [account, authenticated, getAccessToken])
+  }, [accountId, authenticated, getAccessToken])
 
   if (initializationError || entraConfigurationError) return <AccessScreen error={initializationError || entraConfigurationError} pending={false}/>
   if (!authenticated || !account) return <AccessScreen onLogin={login} pending={pending}/>

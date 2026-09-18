@@ -15,6 +15,8 @@ class ApiAuditFilter implements FilterInterface
 
     public function before(RequestInterface $request, $arguments = null): ?ResponseInterface
     {
+        service('adminAuthContext')->reset();
+
         if (! $this->enabled() || strtoupper($request->getMethod()) === 'OPTIONS') {
             return null;
         }
@@ -34,8 +36,9 @@ class ApiAuditFilter implements FilterInterface
         }
 
         $response->setHeader('X-Request-Id', $context['requestId']);
-        $claims = service('request')->jwtClaims ?? [];
-        $roles = service('request')->azureRoles ?? [];
+        $authContext = service('adminAuthContext');
+        $claims = $authContext->claims();
+        $roles = $authContext->roles();
         [$resourceType, $resourceId] = $this->resource($request);
 
         try {

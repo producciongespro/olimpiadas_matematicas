@@ -17,6 +17,8 @@ class JwtAuthFilter implements FilterInterface
 
     public function before(RequestInterface $request, $arguments = null): ?ResponseInterface
     {
+        $authContext = service('adminAuthContext');
+        $authContext->reset();
         $header = $request->getHeaderLine('Authorization');
 
         if (! str_starts_with($header, 'Bearer ')) {
@@ -33,11 +35,7 @@ class JwtAuthFilter implements FilterInterface
         catch (ForbiddenException $exception) { return $this->error(403, $exception->getMessage()); }
         catch (Throwable $exception) { log_message('error', 'No se pudo resolver la autorización local: {message}', ['message' => $exception->getMessage()]); return service('response')->setStatusCode(500)->setJSON(['message' => 'No fue posible validar la autorización local.']); }
 
-        service('request')->jwtClaims = $claims;
-        service('request')->azureRoles = [$user['role']];
-        service('request')->azureIsAdmin = true;
-        service('request')->azureClientId = $this->clientApplicationId($claims);
-        service('request')->localAdminUser = $user;
+        $authContext->authenticate($claims, $user, $this->clientApplicationId($claims));
 
         return null;
     }

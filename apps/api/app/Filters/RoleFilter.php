@@ -10,7 +10,7 @@ class RoleFilter implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null): ?ResponseInterface
     {
-        $user = service('request')->localAdminUser ?? null;
+        $user = service('adminAuthContext')->user();
         if (is_array($user) && ($user['status'] ?? null) === 'active' && in_array($user['role'] ?? null, ['master', 'admin', 'editor'], true)) {
             return null;
         }

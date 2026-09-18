@@ -20,18 +20,22 @@ Proteger `apps/admin-web` y las operaciones administrativas de `apps/api` median
 6. Si Microsoft exige interacción, la SPA redirige nuevamente; nunca solicita pegar o guardar tokens manualmente.
 7. Cerrar sesión usa `logoutRedirect` y limpia la cuenta de la sesión.
 
+La SPA identifica de forma estable la sesión mediante `homeAccountId`. Los cambios internos de referencia producidos por MSAL durante la adquisición silenciosa no recrean el cliente API ni reinician los efectos de carga de los módulos administrativos.
+
 ## Configuración del frontend
 
 Variables sin secretos:
 
 - `VITE_ENTRA_CLIENT_ID`: identificador del registro SPA administrativo.
 - `VITE_ENTRA_TENANT_ID`: tenant institucional.
-- `VITE_ENTRA_API_SCOPE`: scope completo, por ejemplo `api://<api-id>/access_as_user`.
+- `VITE_ENTRA_API_SCOPE`: scope completo, por ejemplo `api://<api-id>/api.read`.
 - `VITE_ENTRA_REDIRECT_URI`: URI registrada; por defecto usa el origen actual.
 - `VITE_API_URL`: base de la API.
 
+En desarrollo, Vite obtiene estas variables exclusivamente de `apps/admin-web/.env.development`; en producción utiliza `.env.production`. Ambos archivos son privados y están ignorados por Git. La administración no mantiene una `.env.example` paralela.
+
 La caché de MSAL usa `sessionStorage`; no se persisten access tokens en almacenamiento propio de la aplicación.
-Antes de habilitar el botón de ingreso, la SPA valida que los Client ID, Tenant ID y el identificador incluido en el scope tengan formato GUID y que el scope corresponda a `api://<api-id>/access_as_user`. Los marcadores de las plantillas se consideran configuración ausente y nunca se envían a Microsoft.
+Antes de habilitar el botón de ingreso, la SPA valida que los Client ID, Tenant ID y el identificador incluido en el scope tengan formato GUID y que el scope corresponda a `api://<api-id>/<scope-delegado>`. El nombre del scope proviene de la App Registration y debe coincidir con `azure.requiredScope`; los marcadores de las plantillas se consideran configuración ausente y nunca se envían a Microsoft.
 Si MSAL falla durante su inicialización o al procesar una redirección, la SPA conserva un código seguro de diagnóstico en pantalla y consola. No registra tokens, identificadores ni valores de los archivos de entorno.
 
 ## Validación de la API
@@ -39,6 +43,8 @@ Si MSAL falla durante su inicialización o al procesar una redirección, la SPA 
 La API rechaza de forma segura tokens que incumplan firma RS256/JWKS, `kid`, vigencia, tenant `tid`, emisor oficial v1 o v2, audiencia, scope o aplicación cliente `azp`/`appid`. La audiencia acepta las representaciones GUID y `api://GUID` únicamente cuando derivan del mismo identificador configurado.
 
 Después de autenticar, la API vincula `oid` y correo con una autorización local activa. La pertenencia al tenant MEP no concede por sí misma acceso administrativo.
+
+Los claims validados y el usuario local se conservan durante la solicitud en un contexto de autenticación tipado. Este contexto se reinicia al comenzar cada solicitud de API y sustituye la creación de propiedades dinámicas sobre `IncomingRequest`, incompatible con PHP 8.2 y susceptible de conservar estado entre solicitudes en procesos persistentes.
 
 ## Roles locales
 
@@ -52,8 +58,10 @@ El primer Master se declara mediante `auth.bootstrapMasterEmail` en el `.env` pr
 
 ## Registro de Entra requerido
 
-- Registro API: exponer `access_as_user`.
+- Registro API: exponer el scope delegado `api.read`.
 - Registro SPA: agregar las URI exactas de desarrollo y producción y conceder permiso delegado al scope de la API.
 - Configurar el Client ID de la SPA en `azure.allowedClientIds`.
 
 Ningún client secret se utiliza en la SPA ni se confirma en Git.
+
+La API usa la misma convención por ambiente. Sus puntos de entrada web y CLI cargan `.env.development` por defecto y `.env.production` cuando el proceso declara `CI_ENVIRONMENT=production`; la plantilla versionada `apps/api/env` solo documenta las claves admitidas.

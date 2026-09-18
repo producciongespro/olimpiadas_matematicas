@@ -1,5 +1,5 @@
-# Copie este archivo como .env y reemplace los valores de ejemplo.
-# Nunca confirme .env ni secretos reales en Git.
+# Copie este archivo como .env.development y reemplace los valores de ejemplo.
+# Nunca confirme .env.development, .env.production ni secretos reales en Git.
 CI_ENVIRONMENT = development
 
 app.baseURL = 'http://localhost:3600/'
@@ -34,7 +34,7 @@ azure.clientId = ''
 azure.issuer = 'https://login.microsoftonline.com/{tenantId}/v2.0'
 azure.jwksUri = 'https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys'
 azure.expectedAudience = 'api://<API_CLIENT_ID>'
-azure.requiredScope = 'access_as_user'
+azure.requiredScope = 'api.read'
 # Client IDs de las SPA autorizadas a solicitar tokens para esta API.
 azure.allowedClientIds = ''
 azure.clockSkewSeconds = 300

@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Services\AdminAuthContext;
 use CodeIgniter\Config\BaseService;
 
 /**
@@ -19,6 +20,15 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
+    public static function adminAuthContext(bool $getShared = true): AdminAuthContext
+    {
+        if ($getShared) {
+            return static::getSharedInstance('adminAuthContext');
+        }
+
+        return new AdminAuthContext();
+    }
+
     /*
      * public static function example($getShared = true)
      * {
