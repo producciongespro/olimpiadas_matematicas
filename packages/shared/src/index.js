@@ -132,7 +132,18 @@ export const defaultRegionalCoordinationsContent = Object.freeze({
 })
 
 export function mergeRegionalCoordinationsContent(content) {
-  return { ...defaultRegionalCoordinationsContent, ...(content || {}), regions: content?.regions || defaultRegionalCoordinationsContent.regions }
+  const regions = content?.regions || defaultRegionalCoordinationsContent.regions
+  return {
+    ...defaultRegionalCoordinationsContent,
+    ...(content || {}),
+    regions: regions.map((region, regionIndex) => ({
+      ...region,
+      contacts: region.contacts.map((contact, contactIndex) => ({
+        key: contact.key || `regional-${regionIndex + 1}-contact-${contactIndex + 1}`,
+        ...contact,
+      })),
+    })),
+  }
 }
 
 export const defaultCurrentEditionContent = Object.freeze({
@@ -164,6 +175,20 @@ export const defaultCurrentEditionContent = Object.freeze({
 
 export function mergeCurrentEditionContent(content) {
   return { ...defaultCurrentEditionContent, ...(content || {}), resources: content?.resources || defaultCurrentEditionContent.resources }
+}
+
+export const defaultContactContent = Object.freeze({
+  eyebrow: 'Estamos para orientarle', title: 'Contacto', description: 'Para consultas sobre OLCOMEP, comuníquese con la Asesoría de Matemáticas de Primero y Segundo Ciclos.',
+  contact_name: 'Yeri Charpentier Díaz', contact_role: 'Asesora de matemáticas de Primero y Segundo Ciclos',
+  phones: ['2221-7685'], emails: ['primero.segundo.ciclos@mep.go.cr'],
+  resources: [
+    { key: 'youtube', title: 'Canal de OLCOMEP en YouTube', description: 'Videos y materiales audiovisuales relacionados con las Olimpiadas Matemáticas.', href: 'https://www.youtube.com/channel/UCb1Mihv34LjcEzjicn76Omw' },
+    { key: 'calificame', title: 'Califique este recurso', description: 'Comparta su valoración sobre este recurso educativo del MEP.', href: 'https://recursos.mep.go.cr/0_calificame/app/index.html?id_app=15' },
+  ],
+})
+
+export function mergeContactContent(content) {
+  return { ...defaultContactContent, ...(content || {}), phones: content?.phones || defaultContactContent.phones, emails: content?.emails || defaultContactContent.emails, resources: content?.resources || defaultContactContent.resources }
 }
 import { regionalCoordinations } from './regionalCoordinations.js'
 export { regionalCoordinations } from './regionalCoordinations.js'

@@ -1,22 +1,18 @@
 import { createApiClient } from '@olcomep/api-client'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useAutoRevalidatedResource } from '../../hooks/useAutoRevalidatedResource.js'
 
 const api = createApiClient()
 const ROTATION_INTERVAL = 6000
+const EMPTY_SLIDES = []
+const loadCarousel = (options) => api.carousel(options)
 
 export function MainCarousel() {
-  const [slides, setSlides] = useState([])
-  const [active, setActive] = useState(0)
-  const [status, setStatus] = useState('loading')
+  const { data: slides, status } = useAutoRevalidatedResource({ load: loadCarousel, initialData: EMPTY_SLIDES })
+  const [activeId, setActiveId] = useState(null)
   const [paused, setPaused] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
-
-  useEffect(() => {
-    api.carousel()
-      .then((data) => { setSlides(data); setStatus('success') })
-      .catch(() => setStatus('error'))
-  }, [])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -28,18 +24,23 @@ export function MainCarousel() {
 
   useEffect(() => {
     if (slides.length < 2 || paused || reducedMotion) return undefined
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), ROTATION_INTERVAL)
+    const timer = window.setInterval(() => setActiveId((currentId) => {
+      const current = slides.findIndex((item) => item.id === currentId)
+      return slides[(current + 1) % slides.length].id
+    }), ROTATION_INTERVAL)
     return () => window.clearInterval(timer)
-  }, [paused, reducedMotion, slides.length])
+  }, [paused, reducedMotion, slides])
 
   if (status === 'loading') {
     return <div className="h-2 bg-brand-highlight" role="status"><span className="sr-only">Cargando imágenes destacadas</span></div>
   }
-  if (status === 'error' || slides.length === 0) return null
+  if (slides.length === 0) return null
+
+  const active = Math.max(0, slides.findIndex((item) => item.id === activeId))
 
   const show = (index) => {
     setPaused(true)
-    setActive((index + slides.length) % slides.length)
+    setActiveId(slides[(index + slides.length) % slides.length].id)
   }
   const slide = slides[active]
 
