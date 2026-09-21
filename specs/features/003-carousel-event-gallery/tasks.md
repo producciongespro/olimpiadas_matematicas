@@ -16,5 +16,6 @@
 - [x] Reducir la altura y agregar rotación automática accesible al carrusel.
 - [x] Conectar la galería histórica a la API.
 - [x] Verificar build, accesibilidad estructural, responsive y estados de error.
-- [ ] Documentar respaldo, restauración y despliegue persistente.
-- [ ] Aprobar paridad y retirar el respaldo estático.
+- [x] Documentar respaldo, restauración y despliegue persistente.
+- [x] Versionar y revalidar automáticamente carrusel, eventos y detalle seleccionado.
+- [x] Aprobar paridad y retirar el respaldo estático del carrusel migrado.

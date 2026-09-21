@@ -10,3 +10,18 @@
 - [x] Incorporar edición, carga, vista previa y publicación en administración.
 - [x] Añadir pruebas del esquema y flujo editorial.
 - [x] Ejecutar builds, pruebas y verificación de migración reversible.
+- [x] Especificar la futura sección editorial de contacto.
+- [x] Implementar y verificar la sección editorial de contacto.
+- [x] Formalizar y probar la regla estable de borrador y publicación pública.
+- [x] Centralizar la carga y combinación de publicaciones en la vista pública.
+- [x] Versionar la publicación pública y habilitar revalidación mediante `ETag`.
+- [x] Implementar la sincronización automática de páginas públicas ya abiertas.
+- [x] Definir y verificar actualización de URLs y caché inmutable de medios publicados.
+- [x] Incorporar fotografías versionadas y reemplazables por contacto regional, con silueta de respaldo y previsualización autenticada de borradores.
+- [x] Extender la revalidación automática al carrusel y la galería de eventos.
+- [x] Definir y empaquetar la política de caché de producción para HTML y recursos compilados de ambas SPA.
+- [x] Especificar Recursos y cuadernillos, Header/navegación y Footer/créditos antes de conectarlos.
+- [ ] Implementar y verificar Recursos y cuadernillos.
+- [ ] Implementar y verificar Header y navegación.
+- [ ] Implementar y verificar Footer y créditos.
+- [ ] Completar la aceptación real con sesión MEP e interrupción/restauración controlada de la API.

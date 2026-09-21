@@ -19,3 +19,4 @@
 - [x] Crear y verificar el dato inicial de la edición 2026.
 - [x] Aplicar y verificar las migraciones en MySQL/MariaDB local.
 - [x] Especificar el carrusel principal y la galería histórica administrable.
+- [x] Consolidar la documentación de la API en un contrato OpenAPI 3.1 canónico, portal de desarrollo y comprobación automática de rutas.

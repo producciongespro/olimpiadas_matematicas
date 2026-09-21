@@ -4,6 +4,9 @@
 - La ausencia o caída de la API no deja vacía la portada pública.
 - El contenido administrativo se guarda como borrador sin modificar la publicación vigente.
 - Publicar sustituye la versión pública completa dentro de una transacción y conserva la revisión anterior.
+- Una publicación exitosa deja exactamente una revisión `published`, ninguna revisión `draft` y la publicación anterior en estado `superseded` para la sección modificada.
+- Una publicación fallida conserva íntegramente la revisión pública anterior; contenido y medios nunca cambian parcialmente.
+- Las rutas públicas excluyen revisiones `draft` y `superseded` y no entregan medios exclusivos de esas revisiones.
 - La API valida los campos obligatorios, las longitudes y los enlaces internos o HTTP(S).
 - Una imagen nueva se valida y almacena bajo `writable/uploads/sections/hero`.
 - La base relaciona la revisión con `media_files.id`; no almacena base64 ni rutas absolutas.
@@ -30,6 +33,8 @@
 - Los iconos se limitan al catálogo documentado y los enlaces se validan como anclas, rutas internas o HTTP(S).
 - La vista pública y la previsualización comparten el componente y muestran estados explícitos cuando una colección está vacía.
 - Coordinaciones regionales permite agregar, editar, eliminar y reordenar regiones y sus contactos, además de administrar varios correos por contacto.
+- Cada contacto regional permite cargar, reemplazar y retirar una fotografía; la relación permanece estable al editar o reordenar, y la ausencia de foto muestra una silueta sin alterar la retícula.
+- Una fotografía exclusiva del borrador se previsualiza con autenticación y `private, no-store`, pero no responde desde la ruta pública de medios antes de publicar.
 - Los nombres de región y contacto son obligatorios; los correos no vacíos se validan y normalizan en minúsculas.
 - La búsqueda pública filtra por región, persona o correo y la vista pública muestra estados explícitos para directorios, regiones o contactos vacíos.
 - La vista pública y la previsualización comparten el componente regional; los datos públicos vigentes se conservan como respaldo local hasta la primera publicación editorial.
@@ -37,6 +42,24 @@
 - Los documentos oficiales pueden agregarse, editarse, eliminarse y reordenarse; sus iconos pertenecen al catálogo cerrado y una colección vacía muestra un estado explícito.
 - La imagen promocional se valida, almacena en la API y permanece asociada a la revisión; si no se reemplaza, el borrador conserva el medio vigente.
 - La vista pública y la previsualización comparten el componente de edición vigente y conservan contenido local de respaldo cuando la API no responde.
+- Contacto permite administrar textos institucionales, teléfonos, correos y recursos adicionales mediante campos estructurados.
+- Los correos se normalizan, los teléfonos generan enlaces `tel:` saneados y los recursos aceptan únicamente rutas internas o HTTP(S).
+- La vista pública y la previsualización comparten el componente de contacto y muestran estados explícitos para colecciones vacías.
+- La página pública usa un único flujo de carga para las ocho secciones, sin duplicar estados y condiciones de integración en `HomePage`.
+- Una respuesta parcial solo actualiza las secciones publicadas presentes; las demás conservan su último contenido válido o su respaldo local.
+- Un error posterior no vacía ni revierte el contenido válido que ya se mostró.
+- El flujo centralizado expone estados de carga inicial, actualización y error, además de una operación reutilizable de actualización.
+- La respuesta pública incluye una versión global y un `ETag` que cambian al publicar, pero no al guardar un borrador.
+- Una solicitud con el `If-None-Match` vigente recibe `304 Not Modified` y no reemplaza el contenido conservado por el cliente.
+- Una página abierta comprueba nuevas publicaciones al recuperar foco, al volver visible y cada 30 segundos mientras permanece visible.
+- La pestaña oculta no mantiene el intervalo periódico y lo reinicia al volver a primer plano.
+- Foco y visibilidad concurrentes no generan solicitudes públicas duplicadas.
+- Una caída temporal de la API conserva el último contenido válido y una comprobación posterior recupera la sincronización.
+- Reemplazar una imagen genera un UUID y una URL distintos en lugar de sobrescribir el medio publicado.
+- Un medio exclusivo de un borrador responde como no disponible hasta que su revisión sea publicada.
+- Los medios publicados incluyen caché inmutable de un año y `ETag`; una revalidación coincidente responde `304` con ambas cabeceras.
+- El HTML de ambas SPA exige revalidación, los bundles con hash usan caché inmutable de un año y los activos sin hash se revalidan.
+- El artefacto compilado conserva la configuración de caché y el fallback de rutas de la SPA sin interceptar archivos existentes.
 - Guardar y publicar tienen acciones, mensajes y estados claramente diferenciados.
 - Las rutas administrativas conservan autenticación JWT, autorización por rol y auditoría.
 - Los builds de ambas SPA, las pruebas de API y la aplicación/reversión de la nueva migración finalizan correctamente.

@@ -122,6 +122,12 @@ El carrusel respeta el contenedor central de 1200 px y los márgenes laterales r
 
 La rotación se pausa mientras el puntero está sobre el carrusel, mientras el foco permanece dentro de él o después de una interacción manual. Las personas con `prefers-reduced-motion: reduce` conservan los controles manuales, pero no reciben avance automático.
 
+### MED-010 — Sincronización automática de contenido publicado
+
+Las consultas públicas del carrusel, la lista de eventos y el detalle del evento seleccionado exponen una versión derivada de su representación y una cabecera `ETag`. La vista pública revalida estos recursos mediante `If-None-Match` al recuperar el foco, al volver a estar visible y cada 30 segundos mientras permanezca visible.
+
+Una respuesta `304 Not Modified` conserva el contenido ya renderizado. Si la representación cambia, la interfaz incorpora los datos publicados sin recargar la página, conserva la diapositiva activa cuando todavía existe y mantiene el evento seleccionado cuando continúa publicado. Las solicitudes concurrentes del mismo recurso se deduplican y la revalidación se pausa mientras la pestaña está oculta.
+
 ## 6. Almacenamiento de archivos
 
 Los binarios se almacenan dentro de la API:
@@ -211,6 +217,8 @@ Todas las respuestas JSON exitosas usan el contenedor `data`. Los errores usan u
 | `GET` | `/api/v1/events/{slug}` | Entrega un evento publicado y sus fotografías |
 | `GET` | `/api/v1/media/{uuid}` | Entrega una imagen publicada con cabeceras seguras y caché |
 
+Las tres respuestas JSON públicas incluyen `ETag`, `Cache-Control: public, max-age=0, must-revalidate` y `meta.version`; aceptan `If-None-Match` y responden `304` sin cuerpo cuando la representación no cambió. Los archivos se identifican mediante UUID estable y se entregan con caché inmutable, pues un reemplazo genera una URL distinta.
+
 ### Rutas administrativas protegidas
 
 | Método | Ruta | Propósito |
@@ -271,6 +279,7 @@ La forma exacta de payloads, paginación, códigos de error y límites se formal
 - Las imágenes fuera del primer viewport usan carga diferida.
 - Los endpoints de listado no incluyen binarios ni contenido base64.
 - Las respuestas de imagen permiten caché HTTP y validación condicional mediante `ETag` o `Last-Modified`.
+- Las colecciones y detalles públicos permiten revalidación condicional mediante `ETag` sin transferir nuevamente una representación sin cambios.
 
 ## 13. Auditoría y operación
 

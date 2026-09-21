@@ -14,6 +14,8 @@
 - Con `prefers-reduced-motion: reduce` no inicia reproducción automática.
 - No provoca desbordamiento horizontal en 320, 768 y 1280 px.
 - Muestra un estado estable y comprensible cuando no existen diapositivas o falla la API.
+- Revalida automáticamente al recuperar foco o visibilidad y cada 30 segundos mientras la pestaña está visible.
+- Incorpora diapositivas recién publicadas sin recargar la página y conserva la diapositiva activa si todavía existe.
 
 ## Galería pública
 
@@ -25,6 +27,8 @@
 - Define estados de carga, vacío, error y reintento.
 - Mantiene orden de foco y reflow sin scroll horizontal.
 - Muestra un estado vacío hasta que el administrador publique el primer evento con fotografías.
+- Revalida automáticamente la lista y el detalle seleccionado sin recargar la página.
+- Conserva el evento seleccionado mientras siga publicado y elige el más reciente disponible si deja de estarlo.
 
 ## Administración
 
@@ -53,6 +57,8 @@
 - El reordenamiento conserva posiciones consecutivas y no repetidas.
 - El borrado respeta referencias y mantiene consistencia entre archivo y base.
 - Las respuestas no exponen rutas absolutas, trazas o secretos.
+- Carrusel, eventos y detalle de evento exponen `ETag` y versión, aceptan `If-None-Match` y responden `304` sin cuerpo cuando no existen cambios.
+- Los archivos publicados usan URL estable por UUID y caché inmutable; un reemplazo genera un UUID y una URL nuevos.
 
 ## Datos, pruebas y operación
 

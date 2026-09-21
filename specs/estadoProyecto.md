@@ -4,16 +4,16 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **18-09-2026**.
+Última actualización: **21-09-2026**.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `6c9cf85`
-- Mensaje: `17-09-2026 Fortalece la configuración local y el diagnóstico de acceso administrativo`
-- Estado observado el 18-09-2026: rama local alineada con `origin/devUlate`, sin commits adelantados ni atrasados antes de esta actualización documental.
+- Commit de referencia: `abcdeba`
+- Mensaje: `18-09-2026 Extiende el gestor editorial a ocho secciones públicas`
+- Estado observado el 21-09-2026: rama local alineada con `origin/devUlate`, sin commits adelantados ni atrasados antes de los cambios sin confirmar de esta iteración.
 
 El hash es una referencia local del momento de esta actualización. Antes de continuar se debe ejecutar `git fetch` y comprobar la relación con la rama remota.
 
@@ -78,9 +78,10 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Su encabezado incorpora el logotipo oficial de OLCOMEP con dimensiones reservadas y alternativa vacía porque el nombre aparece como texto adyacente.
 - Permite crear, publicar, ocultar, archivar, ordenar y definir portadas mediante controles operables por teclado.
 - Consume las rutas protegidas de la API con un token Bearer de Microsoft Entra ID conservado durante la sesión.
-- La integración de inicio de sesión interactivo con MSAL está implementada; queda pendiente proporcionar los identificadores reales de las App Registrations exclusivamente mediante variables privadas de cada ambiente.
+- La integración de inicio de sesión interactivo con MSAL está implementada y la configuración privada local contiene identificadores con formato válido; queda pendiente completar una validación interactiva con una identidad MEP autorizada.
 - El ingreso manual de tokens fue retirado. `admin-web` usa MSAL con redirect, caché de sesión, adquisición silenciosa del scope de la API, identidad visible y cierre de sesión; sin configuración Entra muestra un estado seguro y no monta los módulos.
 - El acceso utiliza roles locales `master`, `admin` y `editor`: Master gestiona los tres roles, Administrador únicamente Editores y Editor solo contenido. El módulo “Usuarios” respeta esas capacidades y permite activar o desactivar autorizaciones.
+- El editor de contenido y la gestión de usuarios se cargan de forma diferida: el bundle inicial administrativo pesa 444,77 kB minificado y los módulos secundarios se descargan al abrirlos.
 
 ### API
 
@@ -98,6 +99,9 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - La identidad validada se comparte mediante un contexto de autenticación tipado y reiniciado por solicitud; filtros, auditoría y controladores ya no agregan propiedades dinámicas a `IncomingRequest` bajo PHP 8.2.
 - La arquitectura acordada es `Controller → Service → Repository → Database`.
 - El README y el contrato OpenAPI identifican visualmente la API mediante `public/assets/logo-olcomep.png`.
+- La documentación técnica tiene una única fuente canónica OpenAPI 3.1 en `apps/api/app/Docs/api/openapi-v1.yaml`; cubre las 32 operaciones, las nueve secciones editoriales, caché, errores y seguridad pública/administrativa.
+- En desarrollo, `/docs` presenta el contrato mediante Swagger UI y enlaza guías de integración, seguridad, operaciones, errores y mantenimiento. El portal no se registra en producción y solo sirve archivos incluidos en listas cerradas.
+- `php spark docs:sync` publica una copia generada del contrato y `php spark docs:check` comprueba su SHA-256 y la correspondencia exacta entre OpenAPI y las rutas `/api/v1`.
 - Las dependencias PHP están fijadas en `composer.lock`; `vendor/` no se confirma en Git.
 
 ### Modelo de datos
@@ -133,6 +137,8 @@ El seeder inicial registra de forma idempotente únicamente la edición OLCOMEP 
 - Modelo y decisiones de datos: `docs/migration/olcomep-data-model.md`.
 - Entorno local de la API: `docs/migration/api-local-environment.md`.
 - Inicialización de MariaDB: `docs/migration/mysql-initialization.md`.
+- Respaldo, restauración y persistencia de medios: `docs/development/backup-restore-media.md`.
+- Las nueve secciones editoriales implementadas cuentan con especificación individual en `specs/features/004-content-management/sections/`.
 
 Las tareas fundacionales registradas en `specs/000-foundation/tasks.md` están completadas. La administración ya cubre contenido, medios y usuarios, y la API dispone de los endpoints relacionados; continúan pendientes la ampliación de capacidades de negocio, la configuración real de Entra ID, las validaciones integrales y el despliegue.
 
@@ -302,6 +308,39 @@ Diagnóstico del 18-09-2026:
 - `composer --working-dir=apps/api test`: 34 pruebas y 100 aserciones correctas con documentos dinámicos, enlaces internos/HTTP(S), conservación de imagen y publicación de Edición vigente.
 - Los builds de `public-web` y `admin-web` finalizaron correctamente con el componente compartido de Edición vigente; permanece la advertencia no bloqueante sobre el tamaño del bundle administrativo.
 
+Verificaciones y mejoras del 21-09-2026:
+
+- `git fetch --prune origin` y la comparación con el upstream confirmaron `0` commits adelantados y `0` atrasados en `devUlate` antes de iniciar la iteración.
+- La API, la vista pública y la administración respondieron localmente en `3600`, `5173` y `5174`; salud y contenido público devolvieron HTTP 200.
+- La inspección pública confirmó un solo `h1`, ausencia de IDs duplicados, imágenes con alternativa y controles accesibles del carrusel; a 320 px no presentó desbordamiento horizontal.
+- La administración alcanzó correctamente la pantalla de acceso institucional, pero la validación autenticada continúa pendiente porque no había una sesión MEP activa y no se automatizaron credenciales.
+- Los módulos de contenido y usuarios se cargan ahora de forma diferida. El chunk inicial administrativo bajó de 521,24 kB a 444,77 kB; `ContentEditor` y `UserManagement` se generan como chunks independientes y desapareció la advertencia de 500 kB.
+- `npm run build`: correctos los builds de `public-web` y `admin-web`.
+- `composer --working-dir=apps/api test`: 34 pruebas y 100 aserciones correctas.
+- `php apps/api/spark migrate:status`: las nueve migraciones versionadas aparecen aplicadas en la base local, incluida `CreateContentRevisionMedia` en el lote 5.
+- La estrategia coordinada de respaldo, restauración y persistencia de base y `writable/uploads` quedó documentada en `docs/development/backup-restore-media.md`.
+- La futura sección editorial “Contacto” cuenta con especificación individual previa en `specs/features/004-content-management/sections/contact.md`; su implementación permanece pendiente.
+- La validación en 768 y 1280 px no encontró desbordamiento horizontal, IDs duplicados, imágenes sin `alt`, controles sin nombre ni fallos automáticos de contraste AA. El enlace de salto conserva foco visible, pero después de activarlo el foco termina en `body`; cuatro enlaces tienen menos de 44 px de alto visual.
+- La prueba integral confirmó salud `ok`, ocho secciones publicadas, 15 diapositivas, cero eventos —estado vacío esperado—, 15 medios JPEG con HTTP 200 y ambas SPA con HTTP 200.
+- `scripts/verify-backup-restore.ps1` creó un volcado, verificó 23 archivos por SHA-256, restauró una base MariaDB aislada, comparó ocho tablas críticas y eliminó los recursos temporales con resultado correcto.
+- Los builds con `--mode production` finalizaron correctamente y CodeIgniter reconoció el ambiente `production`.
+- La preparación productiva permanece bloqueada porque `app.baseURL`, `api.allowedOrigins` y `VITE_API_URL` privados todavía apuntan a destinos locales, y no existe evidencia versionada del montaje persistente de `writable/uploads` en la infraestructura final.
+- El entorno automatizado permitió revisar el árbol de accesibilidad y la navegación por teclado, pero no dispone de un lector de pantalla real; la prueba manual con NVDA, Narrador o equivalente continúa pendiente.
+- El informe completo quedó registrado en `docs/validation/2026-09-21-preproduction-validation.md`.
+- La regla editorial quedó formalizada: guardar solo reemplaza el borrador; publicar es la única operación que cambia la respuesta pública, supersede la publicación anterior y promueve el borrador completo —contenido y medios— dentro de una transacción. `composer --working-dir=apps/api test` confirmó 34 pruebas y 108 aserciones; la sincronización automática de páginas abiertas se mantiene como el siguiente paso independiente.
+- La vista pública centraliza ahora la consulta y combinación de las ocho publicaciones mediante `usePublishedSiteContent`; `HomePage` consume un único estado estructurado, conserva respaldos locales y el último contenido válido ante errores, y dispone de una operación `refresh` reutilizable para la sincronización posterior. `npm run build` compiló correctamente ambas SPA y las 34 pruebas de API conservaron sus 108 aserciones correctas.
+- `GET /api/v1/site/home` expone una versión global de publicación y un `ETag` fuerte; el cliente revalida con `If-None-Match` y conserva su estado ante respuestas `304`. Guardar un borrador no modifica la versión pública. La verificación local confirmó HTTP 200 con ocho secciones, versión y `ETag`, seguido de HTTP 304 sin cuerpo para el identificador vigente; los builds finalizaron correctamente y la API alcanzó 34 pruebas con 110 aserciones.
+- Las páginas públicas abiertas revalidan las ocho secciones editoriales al recuperar foco, al volver visibles y cada 30 segundos mientras permanecen visibles. El intervalo se pausa en segundo plano, las solicitudes concurrentes se deduplican y los errores conservan el último contenido válido. Los builds de ambas SPA y las 34 pruebas con 110 aserciones finalizaron correctamente; carrusel y galería todavía requieren extender este mismo patrón.
+- Los medios publicados usan URLs con UUID, `ETag` por SHA-256 y `Cache-Control: public, max-age=31536000, immutable`. Un reemplazo genera una URL nueva y los archivos exclusivos de borradores permanecen fuera del acceso anónimo hasta publicar la revisión completa. La comprobación HTTP confirmó las mismas cabeceras en respuestas 200 y 304 sin cuerpo; ambas SPA compilaron y la API alcanzó 35 pruebas con 112 aserciones.
+- El carrusel, la lista de eventos y el detalle seleccionado exponen versión y `ETag`, y la vista pública los revalida al recuperar foco o visibilidad y cada 30 segundos mientras la pestaña permanece visible. Las respuestas sin cambios usan HTTP 304 sin cuerpo; las actualizaciones preservan la diapositiva y el evento seleccionados cuando siguen publicados. La comprobación HTTP real confirmó el ciclo 200/304 y `Cache-Control: public, max-age=0, must-revalidate` para carrusel y eventos; `npm run build` compiló ambas SPA y `composer --working-dir=apps/api test` finalizó con 35 pruebas y 112 aserciones.
+- La paridad del carrusel administrable quedó aprobada: sus 15 medios públicos coinciden por SHA-256 con las 15 fotografías heredadas, y todos cuentan con identificador único, texto alternativo y URL controlada. Se retiraron únicamente las copias sin referencias de `apps/public-web/public/assets/legacy/gallery`; el seeder de instalaciones nuevas toma ahora los originales preservados en `app/img`. `app/`, cuadernillos y documentos históricos permanecen intactos. El build público finalizó correctamente y la API conservó 35 pruebas y 112 aserciones correctas.
+- “Contacto” es la novena sección editorial: textos, persona o unidad, cargo, teléfonos, correos y recursos adicionales cuentan con borrador y publicación independiente. La API normaliza correos, valida teléfonos y destinos, la vista pública y la previsualización comparten el componente y los créditos permanecen protegidos. El seeder local confirmó nueve secciones publicadas; ambas SPA compilaron y la API alcanzó 36 pruebas con 116 aserciones.
+- La política de caché productiva quedó empaquetada en ambas SPA: `index.html` y las rutas virtuales exigen revalidación, los activos públicos sin hash se revalidan y los JS/CSS con hash usan caché inmutable de un año. Vite copió las reglas Apache a ambos `dist`; el verificador confirmó dos recursos compilados en la vista pública y cuatro en administración. Una prueba HTTP real mediante Apache devolvió `no-cache, must-revalidate` para HTML y `public, max-age=31536000, immutable` para los bundles, conservando HTTP 200 en una ruta interna de la SPA. La política de JSON editorial e imágenes UUID permanece alineada y está documentada en `docs/development/production-cache-policy.md`.
+- El paso 10 de aceptación se ejecutó hasta el límite de la sesión disponible. La vista pública abrió correctamente y la auditoría en 320, 768 y 1280 px no encontró desbordamiento, controles pequeños, IDs duplicados, saltos de encabezado, imágenes sin alternativa ni controles sin nombre. Ambas SPA compilaron, la API finalizó 36 pruebas con 116 aserciones y la caché empaquetada pasó su verificación. El recorrido real guardar borrador → publicar → actualización abierta y la interrupción/restauración controlada de la API permanecen pendientes: la administración solo presenta “Acceso institucional” porque no existe una sesión MEP autorizada. La evidencia detallada está en `docs/validation/2026-09-21-step-10-acceptance.md`.
+- La documentación de API se consolidó desde tres contratos fragmentados en una fuente canónica OpenAPI 3.1 con 31 operaciones y esquemas estructurados para las nueve secciones editoriales. El portal protegido por ambiente, las guías técnicas, la sincronización SHA-256 y la auditoría automática de rutas quedaron cubiertos por pruebas. La selección de entorno también preserva la precedencia de `CI_ENVIRONMENT` del proceso para impedir que un archivo privado rebaje accidentalmente producción a desarrollo. La prueba HTTP real confirmó 200 para portal, CSS y contrato; el inventario productivo confirmó cero rutas `/docs`. `composer --working-dir=apps/api verify` finalizó correctamente con 42 pruebas, 143 aserciones y el contrato sincronizado.
+- `AGENTS.md` establece como regla bloqueante que todo cambio observable de la API actualice conjuntamente especificaciones y Markdown, el OpenAPI canónico, su copia generada, ejemplos y pruebas. `composer --working-dir=apps/api verify` pasa a ser la comprobación obligatoria antes de cerrar cualquier cambio de API o preparar su commit.
+- Las tarjetas de Coordinaciones regionales reservan un retrato 5:7 por asesor y muestran una silueta accesible cuando no existe fotografía. Cada contacto cuenta con clave estable; administración permite cargar, reemplazar y retirar JPEG, PNG o WebP mediante un borrador, y la publicación genera URLs UUID inmutables. Los medios exclusivos del borrador se recuperan con token desde `GET /api/v1/admin/media/{uuid}` y `private, no-store`, sin abrir su acceso público. Se importaron y verificaron por SHA-256 14 PNG, se retiraron de `recursos-pendientes` y se publicó explícitamente la revisión regional; las 14 URLs públicas respondieron HTTP 200 como `image/png`. `asesorHeredia.png` permanece pendiente porque la región tiene dos contactos y el archivo no identifica inequívocamente a la persona. El catálogo editorial inicial incluye ahora las 27 regiones. Los builds de ambas SPA finalizaron correctamente y `composer --working-dir=apps/api verify` alcanzó 43 pruebas y 149 aserciones.
+
 ## 9. Regla de commits y sincronización
 
 - Formato obligatorio: `DD-MM-YYYY Descripción amplia en español`.
@@ -317,17 +356,18 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Validar interactivamente el ciclo editorial de las ocho secciones, incluyendo carga de logotipos, cronología, rutas informativas, directorio regional y Edición vigente.
-2. Ejecutar una revisión visual y de accesibilidad con API, base y archivos levantados conjuntamente.
+1. Validar con una sesión MEP autorizada el ciclo editorial de las nueve secciones, incluyendo contacto, carga de logotipos, cronología, rutas informativas, directorio regional y Edición vigente.
+2. Corregir el destino de foco del enlace de salto, ampliar las áreas táctiles señaladas y validar manualmente con lector de pantalla real y una herramienta especializada de contraste.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
 5. Validar la vista pública con lector de pantalla real y herramienta especializada de contraste antes de producción.
-6. Definir la estrategia de almacenamiento y despliegue de documentos históricos.
-7. Mantener este archivo actualizado después de cada iteración importante.
+6. Aprobar institucionalmente retención, ubicación externa, cifrado y responsables de los respaldos; el procedimiento y el ensayo local ya están verificados.
+7. Sustituir los destinos locales de la configuración privada de producción y definir el montaje persistente de `writable/uploads` antes de desplegar.
+8. Mantener este archivo actualizado después de cada iteración importante.
 
 ## 11. Próximo paso recomendado
 
-Reiniciar ambas SPA y validar con una identidad MEP el flujo real de las ocho secciones editoriales. Después de confirmar el ciclo completo, especificar y extender el patrón a “Contacto”.
+Iniciar sesión con una identidad MEP autorizada y validar el flujo real de las nueve secciones editoriales. Después, completar las secciones pendientes de Recursos y cuadernillos, Header y navegación, y Footer y créditos conforme a sus especificaciones individuales.
 
 ## 12. Prompt para retomar con Codex
 

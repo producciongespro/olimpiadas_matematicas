@@ -5,6 +5,7 @@ dist/
 .env.production
 .DS_Store
 Thumbs.db
+recursos-pendientes/
 
 # CodeIgniter runtime files (when the API is initialized)
 apps/api/writable/cache/*
