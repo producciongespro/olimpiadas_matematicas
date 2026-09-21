@@ -65,4 +65,9 @@ class MediaRepository
                 ->orWhereIn('media.id', $this->db->table('content_revision_media links')->select('links.media_file_id')->join('content_revisions revisions', 'revisions.id = links.revision_id')->where('revisions.status', 'published'))
             ->groupEnd()->where('media.uuid', $uuid)->get()->getRowArray();
     }
+
+    public function mediaByUuid(string $uuid): ?array
+    {
+        return $this->db->table('media_files')->where('uuid', $uuid)->get()->getRowArray();
+    }
 }

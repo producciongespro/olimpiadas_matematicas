@@ -1,0 +1,416 @@
+openapi: 3.1.0
+info:
+  title: API OLCOMEP
+  version: 1.0.0
+  description: Contrato canónico para contenido público y gestión administrativa de OLCOMEP.
+  x-logo:
+    url: /assets/logo-olcomep.png
+    altText: Logotipo oficial de OLCOMEP
+servers:
+  - url: http://localhost:3600/api/v1
+    description: Desarrollo local
+tags:
+  - { name: Salud, description: Disponibilidad del servicio }
+  - { name: Contenido público, description: Publicaciones editoriales de la vista pública }
+  - { name: Carrusel y galería, description: Carrusel, eventos y fotografías publicadas }
+  - { name: Medios, description: Archivos publicados mediante UUID }
+  - { name: Gestión editorial, description: Borradores y publicaciones de secciones }
+  - { name: Gestión de carrusel, description: Administración de diapositivas }
+  - { name: Gestión de eventos, description: Administración de eventos y fotografías }
+  - { name: Usuarios administrativos, description: Perfil y autorizaciones locales }
+paths:
+  /health:
+    get:
+      tags: [Salud]
+      operationId: getHealth
+      summary: Comprueba la disponibilidad de la API
+      security: []
+      responses:
+        '200': { $ref: '#/components/responses/Health' }
+  /site/home:
+    get:
+      tags: [Contenido público]
+      operationId: getPublicHome
+      summary: Obtiene todas las secciones publicadas
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IfNoneMatch' }]
+      responses:
+        '200': { $ref: '#/components/responses/PublicHome' }
+        '304': { $ref: '#/components/responses/NotModified' }
+  /carousel:
+    get:
+      tags: [Carrusel y galería]
+      operationId: getPublicCarousel
+      summary: Lista las diapositivas publicadas
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IfNoneMatch' }]
+      responses:
+        '200': { $ref: '#/components/responses/Carousel' }
+        '304': { $ref: '#/components/responses/NotModified' }
+  /events:
+    get:
+      tags: [Carrusel y galería]
+      operationId: getPublicEvents
+      summary: Lista los eventos publicados
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IfNoneMatch' }]
+      responses:
+        '200': { $ref: '#/components/responses/Events' }
+        '304': { $ref: '#/components/responses/NotModified' }
+  /events/{slug}:
+    get:
+      tags: [Carrusel y galería]
+      operationId: getPublicEvent
+      summary: Obtiene un evento publicado y sus fotografías
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/Slug' }
+        - { $ref: '#/components/parameters/IfNoneMatch' }
+      responses:
+        '200': { $ref: '#/components/responses/Event' }
+        '304': { $ref: '#/components/responses/NotModified' }
+        '404': { $ref: '#/components/responses/Error' }
+  /media/{uuid}:
+    get:
+      tags: [Medios]
+      operationId: getPublishedMedia
+      summary: Entrega una imagen asociada con contenido publicado
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/Uuid' }
+        - { $ref: '#/components/parameters/IfNoneMatch' }
+      responses:
+        '200': { $ref: '#/components/responses/ImageFile' }
+        '304': { $ref: '#/components/responses/ImmutableNotModified' }
+        '404': { $ref: '#/components/responses/Error' }
+  /admin/profile:
+    get:
+      tags: [Usuarios administrativos]
+      operationId: getAdminProfile
+      summary: Obtiene la autorización y capacidades de la identidad activa
+      security: [{ entraBearer: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/AdminProfile' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+  /admin/media/{uuid}:
+    get:
+      tags: [Medios]
+      operationId: getAdminMediaPreview
+      summary: Entrega un medio para previsualización administrativa
+      description: Permite revisar medios de borradores sin hacerlos públicos. La respuesta no se almacena en caché.
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Uuid' }]
+      responses:
+        '200': { $ref: '#/components/responses/AdminImageFile' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /admin/users:
+    get:
+      tags: [Usuarios administrativos]
+      operationId: listAdminUsers
+      summary: Lista las autorizaciones visibles para la identidad activa
+      security: [{ entraBearer: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/AdminUsers' }
+        '403': { $ref: '#/components/responses/Error' }
+    post:
+      tags: [Usuarios administrativos]
+      operationId: createAdminUser
+      summary: Crea una autorización local
+      security: [{ entraBearer: [] }]
+      requestBody: { $ref: '#/components/requestBodies/AdminUser' }
+      responses:
+        '201': { $ref: '#/components/responses/AdminUser' }
+        '403': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/users/{id}:
+    put:
+      tags: [Usuarios administrativos]
+      operationId: updateAdminUser
+      summary: Modifica rol, estado o nombre de una autorización
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/AdminUser' }
+      responses:
+        '200': { $ref: '#/components/responses/AdminUser' }
+        '403': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/site/sections:
+    get:
+      tags: [Gestión editorial]
+      operationId: listEditorialSections
+      summary: Lista el estado editorial de las secciones
+      security: [{ entraBearer: [] }]
+      responses:
+        '200': { $ref: '#/components/responses/EditorialSections' }
+  /admin/site/sections/{key}:
+    get:
+      tags: [Gestión editorial]
+      operationId: getEditorialSection
+      summary: Obtiene el borrador y la publicación de una sección
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/SectionKey' }]
+      responses:
+        '200': { $ref: '#/components/responses/EditorialSection' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/site/sections/{key}/draft:
+    post:
+      tags: [Gestión editorial]
+      operationId: saveEditorialDraft
+      summary: Guarda el contenido completo como borrador
+      description: Guardar no modifica la publicación vigente. El objeto content depende de la clave de sección.
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/SectionKey' }]
+      requestBody: { $ref: '#/components/requestBodies/EditorialDraft' }
+      responses:
+        '200': { $ref: '#/components/responses/EditorialSection' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/site/sections/{key}/publish:
+    post:
+      tags: [Gestión editorial]
+      operationId: publishEditorialSection
+      summary: Publica el borrador vigente de una sección
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/SectionKey' }]
+      responses:
+        '200': { $ref: '#/components/responses/EditorialSection' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/carousel:
+    get:
+      tags: [Gestión de carrusel]
+      operationId: listAdminCarousel
+      summary: Lista todas las diapositivas
+      security: [{ entraBearer: [] }]
+      responses: { '200': { $ref: '#/components/responses/Carousel' } }
+    post:
+      tags: [Gestión de carrusel]
+      operationId: createCarouselSlide
+      summary: Crea una diapositiva
+      security: [{ entraBearer: [] }]
+      requestBody: { $ref: '#/components/requestBodies/SlideForm' }
+      responses:
+        '201': { $ref: '#/components/responses/Slide' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/carousel/order:
+    put:
+      tags: [Gestión de carrusel]
+      operationId: reorderCarouselSlides
+      summary: Reordena todas las diapositivas
+      security: [{ entraBearer: [] }]
+      requestBody: { $ref: '#/components/requestBodies/Order' }
+      responses:
+        '200': { $ref: '#/components/responses/Carousel' }
+        '422': { $ref: '#/components/responses/Error' }
+  /admin/carousel/{id}:
+    put:
+      tags: [Gestión de carrusel]
+      operationId: updateCarouselSlide
+      summary: Actualiza metadatos o estado
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/SlideUpdate' }
+      responses: { '200': { $ref: '#/components/responses/Slide' }, '422': { $ref: '#/components/responses/Error' } }
+    post:
+      tags: [Gestión de carrusel]
+      operationId: replaceCarouselSlide
+      summary: Actualiza o reemplaza la imagen mediante multipart
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/SlideForm' }
+      responses: { '200': { $ref: '#/components/responses/Slide' }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      tags: [Gestión de carrusel]
+      operationId: archiveCarouselSlide
+      summary: Archiva una diapositiva
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Slide' } }
+  /admin/events:
+    get:
+      tags: [Gestión de eventos]
+      operationId: listAdminEvents
+      summary: Lista eventos de todos los estados
+      security: [{ entraBearer: [] }]
+      responses: { '200': { $ref: '#/components/responses/Events' } }
+    post:
+      tags: [Gestión de eventos]
+      operationId: createEvent
+      summary: Crea un evento en borrador
+      security: [{ entraBearer: [] }]
+      requestBody: { $ref: '#/components/requestBodies/Event' }
+      responses: { '201': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/events/{id}:
+    get:
+      tags: [Gestión de eventos]
+      operationId: getAdminEvent
+      summary: Obtiene el detalle administrativo de un evento
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Event' } }
+    put:
+      tags: [Gestión de eventos]
+      operationId: updateEvent
+      summary: Actualiza o publica un evento
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/Event' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      tags: [Gestión de eventos]
+      operationId: archiveEvent
+      summary: Archiva un evento
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Event' } }
+  /admin/events/{id}/images:
+    post:
+      tags: [Gestión de eventos]
+      operationId: addEventImage
+      summary: Carga una fotografía en el evento
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/ImageForm' }
+      responses: { '201': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/events/{id}/images/order:
+    put:
+      tags: [Gestión de eventos]
+      operationId: reorderEventImages
+      summary: Reordena las fotografías de un evento
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/Order' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+  /admin/event-images/{id}:
+    put:
+      tags: [Gestión de eventos]
+      operationId: updateEventImage
+      summary: Actualiza metadatos o portada de una fotografía
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/ImageUpdate' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    post:
+      tags: [Gestión de eventos]
+      operationId: replaceEventImage
+      summary: Reemplaza una fotografía mediante multipart
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody: { $ref: '#/components/requestBodies/ImageForm' }
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+    delete:
+      tags: [Gestión de eventos]
+      operationId: deleteEventImage
+      summary: Retira una fotografía
+      security: [{ entraBearer: [] }]
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses: { '200': { $ref: '#/components/responses/Event' }, '422': { $ref: '#/components/responses/Error' } }
+components:
+  securitySchemes:
+    entraBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token RS256 emitido por Microsoft Entra ID con audiencia, cliente, tenant y scope autorizados.
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+    Slug: { name: slug, in: path, required: true, schema: { type: string, pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$' } }
+    Uuid: { name: uuid, in: path, required: true, schema: { type: string, format: uuid } }
+    IfNoneMatch: { name: If-None-Match, in: header, required: false, schema: { type: string }, description: ETag recibido en una respuesta anterior. }
+    SectionKey:
+      name: key
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact]
+  requestBodies:
+    AdminUser: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/AdminUserInput' } } } }
+    Order: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/OrderInput' } } } }
+    Event: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/EventInput' } } } }
+    SlideUpdate: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/SlideInput' } } } }
+    SlideForm: { required: true, content: { multipart/form-data: { schema: { $ref: '#/components/schemas/SlideForm' } } } }
+    ImageForm: { required: true, content: { multipart/form-data: { schema: { $ref: '#/components/schemas/ImageForm' } } } }
+    ImageUpdate: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ImageUpdate' } } } }
+    EditorialDraft:
+      required: true
+      content:
+        multipart/form-data:
+          schema: { $ref: '#/components/schemas/EditorialDraftInput' }
+  responses:
+    Health: { description: Servicio disponible, content: { application/json: { schema: { type: object, required: [data], properties: { data: { type: object, required: [service, status], properties: { service: { type: string, const: olcomep-api }, status: { type: string, const: ok } } } } } } } }
+    PublicHome: { description: Mapa de las nueve publicaciones vigentes, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } }, content: { application/json: { schema: { $ref: '#/components/schemas/PublicHomeResponse' } } } }
+    NotModified: { description: La representación no cambió, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } } }
+    ImmutableNotModified: { description: El archivo coincide con el ETag enviado, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/ImmutableCache' } } }
+    ImageFile: { description: Imagen JPEG, PNG o WebP, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/ImmutableCache' } }, content: { image/jpeg: { schema: { type: string, contentEncoding: binary } }, image/png: { schema: { type: string, contentEncoding: binary } }, image/webp: { schema: { type: string, contentEncoding: binary } } } }
+    AdminImageFile: { description: Imagen administrativa sin caché compartida, headers: { Cache-Control: { schema: { type: string, const: 'private, no-store' } } }, content: { image/jpeg: { schema: { type: string, contentEncoding: binary } }, image/png: { schema: { type: string, contentEncoding: binary } }, image/webp: { schema: { type: string, contentEncoding: binary } } } }
+    Carousel: { description: Colección de diapositivas, content: { application/json: { schema: { $ref: '#/components/schemas/SlidesResponse' } } } }
+    Slide: { description: Diapositiva, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/Slide' } } } } } }
+    Events: { description: Colección de eventos, content: { application/json: { schema: { $ref: '#/components/schemas/EventsResponse' } } } }
+    Event: { description: Evento, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/Event' } } } } } }
+    AdminProfile: { description: Identidad administrativa activa, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/AdminProfile' } } } } } }
+    AdminUsers: { description: Autorizaciones administrativas, content: { application/json: { schema: { type: object, required: [data], properties: { data: { type: array, items: { $ref: '#/components/schemas/AdminUser' } } } } } } }
+    AdminUser: { description: Autorización administrativa, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/AdminUser' } } } } } }
+    EditorialSections: { description: Catálogo editorial, content: { application/json: { schema: { type: object, required: [data], properties: { data: { type: array, items: { $ref: '#/components/schemas/EditorialSectionSummary' } } } } } } }
+    EditorialSection: { description: Estado editorial de la sección, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/EditorialSection' } } } } } }
+    Error: { description: Error seguro, content: { application/json: { schema: { $ref: '#/components/schemas/Error' }, example: { message: No fue posible completar la operación. } } } }
+  headers:
+    ETag: { description: Identificador fuerte de la representación, schema: { type: string, example: '"sha256"' } }
+    RevalidateCache: { schema: { type: string, const: 'public, max-age=0, must-revalidate' } }
+    ImmutableCache: { schema: { type: string, const: 'public, max-age=31536000, immutable' } }
+  schemas:
+    Error: { type: object, required: [message], properties: { message: { type: string } }, additionalProperties: false }
+    Status: { type: string, enum: [draft, published, archived] }
+    MediaReference: { type: object, required: [uuid, url], properties: { uuid: { type: string, format: uuid }, url: { type: string, format: uri-reference }, width: { type: [integer, 'null'] }, height: { type: [integer, 'null'] } }, additionalProperties: true }
+    SlideInput: { type: object, properties: { title: { type: [string, 'null'], maxLength: 180 }, alt_text: { type: string, maxLength: 255 }, link_url: { type: [string, 'null'], maxLength: 2048 }, link_label: { type: [string, 'null'], maxLength: 100 }, status: { $ref: '#/components/schemas/Status' } } }
+    SlideForm: { allOf: [{ $ref: '#/components/schemas/SlideInput' }, { type: object, required: [image, alt_text], properties: { image: { type: string, contentEncoding: binary } } }] }
+    Slide: { allOf: [{ $ref: '#/components/schemas/SlideInput' }, { type: object, required: [id, sort_order], properties: { id: { type: integer }, sort_order: { type: integer }, media_uuid: { type: [string, 'null'], format: uuid }, media_url: { type: [string, 'null'], format: uri-reference }, width: { type: [integer, 'null'] }, height: { type: [integer, 'null'] } } }] }
+    SlidesResponse: { type: object, required: [data], properties: { data: { type: array, items: { $ref: '#/components/schemas/Slide' } }, meta: { $ref: '#/components/schemas/VersionMeta' } } }
+    EventInput: { type: object, properties: { name: { type: string, maxLength: 180 }, slug: { type: string }, event_date: { type: [string, 'null'], format: date }, description: { type: [string, 'null'] }, status: { $ref: '#/components/schemas/Status' } } }
+    Event: { allOf: [{ $ref: '#/components/schemas/EventInput' }, { type: object, required: [id], properties: { id: { type: integer }, uuid: { type: [string, 'null'], format: uuid }, images: { type: array, items: { $ref: '#/components/schemas/EventImage' } } } }] }
+    EventsResponse: { type: object, required: [data], properties: { data: { type: array, items: { $ref: '#/components/schemas/Event' } }, meta: { $ref: '#/components/schemas/VersionMeta' } } }
+    ImageForm: { type: object, required: [image, alt_text], properties: { image: { type: string, contentEncoding: binary }, alt_text: { type: string, maxLength: 255 }, caption: { type: [string, 'null'] }, is_cover: { type: boolean } } }
+    ImageUpdate: { type: object, properties: { alt_text: { type: string, maxLength: 255 }, caption: { type: [string, 'null'] }, is_cover: { type: boolean } } }
+    EventImage: { allOf: [{ $ref: '#/components/schemas/ImageUpdate' }, { type: object, properties: { id: { type: integer }, sort_order: { type: integer }, media_uuid: { type: string, format: uuid }, media_url: { type: string, format: uri-reference }, width: { type: [integer, 'null'] }, height: { type: [integer, 'null'] } } }] }
+    OrderInput: { type: object, required: [ids], properties: { ids: { type: array, minItems: 1, uniqueItems: true, items: { type: integer, minimum: 1 } } }, additionalProperties: false }
+    VersionMeta: { type: object, required: [version], properties: { version: { type: string } }, additionalProperties: false }
+    AdminUserInput: { type: object, properties: { email: { type: string, format: email }, display_name: { type: [string, 'null'], maxLength: 180 }, role: { type: string, enum: [master, admin, editor] }, status: { type: string, enum: [active, inactive] } }, additionalProperties: false }
+    AdminUser: { allOf: [{ $ref: '#/components/schemas/AdminUserInput' }, { type: object, required: [id, email, role, status], properties: { id: { type: integer }, oid: { type: [string, 'null'] }, created_at: { type: [string, 'null'], format: date-time }, updated_at: { type: [string, 'null'], format: date-time } } }] }
+    AdminProfile: { allOf: [{ $ref: '#/components/schemas/AdminUser' }, { type: object, properties: { capabilities: { type: array, items: { type: string } } } }] }
+    Link: { type: object, required: [label, href], properties: { label: { type: string }, href: { type: string, maxLength: 2048 } }, additionalProperties: true }
+    HeroContent: { type: object, required: [eyebrow, title, audience, description, primary_label, primary_href, secondary_label, secondary_href, image_alt], properties: { eyebrow: { type: string, maxLength: 80 }, title: { type: string, maxLength: 120 }, audience: { type: string, maxLength: 100 }, description: { type: string, maxLength: 420 }, primary_label: { type: string, maxLength: 60 }, primary_href: { type: string, maxLength: 512 }, secondary_label: { type: string, maxLength: 60 }, secondary_href: { type: string, maxLength: 512 }, image_alt: { type: string, maxLength: 255 }, image: { $ref: '#/components/schemas/MediaReference' } }, additionalProperties: false }
+    PresentationContent: { type: object, required: [eyebrow, title, paragraphs], properties: { eyebrow: { type: string }, title: { type: string }, paragraphs: { type: array, minItems: 1, items: { type: string } } }, additionalProperties: true }
+    CalendarItem: { type: object, required: [date, title, description], properties: { date: { type: string, format: date }, title: { type: string }, description: { type: string }, highlighted: { type: boolean } }, additionalProperties: true }
+    CalendarContent: { type: object, required: [title, activities], properties: { eyebrow: { type: string }, title: { type: string }, description: { type: string }, manual_label: { type: string }, manual_href: { type: string }, activities: { type: array, items: { $ref: '#/components/schemas/CalendarItem' } } }, additionalProperties: true }
+    PartnersContent: { type: object, required: [partners, sponsors], properties: { eyebrow: { type: string }, title: { type: string }, partners: { type: array, items: { type: object, required: [name], properties: { name: { type: string }, href: { type: [string, 'null'] }, description: { type: [string, 'null'] }, image: { $ref: '#/components/schemas/MediaReference' } }, additionalProperties: true } }, sponsors: { type: array, items: { type: object, required: [name], properties: { name: { type: string }, href: { type: [string, 'null'] }, description: { type: [string, 'null'] }, image: { $ref: '#/components/schemas/MediaReference' } }, additionalProperties: true } } }, additionalProperties: true }
+    AboutContent: { type: object, required: [title, intro, milestones, closing], properties: { eyebrow: { type: string }, title: { type: string }, intro: { type: array, items: { type: string } }, milestones: { type: array, items: { type: object, required: [year, text], properties: { year: { type: string }, text: { type: string } }, additionalProperties: false } }, closing: { type: array, items: { type: string } } }, additionalProperties: true }
+    GeneralInformationContent: { type: object, required: [routes, faqs], properties: { eyebrow: { type: string }, title: { type: string }, routes: { type: array, items: { allOf: [{ $ref: '#/components/schemas/Link' }, { type: object, properties: { description: { type: string }, icon: { type: string } } }] } }, faqs: { type: array, items: { type: object, required: [question, answer], properties: { question: { type: string }, answer: { type: string } }, additionalProperties: false } } }, additionalProperties: true }
+    RegionalCoordinationsContent: { type: object, required: [regions], properties: { eyebrow: { type: string }, title: { type: string }, regions: { type: array, items: { type: object, required: [region, contacts], properties: { region: { type: string }, contacts: { type: array, items: { type: object, required: [key, name, emails], properties: { key: { type: string, pattern: '^[a-z0-9-]{3,70}$' }, name: { type: string }, role: { type: [string, 'null'] }, emails: { type: array, items: { type: string, format: email } }, media_uuid: { type: string, format: uuid, readOnly: true }, photo_url: { type: string, format: uri-reference, readOnly: true }, photo_width: { type: integer, readOnly: true }, photo_height: { type: integer, readOnly: true }, remove_photo: { type: boolean, writeOnly: true, description: Retira la relación con la fotografía al guardar el borrador. } }, additionalProperties: false } } }, additionalProperties: true } } }, additionalProperties: true }
+    CurrentEditionContent: { type: object, required: [title, registration_status, documents], properties: { eyebrow: { type: string }, title: { type: string }, description: { type: string }, registration_status: { type: string }, documents: { type: array, items: { $ref: '#/components/schemas/Link' } }, bulk_registration: { $ref: '#/components/schemas/Link' }, video_url: { type: [string, 'null'] }, image: { $ref: '#/components/schemas/MediaReference' } }, additionalProperties: true }
+    ContactContent: { type: object, required: [title, phones, emails, resources], properties: { eyebrow: { type: string }, title: { type: string }, description: { type: string }, contact_name: { type: string }, contact_role: { type: string }, phones: { type: array, items: { type: string } }, emails: { type: array, items: { type: string, format: email } }, resources: { type: array, items: { $ref: '#/components/schemas/Link' } } }, additionalProperties: true }
+    SectionContent: { oneOf: [{ $ref: '#/components/schemas/HeroContent' }, { $ref: '#/components/schemas/PresentationContent' }, { $ref: '#/components/schemas/CalendarContent' }, { $ref: '#/components/schemas/PartnersContent' }, { $ref: '#/components/schemas/AboutContent' }, { $ref: '#/components/schemas/GeneralInformationContent' }, { $ref: '#/components/schemas/RegionalCoordinationsContent' }, { $ref: '#/components/schemas/CurrentEditionContent' }, { $ref: '#/components/schemas/ContactContent' }] }
+    EditorialDraftInput: { type: object, required: [content], properties: { content: { description: JSON serializado o estructura correspondiente a la sección, oneOf: [{ type: string, contentMediaType: application/json }, { $ref: '#/components/schemas/SectionContent' }] }, image: { type: string, contentEncoding: binary }, photo_contact_key: { type: string, contentEncoding: binary, description: Las fotografías regionales se envían como campos dinámicos photo_{key}; reemplazar crea un medio UUID nuevo. } } }
+    EditorialRevision: { type: object, required: [id, status, content], properties: { id: { type: integer }, status: { type: string, enum: [draft, published, superseded] }, content: { $ref: '#/components/schemas/SectionContent' }, created_at: { type: [string, 'null'], format: date-time }, published_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
+    EditorialSectionSummary: { type: object, required: [key, name], properties: { key: { type: string }, name: { type: string }, has_draft: { type: boolean }, has_publication: { type: boolean }, updated_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
+    EditorialSection: { type: object, required: [key], properties: { key: { type: string }, draft: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] }, published: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] } }, additionalProperties: true }
+    PublicHomeResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: object
+          required: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact]
+          properties:
+            hero: { $ref: '#/components/schemas/HeroContent' }
+            presentation: { $ref: '#/components/schemas/PresentationContent' }
+            calendar: { $ref: '#/components/schemas/CalendarContent' }
+            partners: { $ref: '#/components/schemas/PartnersContent' }
+            about: { $ref: '#/components/schemas/AboutContent' }
+            general-information: { $ref: '#/components/schemas/GeneralInformationContent' }
+            regional-coordinations: { $ref: '#/components/schemas/RegionalCoordinationsContent' }
+            current-edition: { $ref: '#/components/schemas/CurrentEditionContent' }
+            contact: { $ref: '#/components/schemas/ContactContent' }
+          additionalProperties: false
+        meta: { $ref: '#/components/schemas/VersionMeta' }
+      additionalProperties: false

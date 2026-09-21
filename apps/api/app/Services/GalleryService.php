@@ -251,6 +251,7 @@ class GalleryService
     }
 
     public function media(string $uuid): ?array { return $this->repository->mediaForPublic($uuid); }
+    public function adminMedia(string $uuid): ?array { return $this->repository->mediaByUuid($uuid); }
 
     private function findSlide(int $id): array
     {

@@ -4,6 +4,15 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'Api\\HealthController::index');
+
+if (ENVIRONMENT !== 'production') {
+    $routes->get('docs', 'DocumentationController::index');
+    $routes->get('docs/', 'DocumentationController::index');
+    $routes->get('docs/assets/(:segment)', 'DocumentationController::asset/$1');
+    $routes->get('docs/api/(:segment)', 'DocumentationController::api/$1');
+    $routes->get('docs/markdown/(:segment)', 'DocumentationController::markdown/$1');
+}
+
 $routes->options('api/v1/(:any)', 'Api\\HealthController::options', ['filter' => 'cors']);
 
 $routes->group('api/v1', ['filter' => 'cors'], static function (RouteCollection $routes): void {
@@ -16,6 +25,7 @@ $routes->group('api/v1', ['filter' => 'cors'], static function (RouteCollection 
 
     $routes->group('admin', ['filter' => ['jwt-auth', 'role']], static function (RouteCollection $routes): void {
         $routes->get('profile', 'Api\\Admin\\AdminUsersController::profile');
+        $routes->get('media/(:segment)', 'Api\\Admin\\MediaAdminController::file/$1');
         $routes->get('users', 'Api\\Admin\\AdminUsersController::index');
         $routes->post('users', 'Api\\Admin\\AdminUsersController::create');
         $routes->put('users/(:num)', 'Api\\Admin\\AdminUsersController::update/$1');

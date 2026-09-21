@@ -53,7 +53,14 @@ La plantilla `env` autoriza por CORS únicamente las dos SPA locales. La auditor
 
 El seeder `OlcomepInitialSeeder` registra la edición 2026 e importa las 15 fotografías heredadas como diapositivas publicadas del carrusel. No crea eventos: sus fotografías se cargarán desde administración. Es idempotente y puede ejecutarse nuevamente sin duplicar datos.
 
-El contrato de medios está documentado en `../../docs/api/media-v1.openapi.yaml`. Los archivos se almacenan en `writable/uploads`, que debe desplegarse como volumen persistente y respaldarse coordinadamente con la base de datos.
+El contrato canónico está en `app/Docs/api/openapi-v1.yaml`. En desarrollo, el portal interactivo está disponible en `http://localhost:3600/docs`. Después de cambiar rutas o payloads ejecute:
+
+```bash
+php spark docs:sync
+php spark docs:check
+```
+
+Los archivos se almacenan en `writable/uploads`, que debe desplegarse como volumen persistente y respaldarse coordinadamente con la base de datos.
 
 ## Microsoft Entra ID
 
@@ -80,5 +87,10 @@ Las rutas dentro de `api/v1/admin` requieren un token cuyo `aud`, `tid`, `azp` (
 
 ```bash
 composer test
+php spark docs:check
 composer audit --locked
 ```
+
+`composer verify` ejecuta conjuntamente la suite y la comprobación documental requerida antes de integrar cambios de API.
+
+Para una importación institucional controlada de fotografías regionales, `php spark content:import-regional-photos` crea un borrador sin publicar. Use `--move` únicamente cuando las imágenes de origen deban retirarse después de verificar su copia almacenada.

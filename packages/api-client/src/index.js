@@ -12,17 +12,56 @@ export function createApiClient({ baseUrl = import.meta.env?.VITE_API_URL || DEF
     return body?.data
   }
 
+  const siteHome = async ({ etag } = {}) => {
+    const headers = new Headers()
+    if (etag) headers.set('If-None-Match', etag)
+    const response = await fetch(`${baseUrl}/site/home`, { headers })
+    const responseEtag = response.headers.get('ETag') || etag || null
+    if (response.status === 304) return { notModified: true, etag: responseEtag, version: null, sections: null }
+    const body = await response.json().catch(() => null)
+    if (!response.ok) throw new Error(body?.message || 'No fue posible completar la solicitud.')
+    return {
+      notModified: false,
+      etag: responseEtag,
+      version: body?.meta?.version || null,
+      sections: body?.data || {},
+    }
+  }
+
+  const publicResource = async (path, { etag } = {}) => {
+    const headers = new Headers()
+    if (etag) headers.set('If-None-Match', etag)
+    const response = await fetch(`${baseUrl}${path}`, { headers })
+    const responseEtag = response.headers.get('ETag') || etag || null
+    if (response.status === 304) return { notModified: true, etag: responseEtag, version: null, data: null }
+    const body = await response.json().catch(() => null)
+    if (!response.ok) throw new Error(body?.message || 'No fue posible completar la solicitud.')
+    return { notModified: false, etag: responseEtag, version: body?.meta?.version || null, data: body?.data }
+  }
+
+  const adminMediaObjectUrl = async (uuid) => {
+    const token = await getToken()
+    const headers = new Headers()
+    if (token) headers.set('Authorization', `Bearer ${token}`)
+    const response = await fetch(`${baseUrl}/admin/media/${encodeURIComponent(uuid)}`, { headers })
+    if (!response.ok) throw new Error('No fue posible cargar la vista previa de la imagen.')
+    return URL.createObjectURL(await response.blob())
+  }
+
   return {
-    siteHome: () => request('/site/home'),
+    siteHome,
     adminSiteSections: () => request('/admin/site/sections'),
     adminProfile: () => request('/admin/profile'),
     adminUsers: () => request('/admin/users'),
     createAdminUser: (data) => request('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
     updateAdminUser: (id, data) => request(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     adminSiteSection: (key) => request(`/admin/site/sections/${encodeURIComponent(key)}`),
+    adminMediaObjectUrl,
     saveSiteSectionDraft: (key, form) => request(`/admin/site/sections/${encodeURIComponent(key)}/draft`, { method: 'POST', body: form }),
     publishSiteSection: (key) => request(`/admin/site/sections/${encodeURIComponent(key)}/publish`, { method: 'POST' }),
-    carousel: () => request('/carousel'), events: () => request('/events'), event: (slug) => request(`/events/${encodeURIComponent(slug)}`),
+    carousel: (options) => publicResource('/carousel', options),
+    events: (options) => publicResource('/events', options),
+    event: (slug, options) => publicResource(`/events/${encodeURIComponent(slug)}`, options),
     adminCarousel: () => request('/admin/carousel'), createSlide: (form) => request('/admin/carousel', { method: 'POST', body: form }),
     updateSlide: (id, data) => request(`/admin/carousel/${id}`, { method: 'PUT', body: JSON.stringify(data) }), archiveSlide: (id) => request(`/admin/carousel/${id}`, { method: 'DELETE' }),
     reorderSlides: (ids) => request('/admin/carousel/order', { method: 'PUT', body: JSON.stringify({ ids }) }), adminEvents: () => request('/admin/events'),

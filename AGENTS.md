@@ -13,6 +13,18 @@ Estas instrucciones aplican a la vista pública, la vista administrativa, la API
 - Toda sección pública nueva debe contar, antes de su implementación, con una especificación propia en `specs/features/004-content-management/sections/` que defina campos editables, campos protegidos, colecciones dinámicas, validaciones, estados y criterios de aceptación.
 - Cuando cambie el comportamiento, contrato, validación o capacidad editorial de una sección existente, actualizar en la misma iteración su especificación individual y los criterios generales relacionados. Un cambio funcional sin su actualización de spec se considera incompleto.
 
+## Documentación contractual obligatoria de la API
+
+- `apps/api/app/Docs/api/openapi-v1.yaml` es la única fuente canónica del contrato OpenAPI.
+- Todo cambio que afecte rutas, métodos HTTP, parámetros, encabezados, cuerpos de solicitud, respuestas, códigos de estado, autenticación, autorización, validaciones, caché o comportamiento observable de la API debe actualizar en la misma iteración:
+  1. La especificación, criterios de aceptación, tareas y archivos Markdown relacionados.
+  2. El contrato canónico `apps/api/app/Docs/api/openapi-v1.yaml`.
+  3. Los ejemplos, esquemas y pruebas automatizadas correspondientes.
+  4. `specs/estadoProyecto.md` cuando el cambio sea relevante para arquitectura, funcionalidad, verificación, despliegue o prioridades.
+- Después de modificar el contrato, ejecutar `php apps/api/spark docs:sync` para regenerar `apps/api/public/openapi/openapi-v1.yaml`. La copia generada no se edita manualmente.
+- Antes de considerar terminado cualquier cambio de API, ejecutar `composer --working-dir=apps/api verify`. Este comando debe confirmar tanto la suite como la sincronización y correspondencia exacta entre OpenAPI y las rutas `/api/v1`.
+- Un cambio de API que actualice únicamente código o archivos Markdown, pero no el contrato OpenAPI y su copia generada cuando corresponda, se considera incompleto y bloquea el cierre de la tarea y cualquier commit relacionado.
+
 ## Seguridad y datos
 
 - No confirmar `.env`, credenciales, tokens, datos personales reales, archivos de `writable/` ni dependencias instaladas.
@@ -31,8 +43,8 @@ Estas instrucciones aplican a la vista pública, la vista administrativa, la API
 
 ### Backend CodeIgniter
 
-- Ejecutar `composer --working-dir=apps/api test`.
-- Si cambian rutas o payloads, actualizar el contrato y ejemplos relacionados.
+- Ejecutar `composer --working-dir=apps/api verify`.
+- Si cambian rutas, payloads o cualquier comportamiento observable de la API, aplicar completa la regla de documentación contractual obligatoria.
 - Si cambia el esquema, probar aplicación y reversión de las migraciones.
 - No exponer trazas ni valores sensibles en respuestas JSON.
 

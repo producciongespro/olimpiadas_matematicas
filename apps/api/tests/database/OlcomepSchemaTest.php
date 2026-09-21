@@ -109,7 +109,7 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(0, $this->db->table('educational_regions')->countAllResults());
         $this->assertSame(0, $this->db->table('events')->countAllResults());
         $this->assertSame(15, $this->db->table('carousel_slides')->countAllResults());
-        $this->assertSame(8, $this->db->table('content_sections')->countAllResults());
+        $this->assertSame(9, $this->db->table('content_sections')->countAllResults());
     }
 
     public function testPublishedLegacyCarouselIsAvailableThroughService(): void
@@ -143,15 +143,60 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $seeder->setSilent(true)->run();
         $service = new ContentService($this->db);
         $original = $service->publicHome()['hero']['content']['title'];
-        $content = $service->adminSection('hero')['published']['content'];
+        $originalVersion = $service->publicHomeSnapshot()['version'];
+        $initialState = $service->adminSection('hero');
+        $originalPublishedId = $initialState['published']['revision_id'];
+        $content = $initialState['published']['content'];
         $content['title'] = 'Portada en revisión';
 
         $service->saveDraft('hero', $content);
         $this->assertSame($original, $service->publicHome()['hero']['content']['title']);
+        $this->assertSame($originalVersion, $service->publicHomeSnapshot()['version']);
+        $this->assertSame($originalPublishedId, $service->adminSection('hero')['published']['revision_id']);
 
         $service->publish('hero');
+        $publishedState = $service->adminSection('hero');
+        $this->assertNotSame($originalVersion, $service->publicHomeSnapshot()['version']);
         $this->assertSame('Portada en revisión', $service->publicHome()['hero']['content']['title']);
-        $this->assertNull($service->adminSection('hero')['draft']);
+        $this->assertNull($publishedState['draft']);
+        $this->assertNotSame($originalPublishedId, $publishedState['published']['revision_id']);
+
+        $sectionId = (int) $this->db->table('content_sections')->select('id')->where('section_key', 'hero')->get()->getRowArray()['id'];
+        $this->assertSame(1, $this->db->table('content_revisions')->where('section_id', $sectionId)->where('status', 'published')->countAllResults());
+        $this->assertSame(0, $this->db->table('content_revisions')->where('section_id', $sectionId)->where('status', 'draft')->countAllResults());
+        $this->assertSame(1, $this->db->table('content_revisions')->where('section_id', $sectionId)->where('status', 'superseded')->countAllResults());
+    }
+
+    public function testDraftMediaIsPrivateUntilItsRevisionIsPublished(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $content = new ContentService($this->db);
+        $gallery = new GalleryService($this->db);
+        $hero = $content->adminSection('hero')['published']['content'];
+        $content->saveDraft('hero', $hero);
+
+        $uuid = '12345678-1234-4123-8123-123456789abc';
+        $now = date('Y-m-d H:i:s');
+        $this->db->table('media_files')->insert([
+            'uuid' => $uuid,
+            'storage_path' => 'sections/hero/' . $uuid . '.jpg',
+            'original_name' => 'hero-prueba.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 1024,
+            'width' => 640,
+            'height' => 640,
+            'checksum_sha256' => str_repeat('a', 64),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $mediaId = (int) $this->db->insertID();
+        $sectionId = (int) $this->db->table('content_sections')->select('id')->where('section_key', 'hero')->get()->getRowArray()['id'];
+        $this->db->table('content_revisions')->where('section_id', $sectionId)->where('status', 'draft')->update(['media_file_id' => $mediaId]);
+
+        $this->assertNull($gallery->media($uuid));
+        $content->publish('hero');
+        $this->assertNotNull($gallery->media($uuid));
     }
 
     public function testOlcomepIntroductionSupportsDraftAndPublication(): void
@@ -233,6 +278,12 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertCount(2, $draft['sponsors']);
         $this->assertArrayHasKey('logo_url', $draft['collaborators'][0]);
         $this->assertCount(5, $service->publicHome()['partners']['content']['collaborators']);
+
+        $service->publish('partners');
+        $published = $service->publicHome()['partners']['content'];
+        $this->assertCount(4, $published['collaborators']);
+        $this->assertCount(2, $published['sponsors']);
+        $this->assertArrayHasKey('logo_url', $published['collaborators'][0]);
     }
 
     public function testAboutSupportsDynamicMilestonesAndParagraphs(): void
@@ -297,10 +348,45 @@ final class OlcomepSchemaTest extends CIUnitTestCase
 
         $this->assertCount(1, $draft['regions']);
         $this->assertSame('contacto@example.org', $draft['regions'][0]['contacts'][0]['emails'][0]);
-        $this->assertArrayNotHasKey('regions', $service->publicHome()['regional-coordinations']['content']);
+        $this->assertCount(27, $service->publicHome()['regional-coordinations']['content']['regions']);
+        $this->assertNotSame('Región de prueba', $service->publicHome()['regional-coordinations']['content']['regions'][0]['region']);
 
         $service->publish('regional-coordinations');
         $this->assertSame('Región de prueba', $service->publicHome()['regional-coordinations']['content']['regions'][0]['region']);
+    }
+
+    public function testRegionalContactPhotoFollowsDraftPublicationAndRemoval(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $section = $this->db->table('content_sections')->where('section_key', 'regional-coordinations')->get()->getRowArray();
+        $published = $this->db->table('content_revisions')->where('section_id', $section['id'])->where('status', 'published')->get()->getRowArray();
+        $now = date('Y-m-d H:i:s');
+        $this->db->table('media_files')->insert([
+            'uuid' => '11111111-1111-4111-8111-111111111111', 'storage_path' => 'sections/regional-coordinations/advisor.png',
+            'original_name' => 'advisor.png', 'mime_type' => 'image/png', 'size_bytes' => 100,
+            'width' => 500, 'height' => 700, 'checksum_sha256' => str_repeat('a', 64), 'created_at' => $now, 'updated_at' => $now,
+        ]);
+        $mediaId = (int) $this->db->insertID();
+        $this->db->table('content_revision_media')->insert(['revision_id' => $published['id'], 'item_key' => 'advisor-asesor-prueba', 'media_file_id' => $mediaId, 'created_at' => $now]);
+
+        $input = $service->adminSection('regional-coordinations')['published']['content'];
+        $input['regions_json'] = json_encode([['region' => 'Región de prueba', 'contacts' => [['key' => 'asesor-prueba', 'name' => 'Contacto de prueba', 'emails' => []]]]], JSON_UNESCAPED_UNICODE);
+        $service->saveDraft('regional-coordinations', $input);
+        $draft = $service->adminSection('regional-coordinations')['draft']['content'];
+        $this->assertSame('11111111-1111-4111-8111-111111111111', $draft['regions'][0]['contacts'][0]['media_uuid']);
+        $this->assertArrayNotHasKey('photo_url', $service->publicHome()['regional-coordinations']['content']);
+
+        $service->publish('regional-coordinations');
+        $this->assertArrayHasKey('photo_url', $service->publicHome()['regional-coordinations']['content']['regions'][0]['contacts'][0]);
+
+        $input = $service->adminSection('regional-coordinations')['published']['content'];
+        $input['regions'][0]['contacts'][0]['remove_photo'] = true;
+        $input['regions_json'] = json_encode($input['regions'], JSON_UNESCAPED_UNICODE);
+        $service->saveDraft('regional-coordinations', $input);
+        $this->assertArrayNotHasKey('photo_url', $service->adminSection('regional-coordinations')['draft']['content']['regions'][0]['contacts'][0]);
+        $this->assertArrayHasKey('photo_url', $service->publicHome()['regional-coordinations']['content']['regions'][0]['contacts'][0]);
     }
 
     public function testCurrentEditionSupportsDynamicDocumentsAndPublication(): void
@@ -326,6 +412,18 @@ final class OlcomepSchemaTest extends CIUnitTestCase
 
         $service->publish('current-edition');
         $this->assertSame('Edición de prueba', $service->publicHome()['current-edition']['content']['title']);
+    }
+
+    public function testContactSupportsValidatedCollectionsAndPublication(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db); $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db); $content = $service->adminSection('contact')['published']['content'];
+        $input = $content; unset($input['phones'], $input['emails'], $input['resources']);
+        $input['phones_json'] = json_encode(['+506 2222-3333']); $input['emails_json'] = json_encode(['CONTACTO@EXAMPLE.ORG']); $input['resources_json'] = json_encode([]);
+        $service->saveDraft('contact', $input); $draft = $service->adminSection('contact')['draft']['content'];
+        $this->assertSame('contacto@example.org', $draft['emails'][0]); $this->assertSame([], $draft['resources']);
+        $this->assertSame('primero.segundo.ciclos@mep.go.cr', $service->publicHome()['contact']['content']['emails'][0]);
+        $service->publish('contact'); $this->assertSame('+506 2222-3333', $service->publicHome()['contact']['content']['phones'][0]);
     }
 
     public function testMasterCanCreateAnotherMaster(): void

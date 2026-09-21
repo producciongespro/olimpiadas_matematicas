@@ -55,6 +55,25 @@ class MediaStorageService
         }
     }
 
+    public function importLocalImage(string $sourcePath, string $directory): array
+    {
+        $resolved = realpath($sourcePath);
+        if ($resolved === false || ! is_file($resolved)) throw new RuntimeException('La imagen de importación no existe.');
+        $info = @getimagesize($resolved);
+        $mime = is_array($info) ? ($info['mime'] ?? '') : '';
+        if (! isset(self::MIMES[$mime])) throw new RuntimeException('La imagen de importación no tiene un formato permitido.');
+        [$width, $height] = $info;
+        if (min($width, $height) < 300 || max($width, $height) > (int) env('media.maxDimension', 6000)) throw new RuntimeException('La imagen de importación no tiene dimensiones permitidas.');
+        if (filesize($resolved) < 1 || filesize($resolved) > (int) env('media.maxBytes', 8 * 1024 * 1024)) throw new RuntimeException('La imagen de importación supera el tamaño permitido.');
+        $uuid = $this->uuid();
+        $relative = trim($directory, '/') . '/' . $uuid . '.' . self::MIMES[$mime];
+        $targetDirectory = WRITEPATH . 'uploads/' . dirname($relative);
+        if (! is_dir($targetDirectory) && ! mkdir($targetDirectory, 0775, true) && ! is_dir($targetDirectory)) throw new RuntimeException('No fue posible preparar el almacenamiento.');
+        $target = WRITEPATH . 'uploads/' . $relative;
+        if (! copy($resolved, $target)) throw new RuntimeException('No fue posible importar la imagen.');
+        return ['uuid' => $uuid, 'storage_path' => str_replace('\\', '/', $relative), 'original_name' => mb_substr(basename($resolved), 0, 255), 'mime_type' => $mime, 'size_bytes' => filesize($target), 'width' => $width, 'height' => $height, 'checksum_sha256' => hash_file('sha256', $target), 'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s')];
+    }
+
     private function uuid(): string
     {
         $hex = bin2hex(random_bytes(16));

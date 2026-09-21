@@ -31,6 +31,17 @@ class ContentService
         return $result;
     }
 
+    public function publicHomeSnapshot(): array
+    {
+        $latest = $this->repository->latestPublishedRevision();
+        $publishedAt = $latest['published_at'] ?? $latest['created_at'] ?? null;
+
+        return [
+            'sections' => $this->publicHome(),
+            'version' => $latest === null ? 'empty' : sprintf('%s-%d', str_replace([' ', ':'], ['T', ''], (string) $publishedAt), (int) $latest['id']),
+        ];
+    }
+
     public function adminSections(): array
     {
         return array_map(fn (array $section): array => $this->adminSection($section['section_key']), $this->repository->sections());
@@ -46,7 +57,7 @@ class ContentService
         ];
     }
 
-    public function saveDraft(string $key, array $input, ?UploadedFile $file = null, ?string $actor = null, array $files = []): array
+    public function saveDraft(string $key, array $input, ?UploadedFile $file = null, ?string $actor = null, array $files = [], array $localFiles = []): array
     {
         $section = $this->requireSection($key);
         $content = $this->validate($key, $input);
@@ -71,6 +82,7 @@ class ContentService
         ]);
         $revisionId = (int) $this->db->insertID();
         if ($key === 'partners') $this->savePartnerMedia($revisionId, $content, $files, $sourceRevision);
+        if ($key === 'regional-coordinations') $this->saveRegionalContactMedia($revisionId, $content, $files, $sourceRevision, $localFiles);
         $this->db->table('content_sections')->where('id', $section['id'])->update(['updated_at' => $now]);
         $this->db->transComplete();
         if (! $this->db->transStatus()) {
@@ -106,6 +118,7 @@ class ContentService
             'general-information' => ['eyebrow' => 80, 'title' => 120, 'description' => 500, 'faq_eyebrow' => 80, 'faq_title' => 160],
             'regional-coordinations' => ['eyebrow' => 80, 'title' => 120, 'description' => 600, 'summary_title' => 180, 'summary_description' => 600, 'directory_title' => 180, 'search_label' => 160],
             'current-edition' => ['eyebrow' => 80, 'title' => 160, 'description' => 600, 'registration_title' => 180, 'registration_description' => 600, 'registration_label' => 120, 'bulk_eyebrow' => 80, 'bulk_title' => 180, 'bulk_description' => 600, 'bulk_label' => 120, 'promotion_label' => 120, 'image_alt' => 255],
+            'contact' => ['eyebrow' => 80, 'title' => 120, 'description' => 600, 'contact_name' => 180, 'contact_role' => 240],
             default => throw new InvalidArgumentException('La sección todavía no admite edición.'),
         };
         $result = [];
@@ -145,7 +158,30 @@ class ContentService
             foreach (['registration_href', 'bulk_href', 'promotion_href'] as $field) $result[$field] = $this->validateHref((string) ($input[$field] ?? ''), $field);
             $result['resources'] = $this->validateEditionResources((string) ($input['resources_json'] ?? ''));
         }
+        if ($key === 'contact') {
+            $result['phones'] = $this->validateContactPhones((string) ($input['phones_json'] ?? ''));
+            $result['emails'] = $this->validateContactEmails((string) ($input['emails_json'] ?? ''));
+            $result['resources'] = $this->validateContactResources((string) ($input['resources_json'] ?? ''));
+        }
         return $result;
+    }
+
+    private function validateContactPhones(string $json): array
+    {
+        $items = json_decode($json, true); if (! is_array($items)) throw new InvalidArgumentException('Los teléfonos no son válidos.');
+        return array_values(array_map(function (mixed $phone): string { $value = trim((string) $phone); if ($value === '' || ! preg_match('/^[+0-9() .-]{7,40}$/', $value) || strlen(preg_replace('/\D/', '', $value)) < 7) throw new InvalidArgumentException('Un teléfono no es válido.'); return $value; }, $items));
+    }
+
+    private function validateContactEmails(string $json): array
+    {
+        $items = json_decode($json, true); if (! is_array($items)) throw new InvalidArgumentException('Los correos no son válidos.');
+        return array_values(array_map(function (mixed $email): string { $value = mb_strtolower(trim((string) $email)); if (! filter_var($value, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Un correo institucional no es válido.'); return mb_substr($value, 0, 180); }, $items));
+    }
+
+    private function validateContactResources(string $json): array
+    {
+        $items = json_decode($json, true); if (! is_array($items)) throw new InvalidArgumentException('Los recursos de contacto no son válidos.');
+        return array_map(function (mixed $item): array { if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('Un recurso de contacto no es válido.'); $result=['key'=>$item['key']]; foreach (['title'=>180,'description'=>700] as $field=>$limit) { $value=trim((string)($item[$field]??'')); if ($value==='') throw new InvalidArgumentException("El campo {$field} del recurso es obligatorio."); $result[$field]=mb_substr($value,0,$limit); } $result['href']=$this->validateContentHref((string)($item['href']??''),'href'); return $result; }, $items);
     }
 
     private function validateEditionResources(string $json): array
@@ -169,22 +205,24 @@ class ContentService
         if (strlen($json) > 2_000_000) throw new InvalidArgumentException('El directorio regional supera el tamaño permitido.');
         $regions = json_decode($json, true);
         if (! is_array($regions)) throw new InvalidArgumentException('El directorio regional no es válido.');
-        return array_map(function (mixed $region): array {
+        return array_map(function (mixed $region, int $regionIndex): array {
             if (! is_array($region)) throw new InvalidArgumentException('Una región no es válida.');
             $name = trim((string) ($region['region'] ?? ''));
             if ($name === '') throw new InvalidArgumentException('El nombre de la región es obligatorio.');
             $contacts = $region['contacts'] ?? null;
             if (! is_array($contacts)) throw new InvalidArgumentException('Los contactos de la región no son válidos.');
-            return ['region' => mb_substr($name, 0, 180), 'contacts' => array_map(function (mixed $contact): array {
+            return ['region' => mb_substr($name, 0, 180), 'contacts' => array_map(function (mixed $contact, int $contactIndex) use ($regionIndex): array {
                 if (! is_array($contact)) throw new InvalidArgumentException('Un contacto regional no es válido.');
+                $key = (string) ($contact['key'] ?? "regional-" . ($regionIndex + 1) . "-contact-" . ($contactIndex + 1));
+                if (! preg_match('/^[a-z0-9-]{3,70}$/', $key)) throw new InvalidArgumentException('La clave del contacto regional no es válida.');
                 $contactName = trim((string) ($contact['name'] ?? ''));
                 if ($contactName === '') throw new InvalidArgumentException('El nombre del contacto es obligatorio.');
                 $emails = $contact['emails'] ?? null;
                 if (! is_array($emails)) throw new InvalidArgumentException('Los correos del contacto no son válidos.');
                 $validEmails = array_map(function (mixed $email): string { $value = mb_strtolower(trim((string) $email)); if (! filter_var($value, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Un correo institucional no es válido.'); return mb_substr($value, 0, 180); }, array_filter($emails, static fn (mixed $email): bool => trim((string) $email) !== ''));
-                return ['name' => mb_substr($contactName, 0, 180), 'emails' => array_values($validEmails)];
-            }, $contacts)];
-        }, $regions);
+                return ['key' => $key, 'name' => mb_substr($contactName, 0, 180), 'emails' => array_values($validEmails), 'remove_photo' => ! empty($contact['remove_photo'])];
+            }, $contacts, array_keys($contacts))];
+        }, $regions, array_keys($regions));
     }
 
     private function validateInformationRoutes(string $json): array
@@ -290,6 +328,35 @@ class ContentService
         $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
     }
 
+    private function saveRegionalContactMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision, array $localFiles = []): void
+    {
+        $sourceMedia = [];
+        if ($sourceRevision !== null) {
+            foreach ($this->repository->revisionMedia((int) $sourceRevision['id']) as $media) $sourceMedia[$media['item_key']] = $media;
+        }
+        foreach ($content['regions'] as &$region) {
+            foreach ($region['contacts'] as &$contact) {
+                $itemKey = 'advisor-' . $contact['key'];
+                $file = $files['photo_' . $contact['key']] ?? null;
+                $mediaId = ! $contact['remove_photo'] ? ($sourceMedia[$itemKey]['media_file_id'] ?? null) : null;
+                if ($file instanceof UploadedFile && $file->isValid()) {
+                    $media = $this->storage->store($file, 'sections/regional-coordinations', 300);
+                    $this->db->table('media_files')->insert($media);
+                    $mediaId = (int) $this->db->insertID();
+                } elseif (isset($localFiles[$contact['key']])) {
+                    $media = $this->storage->importLocalImage((string) $localFiles[$contact['key']], 'sections/regional-coordinations');
+                    $this->db->table('media_files')->insert($media);
+                    $mediaId = (int) $this->db->insertID();
+                }
+                unset($contact['remove_photo'], $contact['media_uuid'], $contact['photo_url'], $contact['photo_width'], $contact['photo_height']);
+                if ($mediaId !== null) $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => $itemKey, 'media_file_id' => $mediaId, 'created_at' => date('Y-m-d H:i:s')]);
+            }
+            unset($contact);
+        }
+        unset($region);
+        $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+    }
+
     private function validateCalendarActivity(mixed $activity): array
     {
         if (! is_array($activity)) throw new InvalidArgumentException('Una actividad del calendario no es válida.');
@@ -358,6 +425,21 @@ class ContentService
                 }
             }
             unset($item);
+        }
+        if (isset($content['regions']) && is_array($content['regions'])) {
+            foreach ($content['regions'] as &$region) {
+                foreach ($region['contacts'] as &$contact) {
+                    $media = $revisionMedia['advisor-' . ($contact['key'] ?? '')] ?? null;
+                    if ($media !== null) {
+                        $contact['media_uuid'] = $media['uuid'];
+                        $contact['photo_url'] = site_url('api/v1/media/' . $media['uuid']);
+                        $contact['photo_width'] = (int) $media['width'];
+                        $contact['photo_height'] = (int) $media['height'];
+                    }
+                }
+                unset($contact);
+            }
+            unset($region);
         }
         return ['revision_id' => (int) $revision['id'], 'status' => $revision['status'], 'content' => $content, 'created_at' => $revision['created_at'], 'published_at' => $revision['published_at']];
     }

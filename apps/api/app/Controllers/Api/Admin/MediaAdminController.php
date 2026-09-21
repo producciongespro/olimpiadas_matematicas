@@ -23,6 +23,17 @@ class MediaAdminController extends BaseController
     }
 
     public function carousel(): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->adminCarousel())); }
+    public function file(string $uuid): ResponseInterface
+    {
+        return $this->run(function () use ($uuid) {
+            $media = $this->service()->adminMedia($uuid);
+            if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no existe.']);
+            $root = realpath(WRITEPATH . 'uploads');
+            $resolved = realpath(WRITEPATH . 'uploads/' . $media['storage_path']);
+            if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no existe.']);
+            return $this->response->setHeader('Content-Type', $media['mime_type'])->setHeader('Content-Length', (string) filesize($resolved))->setHeader('Cache-Control', 'private, no-store')->setHeader('X-Content-Type-Options', 'nosniff')->setBody((string) file_get_contents($resolved));
+        });
+    }
     public function createSlide(): ResponseInterface { return $this->run(function () { $file = $this->image(); if ($file === null) throw new InvalidArgumentException('La imagen es obligatoria.'); return $this->ok($this->service()->createSlide($this->input(), $file), 201); }); }
     public function updateSlide(int $id): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->updateSlide($id, $this->input(), $this->image()))); }
     public function archiveSlide(int $id): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->archiveSlide($id))); }

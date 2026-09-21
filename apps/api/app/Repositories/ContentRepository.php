@@ -37,4 +37,13 @@ class ContentRepository
             ->join('media_files media', 'media.id = links.media_file_id')
             ->where('links.revision_id', $revisionId)->get()->getResultArray();
     }
+
+    public function latestPublishedRevision(): ?array
+    {
+        return $this->db->table('content_revisions')
+            ->select('id, published_at, created_at')
+            ->where('status', 'published')
+            ->orderBy('id', 'DESC')
+            ->get()->getRowArray();
+    }
 }

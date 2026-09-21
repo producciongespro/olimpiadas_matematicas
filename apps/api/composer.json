@@ -39,6 +39,12 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "docs:sync": "php spark docs:sync",
+        "docs:check": "php spark docs:check",
+        "verify": [
+            "@test",
+            "@docs:check"
+        ]
     }
 }

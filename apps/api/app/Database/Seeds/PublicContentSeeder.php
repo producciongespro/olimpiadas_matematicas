@@ -136,6 +136,17 @@ class PublicContentSeeder extends Seeder
         'image_alt' => 'Anuncio del patrocinio del Centro Cultural Costarricense Norteamericano a OLCOMEP',
     ];
 
+    private const CONTACT = [
+        'eyebrow' => 'Estamos para orientarle', 'title' => 'Contacto',
+        'description' => 'Para consultas sobre OLCOMEP, comuníquese con la Asesoría de Matemáticas de Primero y Segundo Ciclos.',
+        'contact_name' => 'Yeri Charpentier Díaz', 'contact_role' => 'Asesora de matemáticas de Primero y Segundo Ciclos',
+        'phones' => ['2221-7685'], 'emails' => ['primero.segundo.ciclos@mep.go.cr'],
+        'resources' => [
+            ['key' => 'youtube', 'title' => 'Canal de OLCOMEP en YouTube', 'description' => 'Videos y materiales audiovisuales relacionados con las Olimpiadas Matemáticas.', 'href' => 'https://www.youtube.com/channel/UCb1Mihv34LjcEzjicn76Omw'],
+            ['key' => 'calificame', 'title' => 'Califique este recurso', 'description' => 'Comparta su valoración sobre este recurso educativo del MEP.', 'href' => 'https://recursos.mep.go.cr/0_calificame/app/index.html?id_app=15'],
+        ],
+    ];
+
     public function run(): void
     {
         $now = date('Y-m-d H:i:s');
@@ -147,9 +158,12 @@ class PublicContentSeeder extends Seeder
         $this->ensurePartnerMedia($partnersRevisionId, $now);
         $this->ensureSection('about', 'Acerca de nosotros', self::ABOUT, $now);
         $this->ensureSection('general-information', 'Información general', self::GENERAL_INFORMATION, $now);
-        $this->ensureSection('regional-coordinations', 'Coordinaciones regionales', self::REGIONAL_COORDINATIONS, $now);
+        $regionalContent = self::REGIONAL_COORDINATIONS;
+        $regionalContent['regions'] = json_decode((string) file_get_contents(APPPATH . 'Database/Seeds/Data/regional-coordinations.json'), true, 512, JSON_THROW_ON_ERROR);
+        $this->ensureSection('regional-coordinations', 'Coordinaciones regionales', $regionalContent, $now);
         $editionMediaId = $this->ensureSectionMedia('current-edition', 'current-edition/centro-cultural.jpg', 'centro-cultural.jpg', 'Imagen promocional de la edición vigente', $now);
         $this->ensureSection('current-edition', 'Edición vigente', self::CURRENT_EDITION, $now, $editionMediaId);
+        $this->ensureSection('contact', 'Contacto', self::CONTACT, $now);
     }
 
     private function ensureSection(string $key, string $label, array $content, string $now, ?int $mediaId = null): int

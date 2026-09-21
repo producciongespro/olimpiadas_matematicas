@@ -11,7 +11,7 @@ class LegacyCarouselSeeder extends Seeder
 
     public function run(): void
     {
-        $sourceRoot = dirname(rtrim(ROOTPATH, '/\\')) . '/public-web/public/assets/legacy/gallery';
+        $sourceRoot = dirname(rtrim(ROOTPATH, '/\\'), 2) . '/app/img';
         $targetRoot = WRITEPATH . 'uploads/carousel';
         if (! is_dir($targetRoot) && ! mkdir($targetRoot, 0775, true) && ! is_dir($targetRoot)) {
             throw new RuntimeException('No fue posible preparar el carrusel heredado.');
