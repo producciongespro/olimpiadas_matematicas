@@ -10,7 +10,7 @@ Permitir que el equipo administrador actualice la información de la vista públ
 - El diseño, la identidad y la estructura permanecen controlados por código.
 - El contenido se guarda primero como borrador y solo llega al público mediante una acción explícita de publicación.
 - Cada tipo de sección tiene un contrato versionado y validación en la API.
-- Las imágenes se almacenan en `apps/api/writable/uploads`; la base conserva metadatos en `media_files` y referencias mediante `media_file_id`.
+- Las imágenes y documentos editoriales se almacenan en `apps/api/writable/uploads`; la base conserva metadatos en `media_files` y referencias mediante `media_file_id`.
 - Una revisión publicada nunca depende de una ruta absoluta ni de un archivo público escrito por el navegador.
 
 ## 2.1 Regla estable de publicación
@@ -42,7 +42,7 @@ El contenido actual permanece como respaldo cuando la API todavía no tiene una 
 
 La segunda implementación cubre “Conoce OLCOMEP” mediante un contrato estructurado con antetítulo, título y dos párrafos. El logotipo, la composición visual y el ancla `#olimpiadas` permanecen controlados por código. La sección reutiliza un único componente React entre la vista pública y la previsualización administrativa y conserva valores locales de respaldo.
 
-La tercera implementación cubre el calendario: textos introductorios, nota final, enlace al manual y una lista dinámica de actividades. Cada actividad conserva fecha visible, fecha semántica ISO, fecha final opcional, título, descripción y marca de destaque. La administración permite agregar, eliminar y reordenar elementos sin un límite funcional de cantidad; la API valida cada elemento, protege el tamaño total del payload y no admite HTML libre. Un calendario vacío es válido y muestra un estado público explícito.
+La tercera implementación cubre el calendario: textos introductorios, nota final, texto de la acción del manual, un PDF anual versionado y una lista dinámica de actividades. El destino del manual no se edita: la API lo genera desde el UUID del archivo publicado y mantiene el documento institucional incluido en el código como respaldo mientras no exista una carga administrada. Cada actividad conserva fecha visible, fecha semántica ISO, fecha final opcional, título, descripción y marca de destaque. La administración permite agregar, eliminar y reordenar elementos sin un límite funcional de cantidad; la API valida cada elemento, protege el tamaño total del payload y no admite HTML libre. Un calendario vacío es válido y muestra un estado público explícito.
 
 La cuarta implementación cubre “Colaboradores y patrocinadores”. Ambas listas permiten agregar, eliminar, reordenar y editar instituciones, con nombre obligatorio, enlace opcional, descripción para patrocinadores y logotipo opcional. Los logotipos se vinculan a cada revisión mediante `content_revision_media`; no se guardan rutas privadas en el JSON. Las revisiones publicadas anteriores conservan sus relaciones y la entrega pública de medios solo autoriza archivos asociados a una publicación vigente.
 
@@ -70,17 +70,17 @@ Las revisiones anteriores conservan su referencia de imagen para permitir trazab
 
 ### `content_revision_media`
 
-Relaciona una revisión con varios archivos por una clave estable de elemento. Permite que colecciones editoriales como colaboradores, patrocinadores y contactos regionales conserven sus imágenes independientes por revisión sin sobrescribir medios históricos.
+Relaciona una revisión con varios archivos por una clave estable de elemento. Permite que colecciones editoriales como colaboradores, patrocinadores y contactos regionales conserven sus imágenes independientes, y que el calendario conserve su manual PDF anual, sin sobrescribir medios históricos.
 
 ## 5. Archivos
 
-Las imágenes editables de una sección se almacenan así:
+Los archivos editables de una sección se almacenan así:
 
 ```text
 apps/api/writable/uploads/sections/{section-key}/{uuid}.{extension}
 ```
 
-Se aplican las mismas validaciones de MIME real, dimensiones, tamaño, nombre interno aleatorio y entrega controlada ya utilizadas por el carrusel y la galería.
+Las imágenes conservan sus validaciones de MIME real, dimensiones y tamaño. El manual del calendario exige MIME y firma PDF reales y un máximo de 16 MB. Todos los archivos reciben un nombre interno UUID y entrega controlada según el estado de su revisión.
 
 ## 6. API inicial
 
@@ -92,7 +92,7 @@ Se aplican las mismas validaciones de MIME real, dimensiones, tamaño, nombre in
 
 - `GET /api/v1/admin/site/sections`: lista secciones, borradores y publicaciones.
 - `GET /api/v1/admin/site/sections/{key}`: obtiene el estado editorial de una sección.
-- `POST /api/v1/admin/site/sections/{key}/draft`: crea o reemplaza el borrador; acepta `multipart/form-data` cuando cambia la imagen.
+- `POST /api/v1/admin/site/sections/{key}/draft`: crea o reemplaza el borrador; acepta `multipart/form-data` cuando cambia una imagen o el manual PDF del calendario.
 - `POST /api/v1/admin/site/sections/{key}/publish`: publica el borrador completo.
 
 Las rutas administrativas conservan los filtros JWT y rol. Las respuestas exitosas usan `data`; los errores no exponen trazas ni rutas internas.

@@ -18,6 +18,10 @@
 - [x] Implementar la sincronización automática de páginas públicas ya abiertas.
 - [x] Definir y verificar actualización de URLs y caché inmutable de medios publicados.
 - [x] Incorporar fotografías versionadas y reemplazables por contacto regional, con silueta de respaldo y previsualización autenticada de borradores.
+- [x] Presentar el directorio regional como carrusel manual responsive de tarjetas por asesor, conservando búsqueda, estados accesibles y movimiento reducido.
+- [x] Sustituir el destino editable del manual del calendario por la carga versionada de un PDF anual, con previsualización privada y acciones públicas de apertura y descarga tras publicar.
+- [x] Actualizar el portal técnico para documentar el manual PDF y servir Swagger UI localmente sin depender de una CDN.
+- [x] Proteger los destinos oficiales de los dos botones de la portada y retirar su edición del formulario administrativo.
 - [x] Extender la revalidación automática al carrusel y la galería de eventos.
 - [x] Definir y empaquetar la política de caché de producción para HTML y recursos compilados de ambas SPA.
 - [x] Especificar Recursos y cuadernillos, Header/navegación y Footer/créditos antes de conectarlos.

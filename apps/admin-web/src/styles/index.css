@@ -69,3 +69,8 @@ button, input, select, textarea { font: inherit; }
 .site-preview .button-secondary { border: 1px solid rgb(255 255 255 / 55%); color: white; }
 @media (min-width: 640px) { .media-row { grid-template-columns: 7rem minmax(0,1fr) auto; } .media-row img { width: 7rem; } .row-actions { grid-column: auto; justify-content: flex-end; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+.regional-carousel { scrollbar-width: none; }
+.regional-carousel::-webkit-scrollbar { display: none; }
+.regional-carousel-card { flex-basis: 88%; }
+@media (min-width: 640px) { .regional-carousel-card { flex-basis: calc(50% - 0.625rem); } }
+@media (min-width: 1280px) { .regional-carousel-card { flex-basis: calc(33.333% - 0.834rem); } }

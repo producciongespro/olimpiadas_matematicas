@@ -27,10 +27,10 @@ class MediaAdminController extends BaseController
     {
         return $this->run(function () use ($uuid) {
             $media = $this->service()->adminMedia($uuid);
-            if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no existe.']);
+            if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no existe.']);
             $root = realpath(WRITEPATH . 'uploads');
             $resolved = realpath(WRITEPATH . 'uploads/' . $media['storage_path']);
-            if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no existe.']);
+            if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no existe.']);
             return $this->response->setHeader('Content-Type', $media['mime_type'])->setHeader('Content-Length', (string) filesize($resolved))->setHeader('Cache-Control', 'private, no-store')->setHeader('X-Content-Type-Options', 'nosniff')->setBody((string) file_get_contents($resolved));
         });
     }

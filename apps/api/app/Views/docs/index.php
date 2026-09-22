@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="<?= esc($docsBase, 'attr') ?>">
     <title>Documentación técnica | API OLCOMEP</title>
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+    <link rel="stylesheet" href="assets/swagger-ui.css">
     <link rel="stylesheet" href="assets/portal.css">
 </head>
 <body>
@@ -38,7 +38,7 @@
     </main>
     <footer>OLCOMEP · Documentación técnica para desarrollo</footer>
     <noscript>Active JavaScript para consultar la referencia interactiva.</noscript>
-    <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js" crossorigin="anonymous"></script>
+    <script src="assets/swagger-ui-bundle.js"></script>
     <script>window.addEventListener('load', function () { SwaggerUIBundle({url: 'api/openapi-v1.yaml', dom_id: '#swagger-ui', deepLinking: true, displayRequestDuration: true, persistAuthorization: false, tryItOutEnabled: false}); });</script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 # Contrato de la API
 
+El portal interactivo sirve localmente una versión fijada de Swagger UI. No depende de una CDN ni de conectividad a Internet para representar el contrato en desarrollo.
+
 `app/Docs/api/openapi-v1.yaml` es la única fuente canónica. Los antiguos contratos fragmentados de `docs/api/` quedan sustituidos por este archivo.
 
 Después de modificar rutas, entradas o respuestas:

@@ -25,15 +25,19 @@
 - Una fotografía nueva crea un UUID nuevo. Retirarla elimina la relación del borrador, sin alterar la publicación vigente hasta publicar.
 - Los datos iniciales continúan como respaldo local; no se insertan automáticamente en tablas del dominio de inscripción.
 
-## Campos protegidos
+## Presentación pública protegida
 
-- Ancla `#coordinaciones-regionales`, buscador, contador, iconos, estructura semántica y comportamiento responsive.
+- Ancla `#coordinaciones-regionales`, buscador persistente, contador, iconos, estructura semántica y comportamiento responsive.
 - Proporción y espacio reservado del retrato, silueta de respaldo y alternativa accesible no editable.
+- El directorio presenta una tarjeta por contacto dentro de un carrusel manual, sin avance automático: una tarjeta con indicio de continuidad en móvil, dos en tableta y tres en escritorio.
+- El carrusel admite desplazamiento táctil, rueda o trackpad, flechas anterior/siguiente y navegación por teclado nativa; los controles tienen nombre accesible, foco visible y estado deshabilitado en los límites.
+- El movimiento es breve y funcional, y se elimina cuando el sistema solicita `prefers-reduced-motion`.
 
 ## Flujo y aceptación
 
 - Borrador, previsualización responsive y publicación confirmada.
 - La búsqueda pública filtra la revisión publicada por región, persona o correo.
+- Al cambiar la búsqueda, el carrusel vuelve al primer resultado y actualiza el total de asesorías y regiones coincidentes.
 - Cada asesor muestra su fotografía publicada o una silueta neutra cuando no dispone de ella.
 - La previsualización administrativa refleja inmediatamente una selección o retiro, pero la vista pública solo cambia después de publicar.
 - Los medios exclusivos del borrador se consultan mediante una ruta administrativa autenticada y `private, no-store`; no quedan disponibles desde la ruta pública de medios.

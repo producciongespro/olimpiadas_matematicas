@@ -20,7 +20,7 @@
 - “Coordinaciones regionales” muestra las 27 regiones, permite buscar por región, persona o correo, genera enlaces `mailto:` únicamente para direcciones inequívocas y señala cualquier contacto pendiente de confirmación.
 - “Información general” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes mediante destinos válidos y contenido propio de OLCOMEP.
 - La navegación y “Información general” conducen a una sección “Calendario” única y reconocible.
-- “Calendario” presenta en orden cronológico las 12 actividades confirmadas de abril a diciembre de 2026, diferencia fechas exactas de meses sin día confirmado y enlaza al manual oficial.
+- “Calendario” presenta en orden cronológico las 12 actividades confirmadas de abril a diciembre de 2026, diferencia fechas exactas de meses sin día confirmado y permite abrir o descargar el manual oficial publicado.
 - El cronograma conserva lectura lineal, fechas semánticas, contraste suficiente y ausencia de desbordamiento horizontal en móvil y escritorio.
 - “Colaboradores y patrocinadores” diferencia las cinco universidades públicas del patrocinador de la edición 2026.
 - Los logotipos de UCR, UNED, UNA, TEC y UTN conservan proporción, tienen nombres accesibles y se adaptan sin recorte ni desbordamiento desde 320 px.

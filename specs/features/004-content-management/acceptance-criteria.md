@@ -16,7 +16,11 @@
 - “Conoce OLCOMEP” permite editar antetítulo, título y dos párrafos sin exponer HTML, estilos, logotipo ni anclas a edición libre.
 - La administración permite alternar entre portada y “Conoce OLCOMEP”; cada sección conserva de forma independiente su borrador, publicación y estado editorial.
 - La vista pública y la vista previa administrativa reutilizan el mismo componente para “Conoce OLCOMEP” y mantienen contenido local de respaldo cuando la API no responde.
-- El calendario permite editar sus textos, enlace al manual y actividades ordenadas mediante campos estructurados, sin edición libre de HTML.
+- El calendario permite editar sus textos, el texto de la acción del manual y las actividades ordenadas mediante campos estructurados, sin editar el destino ni usar HTML libre.
+- Administración permite cargar o reemplazar el manual anual únicamente con un PDF real de hasta 16 MB; guardar sin seleccionar archivo conserva el manual relacionado vigente.
+- Un manual exclusivo del borrador se previsualiza con autenticación y `private, no-store`, pero no responde desde la ruta pública antes de publicar.
+- Al publicar, la vista pública ofrece acciones para abrir y descargar el PDF mediante su URL UUID; sin una carga administrada utiliza el manual institucional de respaldo.
+- El portal de documentación carga su referencia Swagger desde activos locales y describe la carga multipart, privacidad de borrador, publicación, apertura y descarga del manual PDF sin depender de una CDN.
 - Cada actividad exige fecha visible, fecha ISO, título y descripción y acepta fecha final y destaque opcionales.
 - La administración permite agregar, eliminar y mover actividades hacia arriba o abajo; el orden del borrador determina el orden publicado y no existe un límite funcional fijo de cantidad.
 - Es posible publicar un calendario vacío; la vista pública muestra un estado explícito en lugar de una lista rota.
@@ -34,10 +38,12 @@
 - La vista pública y la previsualización comparten el componente y muestran estados explícitos cuando una colección está vacía.
 - Coordinaciones regionales permite agregar, editar, eliminar y reordenar regiones y sus contactos, además de administrar varios correos por contacto.
 - Cada contacto regional permite cargar, reemplazar y retirar una fotografía; la relación permanece estable al editar o reordenar, y la ausencia de foto muestra una silueta sin alterar la retícula.
+- El directorio regional conserva el buscador visible y representa cada asesoría como una tarjeta en un carrusel manual responsive, sin reproducción automática, operable por toque, desplazamiento y teclado, con controles de foco visible y respeto por movimiento reducido.
 - Una fotografía exclusiva del borrador se previsualiza con autenticación y `private, no-store`, pero no responde desde la ruta pública de medios antes de publicar.
 - Los nombres de región y contacto son obligatorios; los correos no vacíos se validan y normalizan en minúsculas.
 - La búsqueda pública filtra por región, persona o correo y la vista pública muestra estados explícitos para directorios, regiones o contactos vacíos.
 - La vista pública y la previsualización comparten el componente regional; los datos públicos vigentes se conservan como respaldo local hasta la primera publicación editorial.
+- En la portada, únicamente los textos de los botones son editables: sus destinos oficiales permanecen protegidos en administración y la API los restablece aunque una solicitud intente modificarlos.
 - Edición vigente permite administrar el estado de inscripción, la descarga masiva y la promoción audiovisual mediante campos estructurados y enlaces validados.
 - Los documentos oficiales pueden agregarse, editarse, eliminarse y reordenarse; sus iconos pertenecen al catálogo cerrado y una colección vacía muestra un estado explícito.
 - La imagen promocional se valida, almacena en la API y permanece asociada a la revisión; si no se reemplaza, el borrador conserva el medio vigente.

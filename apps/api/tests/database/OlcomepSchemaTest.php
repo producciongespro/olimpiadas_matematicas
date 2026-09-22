@@ -14,6 +14,7 @@ use App\Services\AdminUserService;
 use App\Exceptions\ForbiddenException;
 use CodeIgniter\Database\Config as DatabaseConfig;
 use CodeIgniter\Database\Migration;
+use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\Test\CIUnitTestCase;
 
 require_once APPPATH . 'Database/Migrations/2026-09-04-120000_CreateEditionsAndResources.php';
@@ -148,8 +149,13 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $originalPublishedId = $initialState['published']['revision_id'];
         $content = $initialState['published']['content'];
         $content['title'] = 'Portada en revisión';
+        $content['primary_href'] = 'https://example.com/destino-no-autorizado';
+        $content['secondary_href'] = '#destino-no-autorizado';
 
         $service->saveDraft('hero', $content);
+        $draftContent = $service->adminSection('hero')['draft']['content'];
+        $this->assertSame('#edicion-vigente', $draftContent['primary_href']);
+        $this->assertSame('#olimpiadas', $draftContent['secondary_href']);
         $this->assertSame($original, $service->publicHome()['hero']['content']['title']);
         $this->assertSame($originalVersion, $service->publicHomeSnapshot()['version']);
         $this->assertSame($originalPublishedId, $service->adminSection('hero')['published']['revision_id']);
@@ -158,6 +164,8 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $publishedState = $service->adminSection('hero');
         $this->assertNotSame($originalVersion, $service->publicHomeSnapshot()['version']);
         $this->assertSame('Portada en revisión', $service->publicHome()['hero']['content']['title']);
+        $this->assertSame('#edicion-vigente', $service->publicHome()['hero']['content']['primary_href']);
+        $this->assertSame('#olimpiadas', $service->publicHome()['hero']['content']['secondary_href']);
         $this->assertNull($publishedState['draft']);
         $this->assertNotSame($originalPublishedId, $publishedState['published']['revision_id']);
 
@@ -254,6 +262,54 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $service->saveDraft('calendar', $content);
 
         $this->assertSame([], $service->adminSection('calendar')['draft']['content']['schedule']);
+    }
+
+    public function testCalendarManualRemainsPrivateUntilPublication(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('calendar')['published']['content'];
+        unset($content['schedule']);
+        $content['schedule_json'] = json_encode($service->publicHome()['calendar']['content']['schedule'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'olcomep-manual-');
+        $storedPath = null;
+
+        try {
+            file_put_contents($temporaryPath, "%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n");
+            $manual = $this->createMock(UploadedFile::class);
+            $manual->method('isValid')->willReturn(true);
+            $manual->method('hasMoved')->willReturn(false);
+            $manual->method('getSize')->willReturn(filesize($temporaryPath));
+            $manual->method('getTempName')->willReturn($temporaryPath);
+            $manual->method('getClientName')->willReturn('manual-olcomep-2027.pdf');
+            $manual->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($temporaryPath): bool {
+                return copy($temporaryPath, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+            });
+            $service->saveDraft('calendar', $content, null, null, ['manual' => $manual]);
+
+            $draft = $service->adminSection('calendar')['draft']['content'];
+            $publishedBefore = $service->publicHome()['calendar']['content'];
+            $this->assertArrayHasKey('manual_uuid', $draft);
+            $this->assertSame('manual-olcomep-2027.pdf', $draft['manual_name']);
+            $this->assertStringContainsString('/api/v1/media/' . $draft['manual_uuid'], $draft['manual_href']);
+            $this->assertArrayNotHasKey('manual_uuid', $publishedBefore);
+            $this->assertNull((new GalleryService($this->db))->media($draft['manual_uuid']));
+
+            $row = $this->db->table('media_files')->where('uuid', $draft['manual_uuid'])->get()->getRowArray();
+            $this->assertSame('application/pdf', $row['mime_type']);
+            $storedPath = WRITEPATH . 'uploads/' . $row['storage_path'];
+            $this->assertFileExists($storedPath);
+
+            $service->publish('calendar');
+            $published = $service->publicHome()['calendar']['content'];
+            $this->assertSame($draft['manual_uuid'], $published['manual_uuid']);
+            $this->assertSame('manual-olcomep-2027.pdf', $published['manual_name']);
+            $this->assertNotNull((new GalleryService($this->db))->media($draft['manual_uuid']));
+        } finally {
+            if ($storedPath !== null && is_file($storedPath)) unlink($storedPath);
+            if (is_file($temporaryPath)) unlink($temporaryPath);
+        }
     }
 
     public function testPartnersSupportDynamicDraftWhilePreservingLogos(): void

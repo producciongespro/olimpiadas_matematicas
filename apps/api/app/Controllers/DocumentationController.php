@@ -7,7 +7,11 @@ use CodeIgniter\HTTP\ResponseInterface;
 final class DocumentationController extends BaseController
 {
     private const API_FILES = ['openapi-v1.yaml'];
-    private const ASSET_FILES = ['portal.css'];
+    private const ASSET_FILES = [
+        'portal.css' => 'text/css; charset=UTF-8',
+        'swagger-ui.css' => 'text/css; charset=UTF-8',
+        'swagger-ui-bundle.js' => 'application/javascript; charset=UTF-8',
+    ];
     private const MARKDOWN_FILES = [
         'api-contract.md',
         'errors-and-versioning.md',
@@ -33,7 +37,10 @@ final class DocumentationController extends BaseController
 
     public function asset(string $file): ResponseInterface
     {
-        return $this->serveAllowedFile($file, self::ASSET_FILES, APPPATH . 'Docs/assets/', 'text/css; charset=UTF-8');
+        $contentType = self::ASSET_FILES[$file] ?? null;
+        if ($contentType === null) return $this->notFound();
+
+        return $this->serveAllowedFile($file, array_keys(self::ASSET_FILES), APPPATH . 'Docs/assets/', $contentType);
     }
 
     public function markdown(string $file): ResponseInterface

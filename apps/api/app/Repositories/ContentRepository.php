@@ -33,7 +33,7 @@ class ContentRepository
     public function revisionMedia(int $revisionId): array
     {
         return $this->db->table('content_revision_media links')
-            ->select('links.item_key, media.id AS media_file_id, media.uuid, media.width, media.height')
+            ->select('links.item_key, media.id AS media_file_id, media.uuid, media.original_name, media.mime_type, media.size_bytes, media.width, media.height')
             ->join('media_files media', 'media.id = links.media_file_id')
             ->where('links.revision_id', $revisionId)->get()->getResultArray();
     }

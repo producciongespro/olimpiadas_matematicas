@@ -10,6 +10,13 @@ use RuntimeException;
 
 class ContentService
 {
+    private const HERO_PROTECTED_LINKS = [
+        'primary_href' => '#edicion-vigente',
+        'secondary_href' => '#olimpiadas',
+    ];
+    private const CALENDAR_MANUAL_KEY = 'calendar-manual';
+    private const CALENDAR_FALLBACK_MANUAL = '/data/2026/manual-OLCOMEP-primaria-2026.pdf';
+
     private BaseConnection $db;
     private ContentRepository $repository;
     private MediaStorageService $storage;
@@ -82,6 +89,7 @@ class ContentService
         ]);
         $revisionId = (int) $this->db->insertID();
         if ($key === 'partners') $this->savePartnerMedia($revisionId, $content, $files, $sourceRevision);
+        if ($key === 'calendar') $this->saveCalendarManual($revisionId, $content, $files, $sourceRevision);
         if ($key === 'regional-coordinations') $this->saveRegionalContactMedia($revisionId, $content, $files, $sourceRevision, $localFiles);
         $this->db->table('content_sections')->where('id', $section['id'])->update(['updated_at' => $now]);
         $this->db->transComplete();
@@ -127,13 +135,9 @@ class ContentService
             if ($value === '') throw new InvalidArgumentException("El campo {$field} es obligatorio.");
             $result[$field] = mb_substr($value, 0, $limit);
         }
-        foreach ($key === 'hero' ? ['primary_href', 'secondary_href'] : [] as $field) {
-            $value = trim((string) ($input[$field] ?? ''));
-            if (! preg_match('#^(https?://|\#[a-z][a-z0-9_-]*)$#i', $value)) throw new InvalidArgumentException("El enlace {$field} no es válido.");
-            $result[$field] = mb_substr($value, 0, 512);
-        }
+        if ($key === 'hero') $result = array_merge($result, self::HERO_PROTECTED_LINKS);
         if ($key === 'calendar') {
-            $result['manual_href'] = $this->validateHref((string) ($input['manual_href'] ?? ''), 'manual_href');
+            $result['manual_href'] = self::CALENDAR_FALLBACK_MANUAL;
             $scheduleJson = (string) ($input['schedule_json'] ?? '');
             if (strlen($scheduleJson) > 1_000_000) throw new InvalidArgumentException('El calendario supera el tamaño permitido.');
             $schedule = json_decode($scheduleJson, true);
@@ -328,6 +332,27 @@ class ContentService
         $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
     }
 
+    private function saveCalendarManual(int $revisionId, array &$content, array $files, ?array $sourceRevision): void
+    {
+        $sourceMedia = [];
+        if ($sourceRevision !== null) {
+            foreach ($this->repository->revisionMedia((int) $sourceRevision['id']) as $media) $sourceMedia[$media['item_key']] = $media;
+        }
+        $mediaId = $sourceMedia[self::CALENDAR_MANUAL_KEY]['media_file_id'] ?? null;
+        $file = $files['manual'] ?? null;
+        if ($file instanceof UploadedFile && $file->isValid()) {
+            $media = $this->storage->storePdf($file, 'sections/calendar');
+            $this->db->table('media_files')->insert($media);
+            $mediaId = (int) $this->db->insertID();
+        }
+        if ($mediaId !== null) {
+            $this->db->table('content_revision_media')->insert([
+                'revision_id' => $revisionId, 'item_key' => self::CALENDAR_MANUAL_KEY,
+                'media_file_id' => $mediaId, 'created_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+    }
+
     private function saveRegionalContactMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision, array $localFiles = []): void
     {
         $sourceMedia = [];
@@ -413,6 +438,13 @@ class ContentService
         }
         $revisionMedia = [];
         foreach ($this->repository->revisionMedia((int) $revision['id']) as $media) $revisionMedia[$media['item_key']] = $media;
+        $calendarManual = $revisionMedia[self::CALENDAR_MANUAL_KEY] ?? null;
+        if ($calendarManual !== null) {
+            $content['manual_uuid'] = $calendarManual['uuid'];
+            $content['manual_href'] = site_url('api/v1/media/' . $calendarManual['uuid']);
+            $content['manual_name'] = $calendarManual['original_name'];
+            $content['manual_size'] = (int) $calendarManual['size_bytes'];
+        }
         foreach (['collaborators', 'sponsors'] as $collection) {
             if (! isset($content[$collection]) || ! is_array($content[$collection])) continue;
             foreach ($content[$collection] as &$item) {

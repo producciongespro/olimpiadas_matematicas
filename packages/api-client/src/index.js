@@ -44,7 +44,7 @@ export function createApiClient({ baseUrl = import.meta.env?.VITE_API_URL || DEF
     const headers = new Headers()
     if (token) headers.set('Authorization', `Bearer ${token}`)
     const response = await fetch(`${baseUrl}/admin/media/${encodeURIComponent(uuid)}`, { headers })
-    if (!response.ok) throw new Error('No fue posible cargar la vista previa de la imagen.')
+    if (!response.ok) throw new Error('No fue posible cargar la vista previa del archivo.')
     return URL.createObjectURL(await response.blob())
   }
 

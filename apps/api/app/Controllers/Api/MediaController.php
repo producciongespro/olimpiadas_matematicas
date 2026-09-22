@@ -20,11 +20,11 @@ class MediaController extends BaseController
     public function file(string $uuid): ResponseInterface
     {
         $media = (new GalleryService())->media($uuid);
-        if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no está disponible.']);
+        if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no está disponible.']);
         $path = WRITEPATH . 'uploads/' . $media['storage_path'];
         $root = realpath(WRITEPATH . 'uploads');
         $resolved = realpath($path);
-        if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'La imagen no está disponible.']);
+        if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no está disponible.']);
         $etag = '"' . $media['checksum_sha256'] . '"';
         $this->response->removeHeader('Cache-Control');
         if ($this->request->getHeaderLine('If-None-Match') === $etag) {
@@ -32,8 +32,13 @@ class MediaController extends BaseController
                 ->setHeader('Cache-Control', 'public, max-age=31536000, immutable')
                 ->setHeader('ETag', $etag);
         }
-        return $this->response->setHeader('Content-Type', $media['mime_type'])->setHeader('Content-Length', (string) filesize($path))
+        $download = filter_var($this->request->getGet('download'), FILTER_VALIDATE_BOOL);
+        $disposition = $media['mime_type'] === 'application/pdf'
+            ? ($download ? 'attachment' : 'inline') . '; filename="' . addcslashes(basename($media['original_name']), '"\\') . '"'
+            : null;
+        $response = $this->response->setHeader('Content-Type', $media['mime_type'])->setHeader('Content-Length', (string) filesize($path))
             ->setHeader('Cache-Control', 'public, max-age=31536000, immutable')->setHeader('ETag', $etag)->setHeader('X-Content-Type-Options', 'nosniff')->setBody(file_get_contents($resolved));
+        return $disposition === null ? $response : $response->setHeader('Content-Disposition', $disposition);
     }
 
     private function cachedJson(array $data): ResponseInterface

@@ -124,3 +124,23 @@ a {
   outline: 3px solid #f6b52c;
   outline-offset: 3px;
 }
+
+.regional-carousel {
+  scrollbar-width: none;
+}
+
+.regional-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.regional-carousel-card {
+  flex-basis: 88%;
+}
+
+@media (min-width: 640px) {
+  .regional-carousel-card { flex-basis: calc(50% - 0.625rem); }
+}
+
+@media (min-width: 1280px) {
+  .regional-carousel-card { flex-basis: calc(33.333% - 0.834rem); }
+}

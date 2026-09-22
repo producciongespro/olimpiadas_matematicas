@@ -20,6 +20,14 @@ final class DocumentationFeatureTest extends CIUnitTestCase
         $asset->assertOK();
         $asset->assertHeader('Content-Type', 'text/css; charset=UTF-8');
 
+        $swaggerCss = $this->get('docs/assets/swagger-ui.css');
+        $swaggerCss->assertOK();
+        $swaggerCss->assertHeader('Content-Type', 'text/css; charset=UTF-8');
+        $swaggerScript = $this->get('docs/assets/swagger-ui-bundle.js');
+        $swaggerScript->assertOK();
+        $swaggerScript->assertHeader('Content-Type', 'application/javascript; charset=UTF-8');
+        $this->assertStringNotContainsString('unpkg.com', $portal->getBody());
+
         $openApi = $this->get('docs/api/openapi-v1.yaml');
         $openApi->assertOK();
         $openApi->assertHeader('Content-Type', 'application/yaml; charset=UTF-8');

@@ -16,5 +16,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "swagger-ui-dist": "5.17.14"
   }
 }
