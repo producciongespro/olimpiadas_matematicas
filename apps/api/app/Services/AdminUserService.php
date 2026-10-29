@@ -37,17 +37,15 @@ class AdminUserService
 
     public function all(array $actor): array
     {
-        $this->requireManager($actor);
+        $this->requireMaster($actor);
         $builder = $this->db->table('admin_users');
-        if ($actor['role'] === 'admin') $builder->where('role', 'editor');
         return array_map([$this, 'profile'], $builder->orderBy('role')->orderBy('email')->get()->getResultArray());
     }
 
     public function create(array $actor, array $input): array
     {
-        $this->requireManager($actor);
+        $this->requireMaster($actor);
         $role = $this->role($input['role'] ?? 'editor');
-        $this->assertCanAssign($actor, $role);
         $email = mb_strtolower(trim((string) ($input['email'] ?? '')));
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('El correo institucional no es válido.');
         $this->validateDomain($email);
@@ -59,14 +57,11 @@ class AdminUserService
 
     public function update(array $actor, int $id, array $input): array
     {
-        $this->requireManager($actor);
+        $this->requireMaster($actor);
         $target = $this->find($id);
         if ((int) $actor['id'] === $id && (array_key_exists('role', $input) || array_key_exists('status', $input))) throw new ForbiddenException('No puede modificar su propio rol o estado.');
         $role = array_key_exists('role', $input) ? $this->role($input['role']) : $target['role'];
         $status = array_key_exists('status', $input) ? $this->status($input['status']) : $target['status'];
-        $this->assertCanAssign($actor, $role);
-        if ($actor['role'] === 'admin' && $target['role'] !== 'editor') throw new ForbiddenException('Un Administrador solo puede gestionar Editores.');
-
         $this->db->transStart();
         $this->lockMasters();
         if ($target['role'] === 'master' && $target['status'] === 'active' && ($role !== 'master' || $status !== 'active') && $this->activeMasterCount() <= 1) {
@@ -83,12 +78,11 @@ class AdminUserService
 
     public function profile(array $user): array
     {
-        return ['id' => (int) $user['id'], 'email' => $user['email'], 'display_name' => $user['display_name'], 'role' => $user['role'], 'status' => $user['status'], 'last_login_at' => $user['last_login_at'], 'can_manage_users' => in_array($user['role'], ['master', 'admin'], true), 'assignable_roles' => $user['role'] === 'master' ? self::ROLES : ($user['role'] === 'admin' ? ['editor'] : [])];
+        return ['id' => (int) $user['id'], 'email' => $user['email'], 'display_name' => $user['display_name'], 'role' => $user['role'], 'status' => $user['status'], 'last_login_at' => $user['last_login_at'], 'can_manage_users' => $user['role'] === 'master', 'assignable_roles' => $user['role'] === 'master' ? self::ROLES : []];
     }
 
     private function find(int $id): array { $user = $this->db->table('admin_users')->where('id', $id)->get()->getRowArray(); if ($user === null) throw new InvalidArgumentException('La autorización no existe.'); return $user; }
-    private function requireManager(array $actor): void { if (! in_array($actor['role'] ?? '', ['master', 'admin'], true)) throw new ForbiddenException('No tiene permisos para gestionar usuarios.'); }
-    private function assertCanAssign(array $actor, string $role): void { if ($actor['role'] === 'admin' && $role !== 'editor') throw new ForbiddenException('Un Administrador solo puede crear o modificar Editores.'); }
+    private function requireMaster(array $actor): void { if (($actor['role'] ?? '') !== 'master') throw new ForbiddenException('Solo un Master puede gestionar usuarios.'); }
     private function role(mixed $value): string { $value = (string) $value; if (! in_array($value, self::ROLES, true)) throw new InvalidArgumentException('El rol no es válido.'); return $value; }
     private function status(mixed $value): string { $value = (string) $value; if (! in_array($value, self::STATUSES, true)) throw new InvalidArgumentException('El estado no es válido.'); return $value; }
     private function activeMasterCount(): int { return $this->db->table('admin_users')->where('role', 'master')->where('status', 'active')->countAllResults(); }

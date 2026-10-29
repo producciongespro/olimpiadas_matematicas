@@ -12,3 +12,4 @@
 - [x] Implementar bootstrap seguro del primer Master y vinculación por `oid`.
 - [x] Implementar gestión de usuarios en API y administrador.
 - [x] Probar jerarquía, autoprotección y permanencia del último Master.
+- [x] Restringir la consulta y gestión de usuarios exclusivamente al rol Master en la SPA y la API.

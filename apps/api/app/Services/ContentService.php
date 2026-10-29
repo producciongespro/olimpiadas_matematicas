@@ -15,6 +15,8 @@ class ContentService
         'secondary_href' => '#olimpiadas',
     ];
     private const CALENDAR_MANUAL_KEY = 'calendar-manual';
+    private const EDITION_DOCUMENT_PREFIX = 'edition-document-';
+    private const EDITION_BULK_TEMPLATE_KEY = 'edition-bulk-template';
     private const CALENDAR_FALLBACK_MANUAL = '/data/2026/manual-OLCOMEP-primaria-2026.pdf';
 
     private BaseConnection $db;
@@ -90,6 +92,7 @@ class ContentService
         $revisionId = (int) $this->db->insertID();
         if ($key === 'partners') $this->savePartnerMedia($revisionId, $content, $files, $sourceRevision);
         if ($key === 'calendar') $this->saveCalendarManual($revisionId, $content, $files, $sourceRevision);
+        if ($key === 'current-edition') $this->saveEditionDocumentMedia($revisionId, $content, $files, $sourceRevision);
         if ($key === 'regional-coordinations') $this->saveRegionalContactMedia($revisionId, $content, $files, $sourceRevision, $localFiles);
         $this->db->table('content_sections')->where('id', $section['id'])->update(['updated_at' => $now]);
         $this->db->transComplete();
@@ -159,7 +162,12 @@ class ContentService
         }
         if ($key === 'regional-coordinations') $result['regions'] = $this->validateRegions((string) ($input['regions_json'] ?? ''));
         if ($key === 'current-edition') {
-            foreach (['registration_href', 'bulk_href', 'promotion_href'] as $field) $result[$field] = $this->validateHref((string) ($input[$field] ?? ''), $field);
+            $year = filter_var($input['edition_year'] ?? null, FILTER_VALIDATE_INT);
+            if ($year === false || $year < 2000 || $year > 2100) throw new InvalidArgumentException('El año de la edición debe estar entre 2000 y 2100.');
+            $result['edition_year'] = $year;
+            foreach (['registration_href', 'promotion_href'] as $field) $result[$field] = $this->validateHref((string) ($input[$field] ?? ''), $field);
+            if (! empty($input['bulk_href'])) $result['bulk_href'] = $this->validateHref((string) $input['bulk_href'], 'bulk_href');
+            $result['bulk_remove'] = filter_var($input['bulk_remove'] ?? false, FILTER_VALIDATE_BOOLEAN);
             $result['resources'] = $this->validateEditionResources((string) ($input['resources_json'] ?? ''));
         }
         if ($key === 'contact') {
@@ -195,11 +203,14 @@ class ContentService
         if (! is_array($items)) throw new InvalidArgumentException('Los documentos de la edición no son válidos.');
         return array_map(function (mixed $item): array {
             if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('Un documento de la edición no es válido.');
-            $icon = (string) ($item['icon'] ?? '');
-            if (! in_array($icon, ['file', 'archive', 'spreadsheet'], true)) throw new InvalidArgumentException('El icono del documento no es válido.');
-            $result = ['key' => $item['key'], 'icon' => $icon];
-            foreach (['title' => 180, 'description' => 700, 'format' => 100] as $field => $limit) { $value = trim((string) ($item[$field] ?? '')); if ($value === '') throw new InvalidArgumentException("El campo {$field} del documento es obligatorio."); $result[$field] = mb_substr($value, 0, $limit); }
-            $result['href'] = $this->validateHref((string) ($item['href'] ?? ''), 'href');
+            $result = ['key' => $item['key']];
+            foreach (['title' => 180, 'description' => 700] as $field => $limit) { $value = trim((string) ($item[$field] ?? '')); if ($value === '') throw new InvalidArgumentException("El campo {$field} del documento es obligatorio."); $result[$field] = mb_substr($value, 0, $limit); }
+            // Compatibilidad de lectura con los destinos incluidos antes de habilitar cargas administradas.
+            if (! empty($item['href'])) {
+                $result['href'] = $this->validateHref((string) $item['href'], 'href');
+                $result['format'] = mb_substr(trim((string) ($item['format'] ?? 'PDF')), 0, 100);
+                $result['icon'] = in_array(($item['icon'] ?? ''), ['file', 'archive', 'spreadsheet'], true) ? $item['icon'] : 'file';
+            }
             return $result;
         }, $items);
     }
@@ -353,6 +364,47 @@ class ContentService
         }
     }
 
+    private function saveEditionDocumentMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision): void
+    {
+        $sourceMedia = [];
+        if ($sourceRevision !== null) {
+            foreach ($this->repository->revisionMedia((int) $sourceRevision['id']) as $media) $sourceMedia[$media['item_key']] = $media;
+        }
+        foreach ($content['resources'] as &$resource) {
+            $relationKey = self::EDITION_DOCUMENT_PREFIX . $resource['key'];
+            $file = $files['document_' . $resource['key']] ?? null;
+            $mediaId = $sourceMedia[$relationKey]['media_file_id'] ?? null;
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $media = $this->storage->storePdf($file, 'sections/current-edition/' . $content['edition_year']);
+                $this->db->table('media_files')->insert($media);
+                $mediaId = (int) $this->db->insertID();
+            }
+            if ($mediaId === null && empty($resource['href'])) throw new InvalidArgumentException('Cada documento oficial nuevo debe incluir un archivo PDF.');
+            unset($resource['file_uuid'], $resource['file_name'], $resource['file_size']);
+            if ($mediaId !== null) {
+                unset($resource['href'], $resource['format'], $resource['icon']);
+                $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => $relationKey, 'media_file_id' => $mediaId, 'created_at' => date('Y-m-d H:i:s')]);
+            }
+        }
+        unset($resource);
+        $templateFile = $files['bulk_template'] ?? null;
+        $removeTemplate = $content['bulk_remove'];
+        $templateMediaId = ! $removeTemplate ? ($sourceMedia[self::EDITION_BULK_TEMPLATE_KEY]['media_file_id'] ?? null) : null;
+        if ($templateFile instanceof UploadedFile && $templateFile->isValid()) {
+            $templateMedia = $this->storage->storeXlsx($templateFile, 'sections/current-edition/' . $content['edition_year']);
+            $this->db->table('media_files')->insert($templateMedia);
+            $templateMediaId = (int) $this->db->insertID();
+        }
+        unset($content['bulk_remove'], $content['bulk_file_uuid'], $content['bulk_file_name'], $content['bulk_file_size']);
+        if ($templateMediaId !== null) {
+            unset($content['bulk_href']);
+            $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => self::EDITION_BULK_TEMPLATE_KEY, 'media_file_id' => $templateMediaId, 'created_at' => date('Y-m-d H:i:s')]);
+        } elseif ($removeTemplate) {
+            unset($content['bulk_href']);
+        }
+        $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+    }
+
     private function saveRegionalContactMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision, array $localFiles = []): void
     {
         $sourceMedia = [];
@@ -472,6 +524,27 @@ class ContentService
                 unset($contact);
             }
             unset($region);
+        }
+        if (isset($content['resources']) && is_array($content['resources']) && isset($content['edition_year'])) {
+            foreach ($content['resources'] as &$resource) {
+                $media = $revisionMedia[self::EDITION_DOCUMENT_PREFIX . ($resource['key'] ?? '')] ?? null;
+                if ($media !== null) {
+                    $resource['file_uuid'] = $media['uuid'];
+                    $resource['href'] = site_url('api/v1/media/' . $media['uuid']);
+                    $resource['file_name'] = $media['original_name'];
+                    $resource['file_size'] = (int) $media['size_bytes'];
+                    $resource['format'] = 'PDF';
+                    $resource['icon'] = 'file';
+                }
+            }
+            unset($resource);
+            $template = $revisionMedia[self::EDITION_BULK_TEMPLATE_KEY] ?? null;
+            if ($template !== null) {
+                $content['bulk_file_uuid'] = $template['uuid'];
+                $content['bulk_href'] = site_url('api/v1/media/' . $template['uuid']);
+                $content['bulk_file_name'] = $template['original_name'];
+                $content['bulk_file_size'] = (int) $template['size_bytes'];
+            }
         }
         return ['revision_id' => (int) $revision['id'], 'status' => $revision['status'], 'content' => $content, 'created_at' => $revision['created_at'], 'published_at' => $revision['published_at']];
     }

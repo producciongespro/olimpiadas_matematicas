@@ -52,7 +52,7 @@ La sexta implementación cubre “Información general” y preguntas frecuentes
 
 La séptima implementación cubre “Coordinaciones regionales” conforme a `sections/regional-coordinations.md`. El directorio editorial permanece separado de las tablas reservadas al dominio de inscripción y solo contiene información institucional destinada a publicación. Cada contacto usa una clave estable para conservar, reemplazar o retirar su fotografía versionada al editar nombres u orden; los borradores se previsualizan mediante una ruta administrativa autenticada y sin caché compartida.
 
-La octava implementación cubre “Edición vigente” conforme a `sections/current-edition.md`: estado de inscripción, documentos dinámicos, descarga masiva y promoción audiovisual se administran mediante campos estructurados. La imagen promocional utiliza el medio principal de la revisión y los archivos documentales conservan destinos validados.
+La octava implementación cubre “Edición vigente” conforme a `sections/current-edition.md`: estado de inscripción, documentos dinámicos, plantilla masiva y promoción audiovisual se administran mediante campos estructurados y capítulos visuales diferenciados. La imagen promocional utiliza el medio principal de la revisión. Los documentos oficiales se cargan como PDF y la plantilla como un único XLSX sustituible o retirable; ambos se almacenan por año con UUID y se relacionan con la revisión. Administración no expone rutas, formatos ni iconos técnicos, y los destinos heredados solo se conservan como compatibilidad.
 
 La novena implementación cubre “Contacto” conforme a `sections/contact.md`: textos institucionales, teléfonos, correos y recursos adicionales se administran mediante campos estructurados. La vista pública y la previsualización comparten el componente; los créditos permanecen protegidos.
 
@@ -99,16 +99,26 @@ Las rutas administrativas conservan los filtros JWT y rol. Las respuestas exitos
 
 ## 7. Experiencia administrativa
 
-La administración incorpora un módulo “Contenido del sitio”. Presenta un selector de secciones para portada, “Conoce OLCOMEP”, calendario y colaboradores/patrocinadores, con:
+La administración incorpora una única copia editorial de la página pública. Cada bloque administrable presenta:
 
 - formulario estructurado;
 - estado editorial visible;
 - imagen actual y selector de reemplazo;
-- vista previa mediante el mismo componente usado públicamente;
+- representación mediante el mismo componente usado públicamente y acceso contextual “Editar”;
 - controles separados para guardar borrador y publicar;
 - estados de carga, error y éxito.
 
 La vista previa resuelve sus activos de respaldo desde la propia aplicación administrativa. No requiere que `public-web` esté levantada; las imágenes persistidas por la API conservan sus URL absolutas controladas.
+
+El modo de edición visual presenta una copia continua y a ancho completo de la página pública. Compone las nueve secciones editoriales con los mismos componentes compartidos y en el mismo orden relativo de `public-web`. Cada bloque comienza con un separador editorial no adherente que incluye la etiqueta “Sección editorial”, su nombre completo y una acción explícita —por ejemplo, “Editar Portada principal”— operable por teclado. Así, la pertenencia del control no depende de su proximidad con el bloque anterior. Los enlaces, formularios y controles propios del sitio permanecen inactivos para evitar navegación accidental.
+
+Al activar “Editar”, se abre un diálogo modal con todos los campos de esa sección. El diálogo ocupa la pantalla completa en móvil y una superficie centrada y desplazable en escritorio; comunica el estado publicado, borrador o cambios locales, traslada el foco a su título y concentra “Cancelar”, “Guardar borrador” y “Publicar”. Los cambios se reflejan en la copia pública local y, después de guardar correctamente, el modal se cierra para mostrar el resultado dentro de su contexto.
+
+Guardar y publicar permanecen separados. Publicar se deshabilita mientras existan cambios locales para impedir que se publique accidentalmente una versión anterior y solo se habilita cuando la API confirma un borrador. Cerrar el modal con cambios, abrir otro módulo administrativo o cerrar sesión requiere confirmación explícita; cerrar o recargar la pestaña utiliza la advertencia nativa del navegador. Cancelar la confirmación conserva campos y archivos seleccionados.
+
+La superficie mantiene un resumen de cuántas secciones están al día o tienen un borrador pendiente y responde naturalmente al ancho real del navegador, sin controles de simulación móvil o escritorio dentro del flujo editorial. La aceptación responsive se realiza técnicamente en 768 y 1280 px. No existe navegación separada para contenido, carrusel o eventos: el carrusel aparece primero en su posición pública y la galería aparece después del calendario. Ambos exponen “Editar” y abren modales contextuales que reutilizan sus operaciones existentes. El carrusel permite agregar, ordenar, publicar y ocultar diapositivas; la galería permite crear o seleccionar eventos, editar sus datos y fotografías y habilitar u ocultar cada evento desde la lista.
+
+“Usuarios” se muestra únicamente al rol `master` dentro del mismo contenedor que identifica la sesión, junto a “Actualizar contenido” y “Cerrar sesión”. Abre un modal independiente y no forma parte de la navegación ni de la copia pública. Los roles `admin` y `editor` no reciben este acceso visual.
 
 ## 7.1 Carga centralizada en la vista pública
 

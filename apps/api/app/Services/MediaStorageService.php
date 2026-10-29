@@ -48,13 +48,13 @@ class MediaStorageService
 
     public function storePdf(UploadedFile $file, string $directory): array
     {
-        if (! $file->isValid() || $file->hasMoved()) throw new RuntimeException('El manual cargado no es válido.');
+        if (! $file->isValid() || $file->hasMoved()) throw new RuntimeException('El documento cargado no es válido.');
         $maxBytes = (int) env('media.documentMaxBytes', 16 * 1024 * 1024);
-        if ($file->getSize() < 1 || $file->getSize() > $maxBytes) throw new RuntimeException('El manual debe pesar como máximo 16 MB.');
+        if ($file->getSize() < 1 || $file->getSize() > $maxBytes) throw new RuntimeException('El documento debe pesar como máximo 16 MB.');
         $temporaryPath = $file->getTempName();
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($temporaryPath);
         $signature = file_get_contents($temporaryPath, false, null, 0, 5);
-        if ($mime !== 'application/pdf' || $signature !== '%PDF-') throw new RuntimeException('Solo se permite un archivo PDF válido para el manual.');
+        if ($mime !== 'application/pdf' || $signature !== '%PDF-') throw new RuntimeException('Solo se permite un archivo PDF válido.');
         $uuid = $this->uuid();
         $relative = trim($directory, '/') . '/' . $uuid . '.pdf';
         $target = WRITEPATH . 'uploads/' . dirname($relative);
@@ -65,6 +65,33 @@ class MediaStorageService
             'uuid' => $uuid, 'storage_path' => str_replace('\\', '/', $relative),
             'original_name' => mb_substr(basename($file->getClientName()), 0, 255),
             'mime_type' => 'application/pdf', 'size_bytes' => filesize($absolute),
+            'width' => 0, 'height' => 0, 'checksum_sha256' => hash_file('sha256', $absolute),
+            'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function storeXlsx(UploadedFile $file, string $directory): array
+    {
+        if (! $file->isValid() || $file->hasMoved()) throw new RuntimeException('La plantilla cargada no es válida.');
+        $maxBytes = (int) env('media.documentMaxBytes', 16 * 1024 * 1024);
+        if ($file->getSize() < 1 || $file->getSize() > $maxBytes) throw new RuntimeException('La plantilla debe pesar como máximo 16 MB.');
+        $temporaryPath = $file->getTempName();
+        $archiveContents = (string) file_get_contents($temporaryPath);
+        $signature = substr($archiveContents, 0, 4);
+        $extension = mb_strtolower(pathinfo((string) $file->getClientName(), PATHINFO_EXTENSION));
+        $isWorkbook = $extension === 'xlsx' && str_starts_with($signature, 'PK')
+            && str_contains($archiveContents, '[Content_Types].xml') && str_contains($archiveContents, 'xl/workbook.xml');
+        if (! $isWorkbook) throw new RuntimeException('Solo se permite una plantilla XLSX válida.');
+        $uuid = $this->uuid();
+        $relative = trim($directory, '/') . '/' . $uuid . '.xlsx';
+        $target = WRITEPATH . 'uploads/' . dirname($relative);
+        if (! is_dir($target) && ! mkdir($target, 0775, true) && ! is_dir($target)) throw new RuntimeException('No fue posible preparar el almacenamiento.');
+        $file->move($target, basename($relative));
+        $absolute = WRITEPATH . 'uploads/' . $relative;
+        return [
+            'uuid' => $uuid, 'storage_path' => str_replace('\\', '/', $relative),
+            'original_name' => mb_substr(basename($file->getClientName()), 0, 255),
+            'mime_type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'size_bytes' => filesize($absolute),
             'width' => 0, 'height' => 0, 'checksum_sha256' => hash_file('sha256', $absolute),
             'created_at' => date('Y-m-d H:i:s'), 'updated_at' => date('Y-m-d H:i:s'),
         ];

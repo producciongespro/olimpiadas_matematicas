@@ -20,6 +20,6 @@
 
 ## Flujo y aceptación
 
-- Borrador, previsualización móvil/escritorio y publicación confirmada.
+- Borrador, copia editorial responsive según el ancho real del navegador y publicación confirmada.
 - La vista pública conserva el contenido actual como respaldo cuando la API falla.
 - La API valida longitudes, iconos y destinos y rechaza HTML libre.

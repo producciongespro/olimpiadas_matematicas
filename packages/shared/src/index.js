@@ -147,6 +147,7 @@ export function mergeRegionalCoordinationsContent(content) {
 }
 
 export const defaultCurrentEditionContent = Object.freeze({
+  edition_year: 2026,
   eyebrow: 'Información actual',
   title: 'Edición OLCOMEP 2026',
   description: 'Consulte los documentos oficiales y materiales disponibles para estudiantes, familias y personal docente.',

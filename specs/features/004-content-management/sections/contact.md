@@ -40,7 +40,7 @@ Permitir que el equipo autorizado mantenga la información institucional de cont
 - publicar sustituye la revisión completa dentro de una transacción;
 - la vista pública conserva el contenido local confirmado como respaldo cuando la API no responde;
 - las colecciones vacías muestran un estado explícito y no rompen la composición;
-- la vista previa administrativa reutiliza el componente público en ancho móvil y escritorio.
+- la copia editorial reutiliza el componente público y responde al ancho real del navegador.
 
 ## Criterios de aceptación
 

@@ -263,7 +263,9 @@ La forma exacta de payloads, paginación, códigos de error y límites se formal
 
 ## 11. Experiencia administrativa
 
-- Carrusel y eventos aparecen como módulos separados.
+- Carrusel y eventos aparecen en sus posiciones reales dentro de una única copia editorial de la página pública, no como módulos o pestañas separados.
+- Cada bloque abre un modal contextual: el carrusel concentra alta, orden y visibilidad de diapositivas; la galería concentra creación, selección, estado y fotografías de eventos.
+- La lista de eventos permite habilitar o esconder cada evento sin abandonar el espacio contextual.
 - Los formularios tienen etiquetas visibles, ayuda contextual y errores asociados al campo.
 - La carga muestra progreso, resultado por archivo y errores recuperables.
 - La previsualización no sustituye el nombre del archivo ni el campo de texto alternativo.

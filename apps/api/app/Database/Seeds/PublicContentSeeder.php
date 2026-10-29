@@ -118,6 +118,7 @@ class PublicContentSeeder extends Seeder
     ];
 
     private const CURRENT_EDITION = [
+        'edition_year' => 2026,
         'eyebrow' => 'Información actual', 'title' => 'Edición OLCOMEP 2026',
         'description' => 'Consulte los documentos oficiales y materiales disponibles para estudiantes, familias y personal docente.',
         'registration_title' => 'Inscripción 2026 cerrada',

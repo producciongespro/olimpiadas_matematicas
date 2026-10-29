@@ -33,9 +33,12 @@
 ## Administración
 
 - El encabezado muestra el logotipo oficial de OLCOMEP sin deformarlo y mantiene visible el título de la herramienta.
+- Carrusel y galería se administran desde sus bloques dentro de la copia pública continua, sin pestañas o módulos separados.
+- El carrusel aparece primero después del encabezado y la galería después del calendario; ambos abren un modal contextual mediante “Editar”.
 - Solo una identidad autenticada con rol administrativo puede modificar carrusel y eventos.
 - El administrador puede crear, editar, publicar, ocultar, archivar y ordenar diapositivas.
 - El administrador puede crear, editar, publicar, ocultar y archivar eventos.
+- La lista de eventos permite habilitar u ocultar un evento directamente y conserva acceso a los eventos anteriores.
 - Puede cargar una o varias fotografías por evento, ordenarlas y definir portada.
 - No puede publicar una diapositiva sin imagen y texto alternativo.
 - No puede publicar un evento sin fotografías.

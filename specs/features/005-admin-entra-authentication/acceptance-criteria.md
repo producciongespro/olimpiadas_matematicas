@@ -12,7 +12,7 @@
 - La API valida firma, vigencia, tenant, emisor v1/v2, audiencia, scope y aplicación cliente.
 - La API comparte la identidad validada entre filtros, auditoría y controladores sin propiedades dinámicas ni advertencias `DEPRECATED` de PHP 8.2, y reinicia ese contexto para cada solicitud.
 - Las rutas administrativas responden 401 ante identidad inválida y 403 ante identidad válida sin autorización local activa.
-- Master administra los tres roles; Administrador administra únicamente Editores; Editor no accede a gestión de usuarios.
+- Solo Master consulta y administra los tres roles; Administrador y Editor reciben 403 en las rutas de gestión de usuarios y no ven su control en la SPA.
 - Un Master puede crear otro Master y ninguna operación puede dejar cero Masters activos.
 - El rol o estado propio no puede modificarse.
 - El primer Master solo se crea cuando no existen usuarios y el correo autenticado coincide con `auth.bootstrapMasterEmail`.

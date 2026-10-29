@@ -470,6 +470,108 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame('Edición de prueba', $service->publicHome()['current-edition']['content']['title']);
     }
 
+    public function testCurrentEditionPdfRemainsPrivateUntilPublicationAndUsesEditionYear(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('current-edition')['published']['content'];
+        $content['edition_year'] = 2027;
+        $content['resources'] = [['key' => 'manual-2027', 'title' => 'Manual 2027', 'description' => 'Manual oficial de la edición 2027.']];
+        $input = $content;
+        unset($input['resources']);
+        $input['resources_json'] = json_encode($content['resources'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'olcomep-edition-');
+        $storedPath = null;
+
+        try {
+            file_put_contents($temporaryPath, "%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n");
+            $document = $this->createMock(UploadedFile::class);
+            $document->method('isValid')->willReturn(true);
+            $document->method('hasMoved')->willReturn(false);
+            $document->method('getSize')->willReturn(filesize($temporaryPath));
+            $document->method('getTempName')->willReturn($temporaryPath);
+            $document->method('getClientName')->willReturn('manual-olcomep-2027.pdf');
+            $document->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($temporaryPath): bool {
+                return copy($temporaryPath, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+            });
+
+            $service->saveDraft('current-edition', $input, null, null, ['document_manual-2027' => $document]);
+            $draft = $service->adminSection('current-edition')['draft']['content'];
+            $resource = $draft['resources'][0];
+            $this->assertSame(2027, $draft['edition_year']);
+            $this->assertSame('manual-olcomep-2027.pdf', $resource['file_name']);
+            $this->assertSame('PDF', $resource['format']);
+            $this->assertSame('file', $resource['icon']);
+            $this->assertNull((new GalleryService($this->db))->media($resource['file_uuid']));
+
+            $row = $this->db->table('media_files')->where('uuid', $resource['file_uuid'])->get()->getRowArray();
+            $this->assertStringStartsWith('sections/current-edition/2027/', $row['storage_path']);
+            $storedPath = WRITEPATH . 'uploads/' . $row['storage_path'];
+            $this->assertFileExists($storedPath);
+
+            $service->publish('current-edition');
+            $publishedResource = $service->publicHome()['current-edition']['content']['resources'][0];
+            $this->assertSame($resource['file_uuid'], $publishedResource['file_uuid']);
+            $this->assertNotNull((new GalleryService($this->db))->media($resource['file_uuid']));
+        } finally {
+            if ($storedPath !== null && is_file($storedPath)) unlink($storedPath);
+            if (is_file($temporaryPath)) unlink($temporaryPath);
+        }
+    }
+
+    public function testCurrentEditionBulkTemplateCanBeReplacedAndRemovedThroughDrafts(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('current-edition')['published']['content'];
+        $input = $content;
+        unset($input['resources']);
+        $input['resources_json'] = json_encode($content['resources'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $input['bulk_remove'] = '0';
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'olcomep-xlsx-');
+        $storedPath = null;
+
+        try {
+            file_put_contents($temporaryPath, "PK\x03\x04[Content_Types].xml\0xl/workbook.xml\0");
+            $template = $this->createMock(UploadedFile::class);
+            $template->method('isValid')->willReturn(true);
+            $template->method('hasMoved')->willReturn(false);
+            $template->method('getSize')->willReturn(filesize($temporaryPath));
+            $template->method('getTempName')->willReturn($temporaryPath);
+            $template->method('getClientName')->willReturn('inscripcion-masiva-2026.xlsx');
+            $template->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($temporaryPath): bool {
+                return copy($temporaryPath, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+            });
+
+            $service->saveDraft('current-edition', $input, null, null, ['bulk_template' => $template]);
+            $draft = $service->adminSection('current-edition')['draft']['content'];
+            $this->assertSame('inscripcion-masiva-2026.xlsx', $draft['bulk_file_name']);
+            $this->assertNull((new GalleryService($this->db))->media($draft['bulk_file_uuid']));
+            $row = $this->db->table('media_files')->where('uuid', $draft['bulk_file_uuid'])->get()->getRowArray();
+            $this->assertStringStartsWith('sections/current-edition/2026/', $row['storage_path']);
+            $storedPath = WRITEPATH . 'uploads/' . $row['storage_path'];
+
+            $service->publish('current-edition');
+            $published = $service->publicHome()['current-edition']['content'];
+            $this->assertSame($draft['bulk_file_uuid'], $published['bulk_file_uuid']);
+            $this->assertNotNull((new GalleryService($this->db))->media($draft['bulk_file_uuid']));
+
+            $removeInput = $published;
+            unset($removeInput['resources']);
+            $removeInput['resources_json'] = json_encode($published['resources'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $removeInput['bulk_remove'] = '1';
+            $service->saveDraft('current-edition', $removeInput);
+            $removedDraft = $service->adminSection('current-edition')['draft']['content'];
+            $this->assertArrayNotHasKey('bulk_href', $removedDraft);
+            $this->assertArrayHasKey('bulk_href', $service->publicHome()['current-edition']['content']);
+        } finally {
+            if ($storedPath !== null && is_file($storedPath)) unlink($storedPath);
+            if (is_file($temporaryPath)) unlink($temporaryPath);
+        }
+    }
+
     public function testContactSupportsValidatedCollectionsAndPublication(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db); $seeder->setSilent(true)->run();
@@ -491,13 +593,12 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(2, $this->db->table('admin_users')->where('role', 'master')->where('status', 'active')->countAllResults());
     }
 
-    public function testAdministratorCanOnlyCreateEditors(): void
+    public function testAdministratorCannotManageUsers(): void
     {
         $service = new AdminUserService($this->db);
         $admin = $this->adminUser('admin@mep.go.cr', 'admin');
-        $this->assertSame('editor', $service->create($admin, ['email' => 'editor@mep.go.cr', 'role' => 'editor'])['role']);
         $this->expectException(ForbiddenException::class);
-        $service->create($admin, ['email' => 'otro.admin@mep.go.cr', 'role' => 'admin']);
+        $service->create($admin, ['email' => 'editor@mep.go.cr', 'role' => 'editor']);
     }
 
     public function testCannotDeactivateLastActiveMaster(): void

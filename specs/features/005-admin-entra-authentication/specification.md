@@ -49,10 +49,10 @@ Los claims validados y el usuario local se conservan durante la solicitud en un 
 ## Roles locales
 
 - `master`: edita contenido y gestiona masters, administradores y editores.
-- `admin`: edita contenido y gestiona únicamente editores.
+- `admin`: edita contenido y no gestiona usuarios.
 - `editor`: edita contenido y no gestiona usuarios.
 
-Un Master puede crear otro Master. Ninguna operación puede desactivar, degradar o eliminar al último Master activo. La validación se realiza dentro de una transacción y la API impide que una persona modifique su propio rol o estado.
+La consulta y modificación de autorizaciones es exclusiva de Master; ocultar el control en la SPA no sustituye esta autorización en la API. Un Master puede crear otro Master. Ninguna operación puede desactivar, degradar o eliminar al último Master activo. La validación se realiza dentro de una transacción y la API impide que una persona modifique su propio rol o estado.
 
 El primer Master se declara mediante `auth.bootstrapMasterEmail` en el `.env` privado de la API. `BootstrapMasterSeeder` crea la autorización únicamente cuando la tabla está vacía y es idempotente para esa misma cuenta. El primer inicio de sesión cuyo correo coincide exactamente vincula el `oid` de Microsoft. La variable no otorga privilegios adicionales después del bootstrap.
 

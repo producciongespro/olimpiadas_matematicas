@@ -25,6 +25,18 @@
 - [x] Extender la revalidación automática al carrusel y la galería de eventos.
 - [x] Definir y empaquetar la política de caché de producción para HTML y recursos compilados de ambas SPA.
 - [x] Especificar Recursos y cuadernillos, Header/navegación y Footer/créditos antes de conectarlos.
+- [x] Implementar la primera etapa del modo visual administrativo con un lienzo continuo de las nueve secciones editoriales compartidas.
+- [x] Implementar la segunda etapa con selección contextual de secciones e inspector lateral sincronizado y accesible.
+- [x] Implementar la tercera etapa con barra editorial persistente, estado de cambios locales y acciones seguras de borrador y publicación.
+- [x] Implementar la cuarta etapa con protección de cambios locales al navegar, cambiar de módulo, cerrar sesión o abandonar la pestaña.
+- [x] Implementar la quinta etapa con navegación responsive, patrón de pestañas por teclado y sincronización visible del lienzo.
+- [x] Implementar la sexta etapa con panorama global y estado textual por sección en la navegación editorial.
+- [x] Sustituir el inspector lateral y las pestañas de sección por una copia pública a ancho completo con edición modal contextual.
+- [x] Integrar carrusel y galería de eventos en la copia editorial continua, eliminar su navegación por pestañas y trasladar “Usuarios” a la barra de sesión exclusiva de Master.
+- [x] Sustituir los destinos manuales de documentos de Edición vigente por carga PDF anual, metadatos derivados y publicación versionada.
+- [x] Administrar la plantilla XLSX como medio anual sustituible o retirable y reorganizar Edición vigente en capítulos editoriales claros.
+- [x] Retirar la simulación móvil/escritorio del editor y delegar el comportamiento responsive al ancho real del navegador.
+- [x] Delimitar cada bloque con un separador editorial y nombrar explícitamente su acción de edición.
 - [ ] Implementar y verificar Recursos y cuadernillos.
 - [ ] Implementar y verificar Header y navegación.
 - [ ] Implementar y verificar Footer y créditos.

@@ -19,8 +19,10 @@ import {
   mergeCurrentEditionContent,
 } from '@olcomep/shared'
 import { AboutUsSection, CalendarSection, ContactSection, CurrentEditionSection, GeneralInformationSection, HeroSection, OlcomepIntroductionSection, PartnersSection, RegionalCoordinationSection } from '@olcomep/ui'
-import { ArrowDown, ArrowUp, Download, ExternalLink, Monitor, Plus, Save, Send, Smartphone, Trash2, UserRound, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ArrowDown, ArrowUp, Download, ExternalLink, Pencil, Plus, Save, Send, Trash2, UserRound, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+
+const formatFileSize = (bytes) => bytes ? `${(bytes / 1024 / 1024).toFixed(bytes >= 1024 * 1024 ? 1 : 2)} MB` : ''
 
 const editors = {
   hero: {
@@ -101,9 +103,10 @@ const editors = {
   'current-edition': {
     defaults: defaultCurrentEditionContent, merge: mergeCurrentEditionContent,
     fields: [
+      ['edition_year', 'Año de la edición', 4],
       ['eyebrow', 'Antetítulo', 80], ['title', 'Título', 160], ['description', 'Descripción', 600, true],
       ['registration_title', 'Título del estado de inscripción', 180], ['registration_description', 'Descripción del estado', 600, true], ['registration_label', 'Texto del enlace histórico', 120], ['registration_href', 'Destino del enlace histórico', 512],
-      ['bulk_eyebrow', 'Antetítulo de inscripción masiva', 80], ['bulk_title', 'Título de inscripción masiva', 180], ['bulk_description', 'Descripción de inscripción masiva', 600, true], ['bulk_label', 'Texto de descarga', 120], ['bulk_href', 'Destino de descarga', 512],
+      ['bulk_eyebrow', 'Antetítulo de inscripción masiva', 80], ['bulk_title', 'Título de inscripción masiva', 180], ['bulk_description', 'Descripción de inscripción masiva', 600, true], ['bulk_label', 'Texto de descarga', 120],
       ['promotion_label', 'Texto del enlace promocional', 120], ['promotion_href', 'Destino promocional', 512], ['image_alt', 'Texto alternativo de la imagen', 255],
     ],
     preview: (content) => <CurrentEditionSection content={content}/>,
@@ -117,7 +120,55 @@ const editors = {
   },
 }
 
-export function ContentEditor({ api, busy, run, setConfirmation }) {
+function CanvasSection({ children, label, onSelect, selected, sectionKey }) {
+  return <div className={`editorial-canvas-section ${selected ? 'editorial-canvas-section-selected' : ''}`} data-editorial-section={sectionKey}>
+    <div className="editorial-section-control"><span><small>Sección editorial</small><strong>{label}</strong></span><button aria-pressed={selected} onClick={() => onSelect(sectionKey)} type="button"><Pencil aria-hidden="true" size={15}/>{selected ? `Editando ${label}` : `Editar ${label}`}</button></div>
+    {children}
+  </div>
+}
+
+function MediaCanvasSection({ children, label, onEdit }) {
+  return <div className="editorial-canvas-section"><div className="editorial-section-control"><span><small>Sección editorial</small><strong>{label}</strong></span><button onClick={onEdit} type="button"><Pencil aria-hidden="true" size={15}/>Editar {label}</button></div>{children}</div>
+}
+
+function AdminCarouselPreview({ slides }) {
+  const published = slides.filter((item) => item.status === 'published')
+  const slide = published[0]
+  return <section aria-label="Imágenes destacadas" className="bg-white px-5 py-4 sm:px-8 sm:py-6">{slide ? <div className="relative mx-auto max-w-content overflow-hidden rounded-gallery bg-slate-950"><img alt={slide.alt_text} className="main-carousel-image w-full object-cover opacity-80" height={slide.height} src={slide.media_url} width={slide.width}/>{slide.title && <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/95 to-transparent px-5 pb-5 pt-14 text-white sm:px-8"><p className="max-w-3xl text-xl font-black sm:text-2xl">{slide.title}</p></div>}<p className="absolute right-4 top-4 rounded-full bg-slate-950/80 px-3 py-1 text-xs font-bold text-white">{published.length} {published.length === 1 ? 'imagen publicada' : 'imágenes publicadas'}</p></div> : <div className="mx-auto max-w-content rounded-gallery border border-dashed border-slate-300 bg-slate-50 p-8 text-center"><p className="font-black text-slate-800">Carrusel sin imágenes publicadas</p><p className="mt-2 text-sm text-slate-600">Use “Editar” para agregar o habilitar una diapositiva.</p></div>}</section>
+}
+
+function AdminEventsPreview({ events }) {
+  const published = events.filter((item) => item.status === 'published')
+  return <section aria-labelledby="titulo-galeria-editorial" className="scroll-mt-28 py-16 sm:py-20" id="galeria"><div className="mx-auto max-w-content px-5 sm:px-8"><p className="eyebrow text-brand-primary">Memoria OLCOMEP</p><h2 className="section-title mt-3" id="titulo-galeria-editorial">Galería de eventos</h2>{published.length === 0 ? <div className="mt-8 rounded-md border border-dashed border-slate-300 bg-slate-50 p-8"><p className="font-black text-slate-800">Todavía no hay eventos publicados.</p><p className="mt-2 text-sm text-slate-600">Use “Editar” para crear el primer evento o habilitar uno anterior.</p></div> : <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{published.map((event) => <article className="overflow-hidden rounded-xl border border-slate-200 bg-white" key={event.id}>{event.cover_url ? <img alt="" className="aspect-[4/3] w-full object-cover" src={event.cover_url}/> : <div className="aspect-[4/3] bg-slate-100"/>}<div className="p-4"><h3 className="font-black text-slate-900">{event.name}</h3>{event.event_date && <p className="mt-1 text-sm font-bold text-brand-primary">{event.event_date}</p>}{event.description && <p className="mt-2 line-clamp-3 text-sm text-slate-600">{event.description}</p>}</div></article>)}</div>}</div></section>
+}
+
+function EditorialSiteCanvas({ content, events, onEditCarousel, onEditEvents, onSelect, selectedKey, slides }) {
+  return <div className="editorial-site-canvas bg-white text-ink">
+    <header className="editorial-site-header">
+      <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-5 px-5 py-4 sm:px-8">
+        <div className="flex items-center gap-4"><img alt="" className="h-14 w-14 object-contain" height="690" src="/logo-olcomep.png" width="690"/><div><p className="text-xs font-black uppercase tracking-[.16em] text-brand-highlight">OLCOMEP</p><p className="mt-1 text-lg font-black text-white">Olimpiada de Matemática para Primaria</p></div></div>
+        <nav aria-label="Navegación de la vista editorial" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-bold text-white"><a href="#informacion-general">Información</a><a href="#calendario">Calendario</a><a href="#coordinaciones-regionales">Regionales</a><a href="#edicion-vigente">Edición vigente</a></nav>
+      </div>
+    </header>
+    <div className="editorial-canvas-notice" role="note"><strong>Vista editorial completa</strong><span>Carrusel, contenido y galería se muestran juntos en el orden de la página pública.</span></div>
+    <main id="contenido-editorial-completo">
+      <MediaCanvasSection label="Carrusel principal" onEdit={onEditCarousel}><AdminCarouselPreview slides={slides}/></MediaCanvasSection>
+      <CanvasSection label="Portada principal" onSelect={onSelect} selected={selectedKey === 'hero'} sectionKey="hero"><HeroSection content={content.hero}/></CanvasSection>
+      <CanvasSection label="Información general" onSelect={onSelect} selected={selectedKey === 'general-information'} sectionKey="general-information"><GeneralInformationSection content={content['general-information']}/></CanvasSection>
+      <CanvasSection label="Calendario" onSelect={onSelect} selected={selectedKey === 'calendar'} sectionKey="calendar"><CalendarSection content={content.calendar}/></CanvasSection>
+      <MediaCanvasSection label="Eventos y fotografías" onEdit={onEditEvents}><AdminEventsPreview events={events}/></MediaCanvasSection>
+      <CanvasSection label="Conoce OLCOMEP" onSelect={onSelect} selected={selectedKey === 'olcomep-introduction'} sectionKey="olcomep-introduction"><OlcomepIntroductionSection content={content['olcomep-introduction']}/></CanvasSection>
+      <CanvasSection label="Acerca de nosotros" onSelect={onSelect} selected={selectedKey === 'about'} sectionKey="about"><AboutUsSection content={content.about}/></CanvasSection>
+      <CanvasSection label="Colaboradores y patrocinadores" onSelect={onSelect} selected={selectedKey === 'partners'} sectionKey="partners"><PartnersSection content={content.partners}/></CanvasSection>
+      <CanvasSection label="Coordinaciones regionales" onSelect={onSelect} selected={selectedKey === 'regional-coordinations'} sectionKey="regional-coordinations"><RegionalCoordinationSection content={content['regional-coordinations']}/></CanvasSection>
+      <CanvasSection label="Edición vigente" onSelect={onSelect} selected={selectedKey === 'current-edition'} sectionKey="current-edition"><CurrentEditionSection content={content['current-edition']}/></CanvasSection>
+      <CanvasSection label="Contacto" onSelect={onSelect} selected={selectedKey === 'contact'} sectionKey="contact"><ContactSection content={content.contact}/></CanvasSection>
+    </main>
+    <footer className="editorial-site-footer"><div><img alt="" height="690" src="/logo-olcomep.png" width="690"/><div><strong>OLCOMEP</strong><span>Ministerio de Educación Pública · Costa Rica</span></div></div><span>Vista de contenido administrable</span></footer>
+  </div>
+}
+
+export function ContentEditor({ api, busy, events, onDirtyChange, onEditCarousel, onEditEvents, run, setConfirmation, slides }) {
   const [sections, setSections] = useState([])
   const [selectedKey, setSelectedKey] = useState('hero')
   const [content, setContent] = useState(defaultHeroContent)
@@ -131,7 +182,15 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
   const [contactPhotoFiles, setContactPhotoFiles] = useState({})
   const [contactPhotoPreviewUrls, setContactPhotoPreviewUrls] = useState({})
   const [storedContactPhotoUrls, setStoredContactPhotoUrls] = useState({})
-  const [viewport, setViewport] = useState('desktop')
+  const [editionDocumentFiles, setEditionDocumentFiles] = useState({})
+  const [editionDocumentPreviewUrls, setEditionDocumentPreviewUrls] = useState({})
+  const [storedEditionDocumentUrls, setStoredEditionDocumentUrls] = useState({})
+  const [bulkTemplateFile, setBulkTemplateFile] = useState(null)
+  const [bulkTemplatePreviewUrl, setBulkTemplatePreviewUrl] = useState(null)
+  const [storedBulkTemplateUrl, setStoredBulkTemplateUrl] = useState(null)
+  const [editorOpen, setEditorOpen] = useState(false)
+  const inspectorTitleRef = useRef(null)
+  const previewRef = useRef(null)
 
   const section = sections.find(({ key }) => key === selectedKey) || null
   const editor = editors[selectedKey] || editors.hero
@@ -152,6 +211,14 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
     setContactPhotoFiles({})
     setContactPhotoPreviewUrls({})
     setStoredContactPhotoUrls({})
+    Object.values(editionDocumentPreviewUrls).forEach((url) => URL.revokeObjectURL(url))
+    setEditionDocumentFiles({})
+    setEditionDocumentPreviewUrls({})
+    setStoredEditionDocumentUrls({})
+    if (bulkTemplatePreviewUrl) URL.revokeObjectURL(bulkTemplatePreviewUrl)
+    setBulkTemplateFile(null)
+    setBulkTemplatePreviewUrl(null)
+    setStoredBulkTemplateUrl(null)
   }
 
   useEffect(() => {
@@ -201,9 +268,74 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
     return () => { active = false; objectUrls.forEach((url) => URL.revokeObjectURL(url)) }
   }, [api, selectedKey, contactMediaSignature])
 
-  const selectSection = (key) => {
+  const editionMediaSignature = selectedKey === 'current-edition'
+    ? content.resources.map((resource) => resource.file_uuid || '').join('|')
+    : ''
+  useEffect(() => {
+    let active = true
+    const objectUrls = []
+    const resources = selectedKey === 'current-edition' ? content.resources.filter((resource) => resource.file_uuid) : []
+    if (resources.length === 0) {
+      setStoredEditionDocumentUrls({})
+      return () => { active = false }
+    }
+    Promise.all(resources.map(async (resource) => [resource.key, await api.adminMediaObjectUrl(resource.file_uuid)])).then((entries) => {
+      entries.forEach(([, url]) => objectUrls.push(url))
+      if (active) setStoredEditionDocumentUrls(Object.fromEntries(entries))
+      else objectUrls.forEach((url) => URL.revokeObjectURL(url))
+    }).catch(() => { if (active) setStoredEditionDocumentUrls({}) })
+    return () => { active = false; objectUrls.forEach((url) => URL.revokeObjectURL(url)) }
+  }, [api, selectedKey, editionMediaSignature])
+
+  useEffect(() => {
+    let active = true
+    let objectUrl = null
+    if (selectedKey !== 'current-edition' || !content.bulk_file_uuid || content.bulk_remove) {
+      setStoredBulkTemplateUrl(null)
+      return () => { active = false }
+    }
+    api.adminMediaObjectUrl(content.bulk_file_uuid).then((url) => {
+      objectUrl = url
+      if (active) setStoredBulkTemplateUrl(url)
+      else URL.revokeObjectURL(url)
+    }).catch(() => { if (active) setStoredBulkTemplateUrl(null) })
+    return () => { active = false; if (objectUrl) URL.revokeObjectURL(objectUrl) }
+  }, [api, selectedKey, content.bulk_file_uuid, content.bulk_remove])
+
+  const applySectionSelection = (key, openEditor = false) => {
     setSelectedKey(key)
     applySection(sections.find((item) => item.key === key))
+    if (openEditor) setEditorOpen(true)
+    requestAnimationFrame(() => {
+      const canvasSection = previewRef.current?.querySelector(`[data-editorial-section="${key}"]`)
+      if (canvasSection) {
+        previewRef.current.scrollTo({
+          top: Math.max(0, canvasSection.offsetTop - 12),
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        })
+      }
+      if (openEditor) inspectorTitleRef.current?.focus()
+    })
+  }
+  const selectSection = (key, openEditor = false) => {
+    if (key === selectedKey) {
+      if (openEditor) {
+        setEditorOpen(true)
+        requestAnimationFrame(() => inspectorTitleRef.current?.focus())
+      }
+      return
+    }
+    if (hasLocalChanges) {
+      const nextLabel = sections.find((item) => item.key === key)?.label || 'otra sección'
+      setConfirmation({
+        title: 'Descartar cambios sin guardar',
+        text: `Los cambios locales de “${section?.label || selectedKey}” se perderán al abrir “${nextLabel}”.`,
+        confirmLabel: 'Descartar y continuar',
+        action: () => applySectionSelection(key, openEditor),
+      })
+      return
+    }
+    applySectionSelection(key, openEditor)
   }
   const updateSection = (next, preserveContactPreviews = false) => {
     setSections((current) => current.map((item) => item.key === next.key ? next : item))
@@ -269,7 +401,24 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
   const moveMilestone = (index, direction) => setContent((current) => { const target = index + direction; if (target < 0 || target >= current.milestones.length) return current; const milestones = [...current.milestones]; [milestones[index], milestones[target]] = [milestones[target], milestones[index]]; return { ...current, milestones } })
   const addInformationRoute = () => setContent((current) => ({ ...current, routes: [...current.routes, { key: `ruta-${Date.now()}-${Math.floor(Math.random() * 10000)}`, title: '', description: '', href: '#informacion-general', label: '', icon: 'help', external: false }] }))
   const addFaq = () => setContent((current) => ({ ...current, faqs: [...current.faqs, { key: `pregunta-${Date.now()}-${Math.floor(Math.random() * 10000)}`, question: '', answer: '' }] }))
-  const addEditionResource = () => setContent((current) => ({ ...current, resources: [...current.resources, { key: `documento-${Date.now()}-${Math.floor(Math.random() * 10000)}`, title: '', description: '', format: 'PDF', href: '/', icon: 'file' }] }))
+  const addEditionResource = () => setContent((current) => ({ ...current, resources: [...current.resources, { key: `documento-${Date.now()}-${Math.floor(Math.random() * 10000)}`, title: '', description: '' }] }))
+  const chooseEditionDocument = (key, file) => {
+    if (editionDocumentPreviewUrls[key]) URL.revokeObjectURL(editionDocumentPreviewUrls[key])
+    setEditionDocumentFiles((current) => ({ ...current, [key]: file }))
+    setEditionDocumentPreviewUrls((current) => ({ ...current, [key]: file ? URL.createObjectURL(file) : null }))
+  }
+  const chooseBulkTemplate = (file) => {
+    if (bulkTemplatePreviewUrl) URL.revokeObjectURL(bulkTemplatePreviewUrl)
+    setBulkTemplateFile(file)
+    setBulkTemplatePreviewUrl(file ? URL.createObjectURL(file) : null)
+    setContent((current) => ({ ...current, bulk_remove: false }))
+  }
+  const removeBulkTemplate = () => {
+    if (bulkTemplatePreviewUrl) URL.revokeObjectURL(bulkTemplatePreviewUrl)
+    setBulkTemplateFile(null)
+    setBulkTemplatePreviewUrl(null)
+    setContent((current) => ({ ...current, bulk_remove: true, bulk_href: null }))
+  }
   const addRegion = () => setContent((current) => ({ ...current, regions: [...current.regions, { region: '', contacts: [] }] }))
   const updateRegion = (index, value) => setContent((current) => ({ ...current, regions: current.regions.map((item, itemIndex) => itemIndex === index ? { ...item, region: value } : item) }))
   const addContact = (regionIndex) => setContent((current) => ({ ...current, regions: current.regions.map((region, index) => index === regionIndex ? { ...region, contacts: [...region.contacts, { key: `regional-${Date.now()}-${Math.floor(Math.random() * 10000)}`, name: '', emails: [] }] } : region) }))
@@ -322,7 +471,14 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
       form.set('regions_json', JSON.stringify(content.regions))
       Object.entries(contactPhotoFiles).forEach(([key, file]) => { if (file) form.set(`photo_${key}`, file) })
     }
-    if (selectedKey === 'current-edition') form.set('resources_json', JSON.stringify(content.resources))
+    if (selectedKey === 'current-edition') {
+      form.set('edition_year', String(content.edition_year))
+      form.set('resources_json', JSON.stringify(content.resources))
+      Object.entries(editionDocumentFiles).forEach(([key, file]) => { if (file) form.set(`document_${key}`, file) })
+      if (bulkTemplateFile) form.set('bulk_template', bulkTemplateFile)
+      if (content.bulk_href) form.set('bulk_href', content.bulk_href)
+      form.set('bulk_remove', content.bulk_remove ? '1' : '0')
+    }
     if (selectedKey === 'contact') {
       form.set('phones_json', JSON.stringify(content.phones.filter(Boolean)))
       form.set('emails_json', JSON.stringify(content.emails.filter(Boolean)))
@@ -330,13 +486,19 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
     }
     if (image) form.set('image', image)
     const result = await run(() => api.saveSiteSectionDraft(selectedKey, form), `Borrador de “${section?.label || selectedKey}” guardado.`)
-    if (result) updateSection(result, selectedKey === 'regional-coordinations')
+    if (result) {
+      updateSection(result, selectedKey === 'regional-coordinations')
+      setEditorOpen(false)
+    }
   }
   const publish = () => setConfirmation({
     text: `${editor.publishMessage} La versión anterior permanecerá en el historial.`,
     action: async () => {
       const result = await run(() => api.publishSiteSection(selectedKey), editor.successMessage)
-      if (result) updateSection(result)
+      if (result) {
+        updateSection(result)
+        setEditorOpen(false)
+      }
     },
   })
   const previewContent = { ...content, image_url: previewUrl || content.image_url }
@@ -349,28 +511,122 @@ export function ContentEditor({ api, busy, run, setConfirmation }) {
   if (selectedKey === 'regional-coordinations') {
     previewContent.regions = content.regions.map((region) => ({ ...region, contacts: region.contacts.map((contact) => ({ ...contact, photo_url: contactPhotoPreviewUrls[contact.key] || storedContactPhotoUrls[contact.key] || contact.photo_url })) }))
   }
+  if (selectedKey === 'current-edition') {
+    previewContent.resources = content.resources.map((resource) => ({
+      ...resource,
+      href: editionDocumentPreviewUrls[resource.key] || storedEditionDocumentUrls[resource.key] || resource.href,
+      file_name: editionDocumentFiles[resource.key]?.name || resource.file_name,
+      file_size: editionDocumentFiles[resource.key]?.size || resource.file_size,
+      format: 'PDF',
+      icon: 'file',
+    }))
+    previewContent.bulk_href = content.bulk_remove ? null : (bulkTemplatePreviewUrl || storedBulkTemplateUrl || content.bulk_href)
+  }
+  const canvasContent = Object.fromEntries(Object.entries(editors).map(([key, config]) => {
+    const item = sections.find((candidate) => candidate.key === key)
+    return [key, config.merge(item?.draft?.content || item?.published?.content || config.defaults)]
+  }))
+  canvasContent[selectedKey] = previewContent
+  const persistedContent = editor.merge(section?.draft?.content || section?.published?.content || editor.defaults)
+  const hasPendingFiles = Boolean(image || manualFile || bulkTemplateFile || Object.values(logoFiles).some(Boolean) || Object.values(contactPhotoFiles).some(Boolean) || Object.values(editionDocumentFiles).some(Boolean))
+  const hasLocalChanges = hasPendingFiles || JSON.stringify(content) !== JSON.stringify(persistedContent)
+  const draftCount = sections.filter((item) => item.draft).length
+  const publishedCount = sections.length - draftCount
+  const closeEditor = () => {
+    if (hasLocalChanges) {
+      setConfirmation({
+        title: 'Cerrar sin guardar',
+        text: `Los cambios locales de “${section?.label || selectedKey}” se perderán.`,
+        confirmLabel: 'Descartar cambios',
+        action: () => { applySection(section); setEditorOpen(false) },
+      })
+      return
+    }
+    setEditorOpen(false)
+  }
+  const renderEditorField = ([field, label, maxLength, multiline]) => <label className="field" key={field}><span>{label}</span>{multiline ? <textarea className="control min-h-28" maxLength={maxLength} onChange={(event) => setContent((value) => ({ ...value, [field]: event.target.value }))} required value={content[field]}/> : <input className="control" maxLength={maxLength} onChange={(event) => setContent((value) => ({ ...value, [field]: event.target.value }))} required type={field === 'edition_year' ? 'number' : 'text'} value={content[field]}/>}</label>
+  const editionField = (field) => renderEditorField(editor.fields.find(([candidate]) => candidate === field))
+  const bulkTemplateUrl = content.bulk_remove ? null : (bulkTemplatePreviewUrl || storedBulkTemplateUrl || content.bulk_href)
+  const bulkTemplateName = bulkTemplateFile?.name || content.bulk_file_name || (content.bulk_href ? decodeURIComponent(content.bulk_href.split('/').pop()) : '')
+  const bulkTemplateSize = bulkTemplateFile?.size || content.bulk_file_size
+
+  useEffect(() => {
+    onDirtyChange?.(hasLocalChanges)
+  }, [hasLocalChanges, onDirtyChange])
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange])
+
+  useEffect(() => {
+    if (!hasLocalChanges) return undefined
+    const warnBeforeUnload = (event) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', warnBeforeUnload)
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload)
+  }, [hasLocalChanges])
+
+  useEffect(() => {
+    if (!editorOpen) return undefined
+    const previousOverflow = document.body.style.overflow
+    const closeWithEscape = (event) => { if (event.key === 'Escape') closeEditor() }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeWithEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeWithEscape)
+    }
+  }, [editorOpen, hasLocalChanges])
 
   return <section className="content-editor py-7" aria-labelledby="content-title">
-    <div className="section-heading"><div><h2 id="content-title">Contenido del sitio</h2><p>Edite cada sección y compruebe el resultado con el mismo componente de la vista pública.</p></div></div>
-    <div className="mt-5 flex flex-wrap gap-2" role="tablist" aria-label="Secciones editables">
-      {sections.map((item) => <button aria-selected={selectedKey === item.key} className={`button ${selectedKey === item.key ? 'publish-button' : ''}`} key={item.key} onClick={() => selectSection(item.key)} role="tab" type="button">{item.label}</button>)}
+    <div className="section-heading"><div><h2 id="content-title">Contenido del sitio</h2><p>Seleccione “Editar” directamente sobre la sección de la página pública que desea modificar.</p></div></div>
+    <div className="editorial-navigation-heading mt-5"><p className="editorial-status-summary" role="status"><strong>{sections.length} secciones:</strong> {publishedCount} al día · {draftCount} con borrador pendiente{hasLocalChanges ? ' · 1 con cambios locales' : ''}</p></div>
+    <div className="editorial-public-surface site-preview mt-5" ref={previewRef}>
+      <EditorialSiteCanvas content={canvasContent} events={events} onEditCarousel={onEditCarousel} onEditEvents={onEditEvents} onSelect={(key) => selectSection(key, true)} selectedKey={editorOpen ? selectedKey : null} slides={slides}/>
     </div>
-    <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(22rem,0.75fr)_minmax(0,1.25fr)]">
-      <form className="panel grid content-start gap-4" onSubmit={save}>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-black">{section?.label || 'Contenido'}</h3><p className="mt-1 text-sm text-slate-600">Versión {section?.schema_version || 1} del esquema</p></div><span className={`status ${section?.draft ? 'status-draft' : 'status-published'}`}>{section?.draft ? 'Borrador pendiente' : 'Publicado'}</span></div>
-        {editor.fields.map(([field, label, maxLength, multiline]) => <label className="field" key={field}><span>{label}</span>{multiline ? <textarea className="control min-h-28" maxLength={maxLength} onChange={(event) => setContent((value) => ({ ...value, [field]: event.target.value }))} required value={content[field]}/> : <input className="control" maxLength={maxLength} onChange={(event) => setContent((value) => ({ ...value, [field]: event.target.value }))} required value={content[field]}/>}</label>)}
+    {editorOpen && <div className="editor-modal-backdrop" role="presentation"><section aria-labelledby="editorial-inspector-title" aria-modal="true" className="editor-modal" role="dialog">
+      <header className="editor-modal-header"><div><p className="text-xs font-black uppercase tracking-[.14em] text-brand-primary">Editar sección</p><h3 className="mt-1 font-black" id="editorial-inspector-title" ref={inspectorTitleRef} tabIndex="-1">{section?.label || 'Contenido'}</h3><div className="mt-2 flex flex-wrap gap-2"><span className={`status ${section?.draft ? 'status-draft' : 'status-published'}`}>{section?.draft ? 'Borrador pendiente' : 'Publicado'}</span>{hasLocalChanges && <span className="status status-unsaved" role="status">Cambios sin guardar</span>}</div></div><button aria-label={`Cerrar edición de ${section?.label || 'la sección'}`} className="icon-action" onClick={closeEditor} type="button"><X aria-hidden="true"/></button></header>
+      <form aria-labelledby="editorial-inspector-title" className="editor-modal-form grid content-start gap-4" id="editorial-section-form" onSubmit={save}>
+        {selectedKey !== 'current-edition' && editor.fields.map(renderEditorField)}
+        {selectedKey === 'current-edition' && <>
+          <fieldset className="grid gap-4"><legend className="text-lg font-black text-slate-900">1. Información principal</legend><p className="text-sm text-slate-600">Identifica la edición y presenta su información general en la página pública.</p>{['edition_year', 'eyebrow', 'title', 'description'].map(editionField)}</fieldset>
+          <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="text-lg font-black text-slate-900">2. Estado de inscripción</legend><p className="text-sm text-slate-600">Comunica el estado actual y mantiene disponible el enlace histórico correspondiente.</p>{['registration_title', 'registration_description', 'registration_label', 'registration_href'].map(editionField)}</fieldset>
+        </>}
         {selectedKey === 'contact' && <><label className="field"><span>Teléfonos, uno por línea</span><textarea className="control min-h-24" onChange={(event) => setContent((current) => ({ ...current, phones: event.target.value.split(/\r?\n/) }))} value={content.phones.join('\n')}/></label><label className="field"><span>Correos, uno por línea</span><textarea className="control min-h-24" onChange={(event) => setContent((current) => ({ ...current, emails: event.target.value.split(/\r?\n/) }))} value={content.emails.join('\n')}/></label><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Recursos adicionales</legend><button className="button justify-self-start" onClick={() => setContent((current) => ({ ...current, resources: [...current.resources, { key: `recurso-${Date.now()}`, title: '', description: '', href: '/' }] }))} type="button"><Plus aria-hidden="true"/>Agregar recurso</button>{content.resources.map((resource, index) => <div className="rounded-xl border border-slate-200 p-4" key={resource.key}><button aria-label="Eliminar recurso" className="icon-action float-right text-red-700" onClick={() => removeInstitution('resources', index)} type="button"><Trash2 aria-hidden="true"/></button><label className="field"><span>Título</span><input className="control" onChange={(event) => updateInstitution('resources', index, 'title', event.target.value)} required value={resource.title}/></label><label className="field mt-3"><span>Descripción</span><textarea className="control" onChange={(event) => updateInstitution('resources', index, 'description', event.target.value)} required value={resource.description}/></label><label className="field mt-3"><span>Destino</span><input className="control" onChange={(event) => updateInstitution('resources', index, 'href', event.target.value)} required value={resource.href}/></label></div>)}</fieldset></>}
         {selectedKey === 'calendar' && <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Actividades del cronograma</legend><div className="flex items-center justify-between gap-3"><p className="text-sm text-slate-600">{content.schedule.length} actividades en este borrador.</p><button className="button" onClick={addActivity} type="button"><Plus aria-hidden="true"/>Agregar actividad</button></div>{content.schedule.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-600">El calendario quedará sin actividades cuando publique este borrador. Puede agregar una nueva actividad cuando lo necesite.</p>}{content.schedule.map((activity, index) => <div className="rounded-xl border border-slate-200 p-4" key={index}><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><p className="font-black text-brand-primary">Actividad {index + 1}</p><div className="flex gap-2"><button aria-label={`Subir actividad ${index + 1}`} className="icon-action" disabled={index === 0} onClick={() => moveActivity(index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label={`Bajar actividad ${index + 1}`} className="icon-action" disabled={index === content.schedule.length - 1} onClick={() => moveActivity(index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label={`Eliminar actividad ${index + 1}`} className="icon-action text-red-700" onClick={() => removeActivity(index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><div className="grid gap-3"><label className="field"><span>Fecha visible</span><input className="control" maxLength="100" onChange={(event) => updateSchedule(index, 'date', event.target.value)} required value={activity.date}/></label><div className="grid gap-3 sm:grid-cols-2"><label className="field"><span>Fecha inicial ISO</span><input className="control" onChange={(event) => updateSchedule(index, 'dateTime', event.target.value)} pattern="[0-9]{4}-[0-9]{2}(-[0-9]{2})?" required value={activity.dateTime}/></label><label className="field"><span>Fecha final ISO (opcional)</span><input className="control" onChange={(event) => updateSchedule(index, 'endDateTime', event.target.value)} pattern="[0-9]{4}-[0-9]{2}(-[0-9]{2})?" value={activity.endDateTime || ''}/></label></div><label className="field"><span>Título</span><input className="control" maxLength="180" onChange={(event) => updateSchedule(index, 'title', event.target.value)} required value={activity.title}/></label><label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="700" onChange={(event) => updateSchedule(index, 'description', event.target.value)} required value={activity.description}/></label><label className="flex items-center gap-3 text-sm font-bold"><input checked={Boolean(activity.highlighted)} onChange={(event) => updateSchedule(index, 'highlighted', event.target.checked)} type="checkbox"/>Destacar actividad</label></div></div>)}</fieldset>}
         {selectedKey === 'partners' && ['collaborators', 'sponsors'].map((collection) => <fieldset className="grid gap-4 border-t border-slate-200 pt-5" key={collection}><legend className="font-black">{collection === 'collaborators' ? 'Instituciones colaboradoras' : 'Patrocinadores'}</legend><div className="flex items-center justify-between gap-3"><p className="text-sm text-slate-600">{content[collection].length} elementos.</p><button className="button" onClick={() => addInstitution(collection)} type="button"><Plus aria-hidden="true"/>Agregar</button></div>{content[collection].map((institution, index) => <div className="rounded-xl border border-slate-200 p-4" key={institution.key}><div className="mb-3 flex items-center justify-between gap-2"><p className="font-black text-brand-primary">Elemento {index + 1}</p><div className="flex gap-2"><button aria-label="Subir" className="icon-action" disabled={index === 0} onClick={() => moveInstitution(collection, index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar" className="icon-action" disabled={index === content[collection].length - 1} onClick={() => moveInstitution(collection, index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar" className="icon-action text-red-700" onClick={() => removeInstitution(collection, index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><div className="grid gap-3"><label className="field"><span>Nombre</span><input className="control" maxLength="180" onChange={(event) => updateInstitution(collection, index, 'name', event.target.value)} required value={institution.name}/></label><label className="field"><span>Sitio web (opcional)</span><input className="control" maxLength="512" onChange={(event) => updateInstitution(collection, index, 'url', event.target.value)} type="url" value={institution.url || ''}/></label>{collection === 'sponsors' && <label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="600" onChange={(event) => updateInstitution(collection, index, 'description', event.target.value)} value={institution.description || ''}/></label>}<label className="field"><span>Logotipo (opcional)</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={(event) => chooseInstitutionLogo(institution.key, event.target.files?.[0] || null)} type="file"/><small>Si no selecciona uno nuevo, se conserva el logotipo vigente.</small></label></div></div>)}</fieldset>)}
         {selectedKey === 'about' && <><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Introducción</legend><button className="button justify-self-start" onClick={() => addTextItem('introduction')} type="button"><Plus aria-hidden="true"/>Agregar párrafo</button>{content.introduction.map((paragraph, index) => <div className="flex items-start gap-2" key={index}><textarea className="control min-h-28" maxLength="1200" onChange={(event) => updateTextItem('introduction', index, event.target.value)} required value={paragraph}/><button aria-label={`Eliminar párrafo ${index + 1}`} className="icon-action text-red-700" onClick={() => removeTextItem('introduction', index)} type="button"><Trash2 aria-hidden="true"/></button></div>)}</fieldset><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Cronología</legend><button className="button justify-self-start" onClick={addMilestone} type="button"><Plus aria-hidden="true"/>Agregar hito</button>{content.milestones.map((milestone, index) => <div className="rounded-xl border border-slate-200 p-4" key={milestone.key}><div className="mb-3 flex justify-between gap-2"><strong>Hito {index + 1}</strong><div className="flex gap-2"><button aria-label="Subir hito" className="icon-action" disabled={index === 0} onClick={() => moveMilestone(index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar hito" className="icon-action" disabled={index === content.milestones.length - 1} onClick={() => moveMilestone(index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar hito" className="icon-action text-red-700" onClick={() => removeMilestone(index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><div className="grid gap-3"><label className="field"><span>Periodo</span><input className="control" maxLength="100" onChange={(event) => updateMilestone(index, 'period', event.target.value)} required value={milestone.period}/></label><label className="field"><span>Título</span><input className="control" maxLength="180" onChange={(event) => updateMilestone(index, 'title', event.target.value)} required value={milestone.title}/></label><label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="900" onChange={(event) => updateMilestone(index, 'description', event.target.value)} required value={milestone.description}/></label></div></div>)}</fieldset><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Párrafos de cierre</legend><button className="button justify-self-start" onClick={() => addTextItem('closing_paragraphs')} type="button"><Plus aria-hidden="true"/>Agregar párrafo</button>{content.closing_paragraphs.map((paragraph, index) => <div className="flex items-start gap-2" key={index}><textarea className="control min-h-28" maxLength="1200" onChange={(event) => updateTextItem('closing_paragraphs', index, event.target.value)} required value={paragraph}/><button aria-label={`Eliminar párrafo de cierre ${index + 1}`} className="icon-action text-red-700" onClick={() => removeTextItem('closing_paragraphs', index)} type="button"><Trash2 aria-hidden="true"/></button></div>)}</fieldset></>}
         {selectedKey === 'general-information' && <><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Rutas informativas</legend><button className="button justify-self-start" onClick={addInformationRoute} type="button"><Plus aria-hidden="true"/>Agregar ruta</button>{content.routes.map((route, index) => <div className="rounded-xl border border-slate-200 p-4" key={route.key}><div className="mb-3 flex justify-between gap-2"><strong>Ruta {index + 1}</strong><div className="flex gap-2"><button aria-label="Subir ruta" className="icon-action" disabled={index === 0} onClick={() => moveInstitution('routes', index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar ruta" className="icon-action" disabled={index === content.routes.length - 1} onClick={() => moveInstitution('routes', index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar ruta" className="icon-action text-red-700" onClick={() => removeInstitution('routes', index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><div className="grid gap-3"><label className="field"><span>Título</span><input className="control" maxLength="180" onChange={(event) => updateInstitution('routes', index, 'title', event.target.value)} required value={route.title}/></label><label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="700" onChange={(event) => updateInstitution('routes', index, 'description', event.target.value)} required value={route.description}/></label><label className="field"><span>Texto accesible del enlace</span><input className="control" maxLength="255" onChange={(event) => updateInstitution('routes', index, 'label', event.target.value)} required value={route.label}/></label><label className="field"><span>Destino</span><input className="control" maxLength="512" onChange={(event) => updateInstitution('routes', index, 'href', event.target.value)} required value={route.href}/></label><label className="field"><span>Icono</span><select className="control" onChange={(event) => updateInstitution('routes', index, 'icon', event.target.value)} value={route.icon}><option value="file">Documento</option><option value="users">Participantes</option><option value="calendar">Calendario</option><option value="help">Ayuda</option></select></label><label className="flex items-center gap-3 text-sm font-bold"><input checked={Boolean(route.external)} onChange={(event) => updateInstitution('routes', index, 'external', event.target.checked)} type="checkbox"/>Abrir en una pestaña nueva</label></div></div>)}</fieldset><fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Preguntas frecuentes</legend><button className="button justify-self-start" onClick={addFaq} type="button"><Plus aria-hidden="true"/>Agregar pregunta</button>{content.faqs.map((faq, index) => <div className="rounded-xl border border-slate-200 p-4" key={faq.key}><div className="mb-3 flex justify-between gap-2"><strong>Pregunta {index + 1}</strong><div className="flex gap-2"><button aria-label="Subir pregunta" className="icon-action" disabled={index === 0} onClick={() => moveInstitution('faqs', index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar pregunta" className="icon-action" disabled={index === content.faqs.length - 1} onClick={() => moveInstitution('faqs', index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar pregunta" className="icon-action text-red-700" onClick={() => removeInstitution('faqs', index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><label className="field"><span>Pregunta</span><input className="control" maxLength="300" onChange={(event) => updateInstitution('faqs', index, 'question', event.target.value)} required value={faq.question}/></label><label className="field mt-3"><span>Respuesta</span><textarea className="control min-h-28" maxLength="1200" onChange={(event) => updateInstitution('faqs', index, 'answer', event.target.value)} required value={faq.answer}/></label></div>)}</fieldset></>}
         {selectedKey === 'regional-coordinations' && <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Directorio regional</legend><button className="button justify-self-start" onClick={addRegion} type="button"><Plus aria-hidden="true"/>Agregar región</button>{content.regions.map((region, regionIndex) => <div className="rounded-xl border border-slate-200 p-4" key={regionIndex}><div className="mb-3 flex justify-between gap-2"><strong>Región {regionIndex + 1}</strong><div className="flex gap-2"><button aria-label="Subir región" className="icon-action" disabled={regionIndex === 0} onClick={() => moveInstitution('regions', regionIndex, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar región" className="icon-action" disabled={regionIndex === content.regions.length - 1} onClick={() => moveInstitution('regions', regionIndex, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar región" className="icon-action text-red-700" onClick={() => removeInstitution('regions', regionIndex)} type="button"><Trash2 aria-hidden="true"/></button></div></div><label className="field"><span>Nombre de la región</span><input className="control" maxLength="180" onChange={(event) => updateRegion(regionIndex, event.target.value)} required value={region.region}/></label><div className="mt-4 grid gap-3"><button className="button justify-self-start" onClick={() => addContact(regionIndex)} type="button"><Plus aria-hidden="true"/>Agregar contacto</button>{region.contacts.map((contact, contactIndex) => { const contactPhotoUrl = contactPhotoPreviewUrls[contact.key] || storedContactPhotoUrls[contact.key] || contact.photo_url; return <div className="rounded-lg bg-slate-50 p-3" key={contact.key}><div className="flex items-start gap-2"><div className="grid flex-1 gap-3"><div className="grid gap-3 sm:grid-cols-[5rem_1fr]"><div className="aspect-[5/7] w-20 overflow-hidden rounded-md border border-slate-300 bg-white">{contactPhotoUrl ? <img alt="" className="h-full w-full object-cover" src={contactPhotoUrl}/> : <span className="flex h-full items-center justify-center text-slate-400"><UserRound aria-hidden="true" size={38}/></span>}</div><div className="grid content-start gap-2"><label className="field"><span>Fotografía del asesor (opcional)</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={(event) => chooseContactPhoto(contact.key, event.target.files?.[0] || null)} type="file"/><small>JPEG, PNG o WebP. Si no hay fotografía se mostrará una silueta.</small></label>{contactPhotoUrl && <button className="button justify-self-start" onClick={() => removeContactPhoto(contact.key)} type="button"><X aria-hidden="true"/>Retirar fotografía</button>}</div></div><label className="field"><span>Nombre</span><input className="control" maxLength="180" onChange={(event) => updateContact(regionIndex, contactIndex, 'name', event.target.value)} required value={contact.name}/></label><label className="field"><span>Correos institucionales, uno por línea</span><textarea className="control min-h-20" onChange={(event) => updateContact(regionIndex, contactIndex, 'emails', event.target.value.split(/\r?\n/))} value={contact.emails.join('\n')}/></label></div><div className="flex gap-2"><button aria-label="Subir contacto" className="icon-action" disabled={contactIndex === 0} onClick={() => moveContact(regionIndex, contactIndex, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar contacto" className="icon-action" disabled={contactIndex === region.contacts.length - 1} onClick={() => moveContact(regionIndex, contactIndex, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar contacto" className="icon-action text-red-700" onClick={() => removeContact(regionIndex, contactIndex)} type="button"><Trash2 aria-hidden="true"/></button></div></div></div> })}</div></div>)}</fieldset>}
-        {selectedKey === 'current-edition' && <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="font-black">Documentos oficiales</legend><button className="button justify-self-start" onClick={addEditionResource} type="button"><Plus aria-hidden="true"/>Agregar documento</button>{content.resources.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-600">La edición se publicará sin documentos descargables.</p>}{content.resources.map((resource, index) => <div className="rounded-xl border border-slate-200 p-4" key={resource.key}><div className="mb-3 flex justify-between gap-2"><strong>Documento {index + 1}</strong><div className="flex gap-2"><button aria-label="Subir documento" className="icon-action" disabled={index === 0} onClick={() => moveInstitution('resources', index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar documento" className="icon-action" disabled={index === content.resources.length - 1} onClick={() => moveInstitution('resources', index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar documento" className="icon-action text-red-700" onClick={() => removeInstitution('resources', index)} type="button"><Trash2 aria-hidden="true"/></button></div></div><div className="grid gap-3"><label className="field"><span>Título</span><input className="control" maxLength="180" onChange={(event) => updateInstitution('resources', index, 'title', event.target.value)} required value={resource.title}/></label><label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="700" onChange={(event) => updateInstitution('resources', index, 'description', event.target.value)} required value={resource.description}/></label><div className="grid gap-3 sm:grid-cols-2"><label className="field"><span>Formato</span><input className="control" maxLength="100" onChange={(event) => updateInstitution('resources', index, 'format', event.target.value)} required value={resource.format}/></label><label className="field"><span>Icono</span><select className="control" onChange={(event) => updateInstitution('resources', index, 'icon', event.target.value)} value={resource.icon}><option value="file">Documento</option><option value="archive">Archivo comprimido</option><option value="spreadsheet">Hoja de cálculo</option></select></label></div><label className="field"><span>Destino</span><input className="control" maxLength="512" onChange={(event) => updateInstitution('resources', index, 'href', event.target.value)} required value={resource.href}/></label></div></div>)}</fieldset>}
-        {editor.supportsImage && <label className="field"><span>Reemplazar imagen</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={chooseImage} type="file"/><small>Se almacenará en la API. Sin un archivo nuevo se conserva la imagen vigente.</small></label>}
+        {selectedKey === 'current-edition' && <fieldset className="grid gap-4 border-t border-slate-200 pt-5">
+          <legend className="text-lg font-black text-slate-900">3. Documentos oficiales</legend>
+          <p className="text-sm text-slate-600">Los archivos se organizan automáticamente con el año de la edición. El formato, el nombre y la ruta no necesitan edición manual.</p>
+          <button className="button justify-self-start" onClick={addEditionResource} type="button"><Plus aria-hidden="true"/>Agregar documento</button>
+          {content.resources.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-600">La edición se publicará sin documentos descargables.</p>}
+          {content.resources.map((resource, index) => {
+            const documentUrl = editionDocumentPreviewUrls[resource.key] || storedEditionDocumentUrls[resource.key] || resource.href
+            const documentName = editionDocumentFiles[resource.key]?.name || resource.file_name
+            const documentSize = editionDocumentFiles[resource.key]?.size || resource.file_size
+            return <div className="rounded-xl border border-slate-200 p-4" key={resource.key}>
+              <div className="mb-3 flex justify-between gap-2"><strong>Documento {index + 1}</strong><div className="flex gap-2"><button aria-label="Subir documento" className="icon-action" disabled={index === 0} onClick={() => moveInstitution('resources', index, -1)} type="button"><ArrowUp aria-hidden="true"/></button><button aria-label="Bajar documento" className="icon-action" disabled={index === content.resources.length - 1} onClick={() => moveInstitution('resources', index, 1)} type="button"><ArrowDown aria-hidden="true"/></button><button aria-label="Eliminar documento" className="icon-action text-red-700" onClick={() => removeInstitution('resources', index)} type="button"><Trash2 aria-hidden="true"/></button></div></div>
+              <div className="grid gap-3">
+                <label className="field"><span>Título</span><input className="control" maxLength="180" onChange={(event) => updateInstitution('resources', index, 'title', event.target.value)} required value={resource.title}/></label>
+                <label className="field"><span>Descripción</span><textarea className="control min-h-24" maxLength="700" onChange={(event) => updateInstitution('resources', index, 'description', event.target.value)} required value={resource.description}/></label>
+                <label className="field"><span>{documentName ? 'Reemplazar archivo PDF' : 'Subir archivo PDF'}</span><input accept="application/pdf,.pdf" className="control file-control" onChange={(event) => chooseEditionDocument(resource.key, event.target.files?.[0] || null)} required={!documentUrl} type="file"/><small>PDF de hasta 16 MB. Se conservará el archivo actual si no selecciona otro.</small></label>
+                {documentName && <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm"><strong className="block break-all text-slate-900">{documentName}</strong>{documentSize && <span className="mt-1 block text-slate-600">PDF · {formatFileSize(documentSize)}</span>}</div>}
+                {documentUrl && <div className="flex flex-wrap gap-2"><a className="icon-action gap-2 px-3" href={documentUrl} rel="noopener noreferrer" target="_blank"><ExternalLink aria-hidden="true"/>Abrir archivo</a><a className="icon-action gap-2 px-3" download={documentName || true} href={documentUrl}><Download aria-hidden="true"/>Descargar PDF</a></div>}
+              </div>
+            </div>
+          })}
+        </fieldset>}
+        {selectedKey === 'current-edition' && <>
+          <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="text-lg font-black text-slate-900">4. Plantilla de inscripción masiva</legend><p className="text-sm text-slate-600">Administra la única plantilla XLSX activa para esta edición. Sustituirla o retirarla no altera la versión pública hasta publicar el borrador.</p>{['bulk_eyebrow', 'bulk_title', 'bulk_description', 'bulk_label'].map(editionField)}<label className="field"><span>{bulkTemplateUrl ? 'Sustituir plantilla XLSX' : 'Subir plantilla XLSX'}</span><input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" className="control file-control" onChange={(event) => chooseBulkTemplate(event.target.files?.[0] || null)} type="file"/><small>Archivo XLSX válido de hasta 16 MB.</small></label>{bulkTemplateUrl ? <div className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4"><div><strong className="block break-all text-slate-900">{bulkTemplateName || 'Plantilla vigente'}</strong>{bulkTemplateSize && <span className="mt-1 block text-sm text-slate-600">XLSX · {formatFileSize(bulkTemplateSize)}</span>}</div><div className="flex flex-wrap gap-2"><a className="icon-action gap-2 px-3" download={bulkTemplateName || true} href={bulkTemplateUrl}><Download aria-hidden="true"/>Descargar XLSX</a><button className="icon-action gap-2 px-3 text-red-700" onClick={removeBulkTemplate} type="button"><Trash2 aria-hidden="true"/>Retirar plantilla</button></div></div> : <p className="rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-600">No se publicará una plantilla de inscripción masiva.</p>}</fieldset>
+          <fieldset className="grid gap-4 border-t border-slate-200 pt-5"><legend className="text-lg font-black text-slate-900">5. Promoción</legend><p className="text-sm text-slate-600">Configura la imagen institucional y el enlace al material audiovisual de la edición.</p>{['promotion_label', 'promotion_href', 'image_alt'].map(editionField)}<label className="field"><span>Reemplazar imagen promocional</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={chooseImage} type="file"/><small>Sin un archivo nuevo se conserva la imagen vigente.</small></label></fieldset>
+        </>}
+        {editor.supportsImage && selectedKey !== 'current-edition' && <label className="field"><span>Reemplazar imagen</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={chooseImage} type="file"/><small>Se almacenará en la API. Sin un archivo nuevo se conserva la imagen vigente.</small></label>}
         {editor.supportsManual && <fieldset className="grid gap-3 border-t border-slate-200 pt-5"><legend className="font-black">Manual de la edición</legend><label className="field"><span>Subir o reemplazar manual</span><input accept="application/pdf,.pdf" className="control file-control" onChange={chooseManual} type="file"/><small>PDF de hasta 16 MB. Sin un archivo nuevo se conserva el manual vigente.</small></label>{manualUrl && <div className="flex flex-wrap gap-2"><a className="icon-action gap-2 px-3" href={manualUrl} rel="noopener noreferrer" target="_blank"><ExternalLink aria-hidden="true"/>Abrir manual</a><a className="icon-action gap-2 px-3" download={manualFile?.name || content.manual_name || true} href={manualUrl}><Download aria-hidden="true"/>Descargar PDF</a></div>}</fieldset>}
-        <div className="flex flex-wrap gap-3 pt-2"><button className="button" disabled={busy || !section} type="submit"><Save aria-hidden="true"/>Guardar borrador</button><button className="button publish-button" disabled={busy || !section?.draft} onClick={publish} type="button"><Send aria-hidden="true"/>Publicar</button></div>
+        <footer className="editor-modal-actions"><p>{hasLocalChanges ? 'Guarde el borrador para conservar estos cambios.' : section?.draft ? 'Este borrador puede publicarse.' : 'No hay cambios pendientes.'}</p><div><button className="text-action" onClick={closeEditor} type="button">Cancelar</button><button className="button" disabled={busy || !hasLocalChanges} type="submit"><Save aria-hidden="true"/>Guardar borrador</button><button className="button publish-button" disabled={busy || !section?.draft || hasLocalChanges} onClick={publish} type="button"><Send aria-hidden="true"/>Publicar</button></div></footer>
       </form>
-      <div className="min-w-0"><div className="mb-3 flex items-center justify-between gap-3"><h3 className="font-black">Vista previa del borrador</h3><div className="flex gap-2" aria-label="Tamaño de la vista previa"><button aria-label="Vista móvil" aria-pressed={viewport === 'mobile'} className="icon-action" onClick={() => setViewport('mobile')} type="button"><Smartphone aria-hidden="true"/></button><button aria-label="Vista de escritorio" aria-pressed={viewport === 'desktop'} className="icon-action" onClick={() => setViewport('desktop')} type="button"><Monitor aria-hidden="true"/></button></div></div><div className={`site-preview ${viewport === 'mobile' ? 'site-preview-mobile' : ''}`}><div className="site-preview-canvas">{editor.preview(previewContent)}</div></div></div>
-    </div>
+    </section></div>}
   </section>
 }

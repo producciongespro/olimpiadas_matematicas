@@ -12,6 +12,7 @@
 - [x] Importar las 15 fotografías heredadas como diapositivas del carrusel.
 - [x] Implementar el módulo administrativo del carrusel.
 - [x] Implementar el módulo administrativo de eventos y fotografías.
+- [x] Integrar carrusel y eventos como bloques editables dentro de la copia pública continua y retirar su navegación modular.
 - [x] Conectar el carrusel público a la API.
 - [x] Reducir la altura y agregar rotación automática accesible al carrusel.
 - [x] Conectar la galería histórica a la API.

@@ -11,7 +11,7 @@
 - Una imagen nueva se valida y almacena bajo `writable/uploads/sections/hero`.
 - La base relaciona la revisión con `media_files.id`; no almacena base64 ni rutas absolutas.
 - La imagen solo es accesible públicamente cuando pertenece a una revisión publicada o a otro recurso público autorizado.
-- La vista previa administrativa reutiliza el componente de portada y permite evaluar el borrador en ancho móvil y escritorio.
+- La copia editorial reutiliza el componente de portada y responde al ancho real del navegador; no presenta controles para simular móvil o escritorio.
 - La vista previa administrativa muestra el activo de respaldo aunque la vista pública no esté levantada.
 - “Conoce OLCOMEP” permite editar antetítulo, título y dos párrafos sin exponer HTML, estilos, logotipo ni anclas a edición libre.
 - La administración permite alternar entre portada y “Conoce OLCOMEP”; cada sección conserva de forma independiente su borrador, publicación y estado editorial.
@@ -45,7 +45,10 @@
 - La vista pública y la previsualización comparten el componente regional; los datos públicos vigentes se conservan como respaldo local hasta la primera publicación editorial.
 - En la portada, únicamente los textos de los botones son editables: sus destinos oficiales permanecen protegidos en administración y la API los restablece aunque una solicitud intente modificarlos.
 - Edición vigente permite administrar el estado de inscripción, la descarga masiva y la promoción audiovisual mediante campos estructurados y enlaces validados.
-- Los documentos oficiales pueden agregarse, editarse, eliminarse y reordenarse; sus iconos pertenecen al catálogo cerrado y una colección vacía muestra un estado explícito.
+- Los documentos oficiales pueden agregarse, editarse, eliminarse y reordenarse; administración solicita el PDF y muestra su nombre, apertura y descarga sin exponer formato ni destino como campos manuales.
+- Cada PDF nuevo se valida, almacena por año con UUID, permanece privado en borrador y solo se sirve públicamente tras publicar; el formato y el icono se derivan del archivo.
+- La plantilla de inscripción masiva se administra como un único XLSX versionado por revisión: puede subirse, sustituirse o retirarse, sin exponer su destino técnico y sin cambiar la versión pública antes de publicar.
+- El formulario de Edición vigente separa claramente sus cinco capítulos editoriales mediante encabezados, descripciones y divisores accesibles.
 - La imagen promocional se valida, almacena en la API y permanece asociada a la revisión; si no se reemplaza, el borrador conserva el medio vigente.
 - La vista pública y la previsualización comparten el componente de edición vigente y conservan contenido local de respaldo cuando la API no responde.
 - Contacto permite administrar textos institucionales, teléfonos, correos y recursos adicionales mediante campos estructurados.
@@ -67,5 +70,22 @@
 - El HTML de ambas SPA exige revalidación, los bundles con hash usan caché inmutable de un año y los activos sin hash se revalidan.
 - El artefacto compilado conserva la configuración de caché y el fallback de rutas de la SPA sin interceptar archivos existentes.
 - Guardar y publicar tienen acciones, mensajes y estados claramente diferenciados.
+- El administrador presenta un lienzo continuo con las nueve secciones editoriales, reutiliza sus componentes públicos y muestra los cambios locales de la sección seleccionada dentro del contexto completo de la página.
+- La copia pública ocupa el ancho disponible y no mantiene un formulario o inspector lateral permanente.
+- La copia editorial y sus modales se validan técnicamente en 768 y 1280 px sin desbordamiento horizontal ni pérdida de controles.
+- Cada sección permite abrir un modal de edición mediante un botón con nombre accesible; el foco se traslada al título del diálogo.
+- Cada bloque se separa visualmente del anterior mediante una franja editorial con nombre completo y una acción visible “Editar {sección}”; el botón permanece unido a su propio bloque y no se vuelve adherente durante el desplazamiento.
+- Los enlaces y controles propios del contenido público no ejecutan navegación ni acciones dentro del lienzo administrativo.
+- El modal diferencia mediante texto los estados publicado, borrador pendiente y cambios sin guardar; guardar se habilita ante cambios y publicar únicamente para un borrador confirmado sin cambios locales.
+- Guardar correctamente cierra el modal y deja visible el resultado dentro de la copia pública; en móvil el modal ocupa la pantalla completa y en escritorio permanece centrado y desplazable.
+- Cerrar el modal con cambios sin guardar solicita confirmación y cancelar conserva el contenido y los archivos seleccionados.
+- Con cambios locales sin guardar, cambiar de sección, abrir otro módulo o cerrar sesión solicita confirmación antes de descartar el trabajo; cancelar conserva el contenido y los archivos seleccionados.
+- Con cambios locales sin guardar, recargar o cerrar la pestaña activa la advertencia nativa del navegador; después de guardar el borrador no se presenta la advertencia.
+- La navegación resume el total de secciones al día, con borrador pendiente y con cambios locales, sin exigir abrir cada sección.
+- El panorama editorial se actualiza después de modificar, guardar o publicar sin requerir una recarga manual.
+- No existen pestañas independientes para contenido, carrusel o eventos; las tres capacidades forman una sola copia continua de la página pública.
+- El carrusel es el primer bloque editable después del encabezado público y permite agregar, ordenar, publicar u ocultar diapositivas desde un modal contextual.
+- La galería aparece después del calendario; si no hay eventos publicados muestra una acción editorial clara, y su modal permite crear, seleccionar, editar, habilitar u ocultar eventos y administrar fotografías.
+- “Usuarios” aparece dentro de la barra de sesión únicamente cuando `profile.role` es `master`; los roles `admin` y `editor` no reciben el control.
 - Las rutas administrativas conservan autenticación JWT, autorización por rol y auditoría.
 - Los builds de ambas SPA, las pruebas de API y la aplicación/reversión de la nueva migración finalizan correctamente.

@@ -22,6 +22,6 @@ OLCOMEP utiliza registros separados para la SPA administrativa y la API. La vist
 
 Iniciar API y administrador. La pantalla debe ofrecer “Ingresar con cuenta MEP”, regresar a la SPA tras la redirección y mostrar nombre, correo y rol. Una cuenta del tenant sin autorización local activa debe recibir HTTP 403; un token inválido, vencido o de otra aplicación debe recibir HTTP 401.
 
-Master puede gestionar los tres roles; Administrador únicamente Editores; Editor no ve el módulo de usuarios. El backend impide modificar el rol o estado propio y dejar el sistema sin al menos un Master activo.
+Solo Master puede gestionar los tres roles. Administrador y Editor pueden editar contenido, pero no ven el control de usuarios y reciben 403 si intentan invocar directamente esas rutas. El backend impide modificar el rol o estado propio y dejar el sistema sin al menos un Master activo.
 
 No se deben compartir ni confirmar archivos `.env.development`, `.env.production`, tokens, secretos o identificadores reales fuera de la configuración privada del ambiente.
