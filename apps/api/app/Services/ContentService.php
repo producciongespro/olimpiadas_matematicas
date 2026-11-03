@@ -35,7 +35,7 @@ class ContentService
         $result = [];
         foreach ($this->repository->sections() as $section) {
             $revision = $this->repository->revision((int) $section['id'], 'published');
-            if ($revision !== null) $result[$section['section_key']] = $this->present($revision);
+            if ($revision !== null) $result[$section['section_key']] = $this->presentSection($section['section_key'], $revision);
         }
         return $result;
     }
@@ -60,9 +60,9 @@ class ContentService
     {
         $section = $this->requireSection($key);
         return [
-            'key' => $section['section_key'], 'label' => $section['label'], 'schema_version' => (int) $section['schema_version'],
-            'draft' => $this->nullablePresent($this->repository->revision((int) $section['id'], 'draft')),
-            'published' => $this->nullablePresent($this->repository->revision((int) $section['id'], 'published')),
+            'key' => $section['section_key'], 'label' => $key === 'general-information' ? 'Preguntas frecuentes' : $section['label'], 'schema_version' => (int) $section['schema_version'],
+            'draft' => $this->nullablePresent($section['section_key'], $this->repository->revision((int) $section['id'], 'draft')),
+            'published' => $this->nullablePresent($section['section_key'], $this->repository->revision((int) $section['id'], 'published')),
         ];
     }
 
@@ -126,10 +126,13 @@ class ContentService
             'calendar' => ['eyebrow' => 80, 'title' => 120, 'description' => 500, 'notice' => 400, 'footer' => 500, 'manual_label' => 80],
             'partners' => ['eyebrow' => 80, 'title' => 120, 'description' => 500, 'collaborators_title' => 160, 'collaborators_note' => 120, 'sponsors_title' => 160],
             'about' => ['eyebrow' => 80, 'title' => 120, 'closing_title' => 180],
-            'general-information' => ['eyebrow' => 80, 'title' => 120, 'description' => 500, 'faq_eyebrow' => 80, 'faq_title' => 160],
+            'general-information' => ['faq_eyebrow' => 80, 'faq_title' => 160],
             'regional-coordinations' => ['eyebrow' => 80, 'title' => 120, 'description' => 600, 'summary_title' => 180, 'summary_description' => 600, 'directory_title' => 180, 'search_label' => 160],
             'current-edition' => ['eyebrow' => 80, 'title' => 160, 'description' => 600, 'registration_title' => 180, 'registration_description' => 600, 'registration_label' => 120, 'bulk_eyebrow' => 80, 'bulk_title' => 180, 'bulk_description' => 600, 'bulk_label' => 120, 'promotion_label' => 120, 'image_alt' => 255],
             'contact' => ['eyebrow' => 80, 'title' => 120, 'description' => 600, 'contact_name' => 180, 'contact_role' => 240],
+            'resource-booklets' => ['eyebrow' => 80, 'title' => 120, 'description' => 600],
+            'site-header' => ['home_label' => 120, 'slogan' => 120],
+            'site-footer' => ['program_name' => 180, 'organization' => 180],
             default => throw new InvalidArgumentException('La sección todavía no admite edición.'),
         };
         $result = [];
@@ -157,7 +160,6 @@ class ContentService
             $result['milestones'] = $this->validateMilestones((string) ($input['milestones_json'] ?? ''));
         }
         if ($key === 'general-information') {
-            $result['routes'] = $this->validateInformationRoutes((string) ($input['routes_json'] ?? ''));
             $result['faqs'] = $this->validateFaqs((string) ($input['faqs_json'] ?? ''));
         }
         if ($key === 'regional-coordinations') $result['regions'] = $this->validateRegions((string) ($input['regions_json'] ?? ''));
@@ -175,7 +177,116 @@ class ContentService
             $result['emails'] = $this->validateContactEmails((string) ($input['emails_json'] ?? ''));
             $result['resources'] = $this->validateContactResources((string) ($input['resources_json'] ?? ''));
         }
+        if ($key === 'resource-booklets') $result['editions'] = $this->validateResourceEditions((string) ($input['editions_json'] ?? ''));
+        if ($key === 'site-header' || $key === 'site-footer') $result['links'] = $this->validateEditorialLinks((string) ($input['links_json'] ?? ''), $key === 'site-header');
+        if ($key === 'site-footer') $result['credits'] = $this->validateEditorialCredits((string) ($input['credits_json'] ?? ''));
         return $result;
+    }
+
+    private function validateEditorialLinks(string $json, bool $requireInformation = false): array
+    {
+        if (strlen($json) > 200_000) throw new InvalidArgumentException('La navegación supera el tamaño permitido.');
+        $items = json_decode($json, true);
+        if (! is_array($items) || ! array_is_list($items)) throw new InvalidArgumentException('Los enlaces no son válidos.');
+        $keys = [];
+        $result = array_map(function (mixed $item) use (&$keys, $requireInformation): array {
+            if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('La clave de un enlace no es válida.');
+            $key = (string) $item['key'];
+            if (isset($keys[$key])) throw new InvalidArgumentException('Hay un enlace repetido.');
+            if ($requireInformation && ($key === 'calendario' || ($item['href'] ?? '') === '#calendario')) throw new InvalidArgumentException('Calendario ya pertenece al submenú de Información.');
+            $keys[$key] = true;
+            $label = trim((string) ($item['label'] ?? ''));
+            if ($label === '' || str_contains($label, '<') || str_contains($label, '>')) throw new InvalidArgumentException('La etiqueta del enlace no es válida.');
+            if ($requireInformation && $key === 'informacion') return ['key' => $key, 'label' => 'Información', 'href' => '#preguntas-frecuentes'];
+            return ['key' => $key, 'label' => mb_substr($label, 0, 120), 'href' => $this->validateResourceHref((string) ($item['href'] ?? ''), 'href')];
+        }, $items);
+        if ($requireInformation && ! isset($keys['informacion'])) throw new InvalidArgumentException('La navegación debe conservar Información y su submenú.');
+        return $requireInformation ? $this->positionAboutLink($result) : $result;
+    }
+
+    private function positionAboutLink(array $links): array
+    {
+        $aboutIndex = array_search('acerca', array_column($links, 'key'), true);
+        if ($aboutIndex === false) return $links;
+        $about = array_splice($links, $aboutIndex, 1)[0];
+        $galleryIndex = array_search('galeria', array_column($links, 'key'), true);
+        $contactIndex = array_search('contacto', array_column($links, 'key'), true);
+        $position = $galleryIndex !== false ? $galleryIndex + 1 : ($contactIndex !== false ? $contactIndex : count($links));
+        array_splice($links, $position, 0, [$about]);
+        return $links;
+    }
+
+    private function validateEditorialCredits(string $json): array
+    {
+        if (strlen($json) > 200_000) throw new InvalidArgumentException('Los créditos superan el tamaño permitido.');
+        $items = json_decode($json, true);
+        if (! is_array($items) || ! array_is_list($items)) throw new InvalidArgumentException('Los créditos no son válidos.');
+        $keys = [];
+        return array_map(function (mixed $item) use (&$keys): array {
+            if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('La clave de un grupo de créditos no es válida.');
+            $key = (string) $item['key'];
+            if (isset($keys[$key])) throw new InvalidArgumentException('Hay un grupo de créditos repetido.');
+            $keys[$key] = true;
+            $title = trim((string) ($item['title'] ?? ''));
+            if ($title === '' || strpbrk($title, '<>') !== false) throw new InvalidArgumentException('El título de créditos no es válido.');
+            $names = $item['names'] ?? null;
+            if (! is_array($names) || ! array_is_list($names)) throw new InvalidArgumentException('Los nombres de créditos no son válidos.');
+            $names = array_map(static function (mixed $name): string { $value = trim((string) $name); if ($value === '' || strpbrk($value, '<>') !== false) throw new InvalidArgumentException('Un nombre de créditos no es válido.'); return mb_substr($value, 0, 180); }, $names);
+            return ['key' => $key, 'title' => mb_substr($title, 0, 180), 'names' => $names];
+        }, $items);
+    }
+
+    private function validateResourceEditions(string $json): array
+    {
+        if (strlen($json) > 2_000_000) throw new InvalidArgumentException('El catálogo de recursos supera el tamaño permitido.');
+        $editions = json_decode($json, true);
+        if (! is_array($editions) || ! array_is_list($editions)) throw new InvalidArgumentException('Las ediciones no son válidas.');
+        $editionKeys = [];
+        return array_map(function (mixed $edition) use (&$editionKeys): array {
+            if (! is_array($edition) || ! preg_match('/^\d{4}$/', (string) ($edition['year'] ?? ''))) throw new InvalidArgumentException('El año de una edición no es válido.');
+            $type = (string) ($edition['type'] ?? '');
+            if (! in_array($type, ['pdf', 'interactive'], true)) throw new InvalidArgumentException('El tipo de edición no es válido.');
+            $editionKey = $edition['year'] . '-' . $type;
+            if (isset($editionKeys[$editionKey])) throw new InvalidArgumentException('Hay una edición repetida.');
+            $editionKeys[$editionKey] = true;
+            $items = $edition['materials'] ?? null;
+            if (! is_array($items) || ! array_is_list($items)) throw new InvalidArgumentException('Los materiales de una edición no son válidos.');
+            $materialKeys = [];
+            $materials = array_map(function (mixed $item) use (&$materialKeys): array {
+                if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('La clave de un material no es válida.');
+                $key = $item['key'];
+                if (isset($materialKeys[$key])) throw new InvalidArgumentException('Hay un material repetido.');
+                $materialKeys[$key] = true;
+                $role = (string) ($item['role'] ?? '');
+                if (! in_array($role, ['estudiante', 'docente', 'general'], true)) throw new InvalidArgumentException('El rol de un material no es válido.');
+                $grade = $item['grade'] ?? null;
+                if ($grade !== null && (! filter_var($grade, FILTER_VALIDATE_INT) || (int) $grade < 1 || (int) $grade > 6)) throw new InvalidArgumentException('El grado de un material no es válido.');
+                $result = ['key' => $key, 'grade' => $grade === null ? null : (int) $grade, 'role' => $role];
+                foreach (['title' => 180, 'description' => 700] as $field => $limit) {
+                    $value = trim((string) ($item[$field] ?? ''));
+                    if ($value === '') throw new InvalidArgumentException("El campo {$field} de un material es obligatorio.");
+                    $result[$field] = mb_substr($value, 0, $limit);
+                }
+                $result['href'] = $this->validateResourceHref((string) ($item['href'] ?? ''), 'href');
+                foreach (['part' => 30, 'image' => 512] as $field => $limit) {
+                    $value = trim((string) ($item[$field] ?? ''));
+                    if ($value !== '') $result[$field] = $field === 'image' ? $this->validateResourceHref($value, $field) : mb_substr($value, 0, $limit);
+                }
+                return $result;
+            }, $items);
+            return ['year' => (int) $edition['year'], 'type' => $type, 'materials' => $materials];
+        }, $editions);
+    }
+
+    private function validateResourceHref(string $value, string $field): string
+    {
+        $value = trim($value);
+        if (mb_strlen($value) > 512 || preg_match('/[\x00-\x20\\\\]/', $value)) throw new InvalidArgumentException("El enlace {$field} no es válido.");
+        if (str_starts_with($value, '/') && ! str_starts_with($value, '//')) return $value;
+        if (preg_match('/^#[a-z][a-z0-9_-]*$/i', $value)) return $value;
+        $parts = parse_url($value);
+        if (! is_array($parts) || ! in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https'], true) || empty($parts['host']) || isset($parts['user']) || isset($parts['pass'])) throw new InvalidArgumentException("El enlace {$field} no es válido.");
+        return $value;
     }
 
     private function validateContactPhones(string $json): array
@@ -238,22 +349,6 @@ class ContentService
                 return ['key' => $key, 'name' => mb_substr($contactName, 0, 180), 'emails' => array_values($validEmails), 'remove_photo' => ! empty($contact['remove_photo'])];
             }, $contacts, array_keys($contacts))];
         }, $regions, array_keys($regions));
-    }
-
-    private function validateInformationRoutes(string $json): array
-    {
-        if (strlen($json) > 1_000_000) throw new InvalidArgumentException('Las rutas informativas superan el tamaño permitido.');
-        $items = json_decode($json, true);
-        if (! is_array($items)) throw new InvalidArgumentException('Las rutas informativas no son válidas.');
-        return array_map(function (mixed $item): array {
-            if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('Una ruta informativa no es válida.');
-            $icon = (string) ($item['icon'] ?? '');
-            if (! in_array($icon, ['file', 'users', 'calendar', 'help'], true)) throw new InvalidArgumentException('El icono de una ruta no es válido.');
-            $result = ['key' => $item['key'], 'icon' => $icon, 'external' => ! empty($item['external'])];
-            foreach (['title' => 180, 'description' => 700, 'label' => 255] as $field => $limit) { $value = trim((string) ($item[$field] ?? '')); if ($value === '') throw new InvalidArgumentException("El campo {$field} de una ruta es obligatorio."); $result[$field] = mb_substr($value, 0, $limit); }
-            $result['href'] = $this->validateContentHref((string) ($item['href'] ?? ''), 'href');
-            return $result;
-        }, $items);
     }
 
     private function validateFaqs(string $json): array
@@ -479,7 +574,16 @@ class ContentService
         return $section;
     }
 
-    private function nullablePresent(?array $revision): ?array { return $revision === null ? null : $this->present($revision); }
+    private function nullablePresent(string $key, ?array $revision): ?array { return $revision === null ? null : $this->presentSection($key, $revision); }
+    private function presentSection(string $key, array $revision): array
+    {
+        $presented = $this->present($revision);
+        if ($key === 'general-information') {
+            $presented['content'] = array_intersect_key($presented['content'], array_flip(['faq_eyebrow', 'faq_title', 'faqs']));
+        }
+        if ($key === 'site-header') $presented['content']['links'] = $this->positionAboutLink($presented['content']['links'] ?? []);
+        return $presented;
+    }
     private function present(array $revision): array
     {
         $content = json_decode($revision['content_json'], true, 512, JSON_THROW_ON_ERROR);

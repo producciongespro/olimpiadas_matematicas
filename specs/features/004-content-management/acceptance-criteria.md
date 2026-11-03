@@ -33,9 +33,9 @@
 - “Acerca de nosotros” permite administrar párrafos introductorios, hitos cronológicos y párrafos de cierre como colecciones dinámicas.
 - Los hitos pueden agregarse, eliminarse y reordenarse y exigen periodo, título y descripción.
 - La vista pública y la previsualización comparten el componente de historia institucional y conservan el contenido confirmado como respaldo local.
-- Información general permite agregar, editar, eliminar y reordenar rutas y preguntas frecuentes.
-- Los iconos se limitan al catálogo documentado y los enlaces se validan como anclas, rutas internas o HTTP(S).
-- La vista pública y la previsualización comparten el componente y muestran estados explícitos cuando una colección está vacía.
+- Preguntas frecuentes permite agregar, editar, eliminar y reordenar preguntas y respuestas.
+- El bloque de Información general y sus rutas no se muestran ni editan; la API conserva la clave histórica y omite los campos retirados.
+- La vista pública y la previsualización comparten el componente y muestran un estado explícito cuando la colección está vacía.
 - Coordinaciones regionales permite agregar, editar, eliminar y reordenar regiones y sus contactos, además de administrar varios correos por contacto.
 - Cada contacto regional permite cargar, reemplazar y retirar una fotografía; la relación permanece estable al editar o reordenar, y la ausencia de foto muestra una silueta sin alterar la retícula.
 - El directorio regional conserva el buscador visible y representa cada asesoría como una tarjeta en un carrusel manual responsive, sin reproducción automática, operable por toque, desplazamiento y teclado, con controles de foco visible y respeto por movimiento reducido.
@@ -70,7 +70,7 @@
 - El HTML de ambas SPA exige revalidación, los bundles con hash usan caché inmutable de un año y los activos sin hash se revalidan.
 - El artefacto compilado conserva la configuración de caché y el fallback de rutas de la SPA sin interceptar archivos existentes.
 - Guardar y publicar tienen acciones, mensajes y estados claramente diferenciados.
-- El administrador presenta un lienzo continuo con las nueve secciones editoriales, reutiliza sus componentes públicos y muestra los cambios locales de la sección seleccionada dentro del contexto completo de la página.
+- El administrador presenta un lienzo continuo con las doce secciones editoriales, reutiliza sus componentes públicos y muestra los cambios locales de la sección seleccionada dentro del contexto completo de la página.
 - La copia pública ocupa el ancho disponible y no mantiene un formulario o inspector lateral permanente.
 - La copia editorial y sus modales se validan técnicamente en 768 y 1280 px sin desbordamiento horizontal ni pérdida de controles.
 - Cada sección permite abrir un modal de edición mediante un botón con nombre accesible; el foco se traslada al título del diálogo.
@@ -89,3 +89,19 @@
 - “Usuarios” aparece dentro de la barra de sesión únicamente cuando `profile.role` es `master`; los roles `admin` y `editor` no reciben el control.
 - Las rutas administrativas conservan autenticación JWT, autorización por rol y auditoría.
 - Los builds de ambas SPA, las pruebas de API y la aplicación/reversión de la nueva migración finalizan correctamente.
+# Recursos y cuadernillos
+
+- El catálogo editorial conserva los 124 materiales iniciales y sus destinos, distribuidos en 13 ediciones.
+- Las ediciones y sus materiales pueden agregarse, quitarse y reordenarse sin modificar archivos físicos; año/tipo y claves de material repetidos se rechazan.
+- Un borrador no cambia la vista pública hasta publicar; las colecciones vacías comunican su estado.
+- La vista pública y la previsualización administrativa comparten el componente y conservan las anclas `#cuadernillos` y `#interactivos`.
+
+# Header y Footer
+
+- El Header permite editar nombre accesible, lema y navegación ordenada sin alterar marcas, menú responsive ni destino estructural de inicio.
+- El Header conserva el elemento `Información` y sus cuatro opciones protegidas; la API normaliza su etiqueta y destino y rechaza borradores que lo eliminen.
+- Calendario aparece una sola vez, dentro del submenú de Información, incluso al leer publicaciones anteriores con el enlace principal heredado o con otra clave que apunta a `#calendario`.
+- `Acerca` aparece entre `Galería` y `Contacto` en el encabezado público y la copia administrativa; se conservan sus destinos y el orden relativo de los demás enlaces.
+- “Cómo participar” lleva directamente a Edición vigente; las tarjetas heredadas de Información general se omiten en las respuestas y no pueden editarse.
+- El Footer permite editar nombre institucional, enlaces y créditos ordenados, con nombres en texto plano y destinos seguros.
+- Ambas secciones utilizan el componente público en la copia administrativa; las colecciones vacías conservan un estado legible y el borrador no cambia la publicación hasta confirmar.

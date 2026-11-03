@@ -1,11 +1,6 @@
-import { SiteFooter } from '../components/SiteFooter.jsx'
-import { SiteHeader } from '../components/SiteHeader.jsx'
-import { Booklets2025 } from '../features/booklets/Booklets2025.jsx'
-import { HistoricalBooklets } from '../features/booklets/HistoricalBooklets.jsx'
 import { PhotoGallery } from '../features/gallery/PhotoGallery.jsx'
-import { InteractiveBooklets } from '../features/interactive-booklets/InteractiveBooklets.jsx'
 import { MainCarousel } from '../features/carousel/MainCarousel.jsx'
-import { AboutUsSection, CalendarSection, ContactSection, CurrentEditionSection, GeneralInformationSection, HeroSection, OlcomepIntroductionSection, PartnersSection, RegionalCoordinationSection } from '@olcomep/ui'
+import { AboutUsSection, CalendarSection, ContactSection, CurrentEditionSection, GeneralInformationSection, HeroSection, OlcomepIntroductionSection, PartnersSection, RegionalCoordinationSection, ResourceBookletsSection, SiteHeader, SiteFooter } from '@olcomep/ui'
 import { usePublishedSiteContent } from '../hooks/usePublishedSiteContent.js'
 
 export function HomePage() {
@@ -14,7 +9,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-white text-ink">
       <a className="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
-      <SiteHeader />
+      <SiteHeader content={content['site-header']} currentEdition={content['current-edition']} />
 
       <main id="contenido-principal">
         <MainCarousel />
@@ -30,13 +25,11 @@ export function HomePage() {
         <PartnersSection content={content.partners} />
         <RegionalCoordinationSection content={content['regional-coordinations']} />
         <CurrentEditionSection content={content['current-edition']} />
-        <Booklets2025 />
-        <InteractiveBooklets />
-        <HistoricalBooklets />
+        <ResourceBookletsSection content={content['resource-booklets']} />
         <ContactSection content={content.contact} />
       </main>
 
-      <SiteFooter />
+      <SiteFooter content={content['site-footer']} />
     </div>
   )
 }

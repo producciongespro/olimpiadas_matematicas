@@ -17,13 +17,15 @@ Reproducir en React la experiencia pública existente de OLCOMEP, conservando su
 - Presentación y objetivo de OLCOMEP.
 - Sección institucional “Acerca de nosotros”.
 - Sección “Coordinaciones regionales”.
-- Sección “Información general”.
+- Sección “Preguntas frecuentes”.
 - Sección “Calendario”.
 - Sección “Colaboradores y patrocinadores”.
 - Información, inscripción y descargas de la edición vigente.
 - Cuadernillos por año, nivel y tipo de usuario.
 - Cuadernillos interactivos.
 - Contacto, créditos y enlaces institucionales.
+
+Los créditos históricos se presentan en el Footer mediante la publicación editorial `site-footer`; el contacto conserva sus propios datos y recursos. El Header y los cuadernillos también consumen sus secciones editoriales con respaldo local.
 
 ## Requisitos
 
@@ -88,9 +90,11 @@ La página reconoce el alcance de OLCOMEP en las 27 Direcciones Regionales de Ed
 
 Los datos se mantienen como contenido estático de la vista pública: no se cargan en la base de datos, no modifican el formulario externo de inscripción y no habilitan endpoints administrativos. Las inconsistencias de la fuente no se corrigen mediante suposiciones: la ficha de Coto usa el encabezado regional como autoridad frente a una descripción interna que menciona Alajuela, y el correo de Allan Pérez Calderón queda pendiente de confirmación porque el documento repite el de otra persona.
 
-### PUB-011 — Información general
+### PUB-011 — Submenú de Información y preguntas frecuentes
 
-La vista pública incluye un punto de entrada que organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes. La taxonomía toma como referencia la arquitectura de información de `https://www.obm.org.br/informacoes-gerais/`, sin copiar textos, reglas ni procesos de la olimpiada brasileña.
+El control «Información» de la navegación principal despliega un submenú con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento abre en una pestaña nueva el PDF publicado en Edición vigente, sin tarjeta intermedia. Cómo participar conduce directamente a Edición vigente, sin tarjeta intermedia. Calendario y Preguntas frecuentes conservan sus secciones propias. El submenú funciona con clic y teclado en móvil y escritorio y cierra con Escape o al seleccionar una opción.
+
+La vista pública presenta Preguntas frecuentes como sección propia y elimina el bloque de orientación y sus tarjetas. Los cuatro destinos se resuelven directamente desde el submenú. La taxonomía toma como referencia la arquitectura de información de `https://www.obm.org.br/informacoes-gerais/`, sin copiar textos, reglas ni procesos de la olimpiada brasileña.
 
 El contenido OLCOMEP se construye exclusivamente con datos confirmados en el sitio heredado, documentos institucionales y especificaciones vigentes: población de primero a sexto año, inscripción mediante formulario externo, periodo del 8 de abril al 6 de mayo de 2026, manual y reglamento 2026, materiales de preparación y directorio regional. Los temas conducen a documentos o anclas existentes, los PDF se identifican claramente y las preguntas frecuentes utilizan controles nativos operables con teclado.
 

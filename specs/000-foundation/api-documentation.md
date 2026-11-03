@@ -9,7 +9,7 @@ Mantener un contrato único, navegable y verificable para todas las rutas `/api/
 - `apps/api/app/Docs/api/openapi-v1.yaml` es la fuente canónica y usa OpenAPI 3.1.
 - Cada operación declara etiqueta, `operationId`, seguridad, entradas y respuestas relevantes.
 - Las rutas públicas declaran `security: []`; las administrativas usan `entraBearer`.
-- Las nueve secciones editoriales cuentan con esquemas estructurados y una enumeración de claves vigente.
+- Las doce secciones editoriales cuentan con esquemas estructurados y una enumeración de claves vigente; `general-information` conserva su clave histórica y entrega únicamente Preguntas frecuentes.
 - `docs:sync` genera la copia pública; no se mantiene manualmente una segunda fuente.
 - `docs:check` falla si la copia difiere o si las operaciones reales y documentadas no coinciden.
 - El portal y los documentos solo se sirven fuera de `production` y mediante una lista cerrada de archivos.

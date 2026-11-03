@@ -17,3 +17,5 @@
 - El enlace heredado a GESPRO se sustituyó por la página oficial actual de créditos de GESPRO.
 
 Los enlaces de YouTube, Calificame y GESPRO respondieron correctamente el 4 de septiembre de 2026.
+
+Desde el 3 de noviembre de 2026, los grupos de créditos se muestran en el Footer y se administran mediante la sección editorial `site-footer`. Contacto conserva sus datos y recursos propios; las publicaciones y borradores de ambas secciones son independientes.

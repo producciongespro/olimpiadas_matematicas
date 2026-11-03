@@ -48,7 +48,7 @@ La cuarta implementación cubre “Colaboradores y patrocinadores”. Ambas list
 
 La quinta implementación cubre “Acerca de nosotros”: introducción con párrafos dinámicos, cronología ordenada y cierre institucional con título y párrafos dinámicos. Los hitos permiten altas, bajas, orden, periodo, título y descripción. No se admite HTML libre y una lista vacía se representa sin romper el diseño.
 
-La sexta implementación cubre “Información general” y preguntas frecuentes conforme a `sections/general-information.md`: rutas e interrogantes son colecciones dinámicas, los iconos provienen de un catálogo cerrado y los destinos se validan como ancla, ruta del sitio o HTTP(S).
+La sexta implementación conserva la clave `general-information` para Preguntas frecuentes conforme a `sections/general-information.md`. El bloque informativo y las rutas editoriales se retiraron; la colección dinámica de preguntas y respuestas conserva edición y publicación.
 
 La séptima implementación cubre “Coordinaciones regionales” conforme a `sections/regional-coordinations.md`. El directorio editorial permanece separado de las tablas reservadas al dominio de inscripción y solo contiene información institucional destinada a publicación. Cada contacto usa una clave estable para conservar, reemplazar o retirar su fotografía versionada al editar nombres u orden; los borradores se previsualizan mediante una ruta administrativa autenticada y sin caché compartida.
 
@@ -110,7 +110,7 @@ La administración incorpora una única copia editorial de la página pública. 
 
 La vista previa resuelve sus activos de respaldo desde la propia aplicación administrativa. No requiere que `public-web` esté levantada; las imágenes persistidas por la API conservan sus URL absolutas controladas.
 
-El modo de edición visual presenta una copia continua y a ancho completo de la página pública. Compone las nueve secciones editoriales con los mismos componentes compartidos y en el mismo orden relativo de `public-web`. Cada bloque comienza con un separador editorial no adherente que incluye la etiqueta “Sección editorial”, su nombre completo y una acción explícita —por ejemplo, “Editar Portada principal”— operable por teclado. Así, la pertenencia del control no depende de su proximidad con el bloque anterior. Los enlaces, formularios y controles propios del sitio permanecen inactivos para evitar navegación accidental.
+El modo de edición visual presenta una copia continua y a ancho completo de la página pública. Compone las doce secciones editoriales con los mismos componentes compartidos y en el mismo orden relativo de `public-web`. Cada bloque comienza con un separador editorial no adherente que incluye la etiqueta “Sección editorial”, su nombre completo y una acción explícita —por ejemplo, “Editar Portada principal”— operable por teclado. Así, la pertenencia del control no depende de su proximidad con el bloque anterior. Los enlaces, formularios y controles propios del sitio permanecen inactivos para evitar navegación accidental.
 
 Al activar “Editar”, se abre un diálogo modal con todos los campos de esa sección. El diálogo ocupa la pantalla completa en móvil y una superficie centrada y desplazable en escritorio; comunica el estado publicado, borrador o cambios locales, traslada el foco a su título y concentra “Cancelar”, “Guardar borrador” y “Publicar”. Los cambios se reflejan en la copia pública local y, después de guardar correctamente, el modal se cierra para mostrar el resultado dentro de su contexto.
 
@@ -124,7 +124,7 @@ La superficie mantiene un resumen de cuántas secciones están al día o tienen 
 
 La página pública obtiene las publicaciones mediante un único hook de contenido. Este hook:
 
-- inicializa las nueve secciones implementadas con valores locales de respaldo;
+- inicializa las doce secciones implementadas con valores locales de respaldo;
 - realiza una sola consulta a `GET /api/v1/site/home` por ciclo de actualización;
 - combina cada revisión publicada con el contrato local de su sección;
 - conserva el último contenido válido cuando una consulta posterior falla;
@@ -144,7 +144,7 @@ La carga centralizada no altera la regla editorial: solo las revisiones `publish
 
 ## 7.3 Sincronización automática de páginas abiertas
 
-- La vista pública revalida las nueve secciones al recuperar el foco de la ventana.
+- La vista pública revalida las doce secciones al recuperar el foco de la ventana.
 - Cuando una pestaña vuelve al estado visible, revalida inmediatamente y reinicia su intervalo.
 - Mientras la pestaña permanece visible, revalida cada 30 segundos.
 - El intervalo se detiene cuando la pestaña queda oculta y se elimina al desmontar la página.

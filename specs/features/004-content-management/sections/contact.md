@@ -59,3 +59,6 @@ Permitir que el equipo autorizado mantenga la información institucional de cont
 - envío de correo desde la API;
 - edición de créditos, identidad visual o estructura del footer;
 - almacenamiento de mensajes o datos personales de visitantes.
+# Relación con Footer y créditos
+
+Los créditos históricos ya no forman parte de Contacto; se publican y previsualizan desde la sección editorial independiente `site-footer`.

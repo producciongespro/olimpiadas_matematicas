@@ -16,6 +16,7 @@ function loadEnvironmentFile(Paths $paths): void
         ?: null;
 
     if ($configuredEnvironment === 'testing') {
+        defined('SUPPORTPATH') || define('SUPPORTPATH', $paths->appDirectory . '/../tests/_support/');
         return;
     }
 

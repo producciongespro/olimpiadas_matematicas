@@ -77,7 +77,7 @@ button, input, select, textarea { font: inherit; }
 .editorial-site-footer img { width: 3.5rem; height: 3.5rem; border-radius: .35rem; background: white; object-fit: contain; }
 .editorial-site-footer div div { display: grid; gap: .15rem; }
 .editorial-site-footer span { color: #cbd5e1; font-size: .8rem; }
-.editorial-site-canvas main a, .editorial-site-canvas main button, .editorial-site-canvas main input, .editorial-site-canvas main summary, .editorial-site-header a { pointer-events: none; }
+.editorial-site-canvas a, .editorial-site-canvas main button, .editorial-site-canvas main input, .editorial-site-canvas main summary { pointer-events: none; }
 .editorial-canvas-section { position: relative; border: 1px solid #d8dde6; background: white; transition: border-color .15s ease, box-shadow .15s ease; }
 .editorial-site-canvas main > .editorial-canvas-section + .editorial-canvas-section { margin-top: 1.25rem; }
 .editorial-canvas-section-selected { z-index: 1; border-color: #4a245f; box-shadow: 0 0 0 3px rgb(246 181 44 / 55%); }
@@ -85,7 +85,7 @@ button, input, select, textarea { font: inherit; }
 .editorial-section-control > span { display: grid; flex: 1 1 auto; gap: .1rem; min-width: 0; }
 .editorial-section-control small { color: #64748b; font-size: .62rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
 .editorial-section-control strong { overflow-wrap: anywhere; font-size: .8rem; font-weight: 900; }
-.editorial-site-canvas main .editorial-section-control button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .4rem; border: 1px solid #4a245f; border-radius: .4rem; background: white; padding: .45rem .7rem; color: #4a245f; font-size: .75rem; font-weight: 900; text-align: center; pointer-events: auto; }
+.editorial-site-canvas .editorial-section-control button { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .4rem; border: 1px solid #4a245f; border-radius: .4rem; background: white; padding: .45rem .7rem; color: #4a245f; font-size: .75rem; font-weight: 900; text-align: center; pointer-events: auto; }
 .editorial-section-control button:hover, .editorial-section-control button[aria-pressed="true"] { background: #4a245f; color: white; }
 .editorial-section-control button:focus-visible { outline: 3px solid #f6b52c; outline-offset: 2px; }
 @media (max-width: 479px) { .editorial-section-control { align-items: stretch; flex-direction: column; } .editorial-site-canvas main .editorial-section-control button { width: 100%; } }

@@ -39,3 +39,4 @@
 - La vista pública y la previsualización reutilizan el mismo componente.
 - Los valores y activos vigentes permanecen como respaldo local si la API no está disponible.
 - Una colección de documentos vacía y una imagen temporalmente no disponible no rompen la sección.
+- El submenú «Información → Reglamento» usa el documento publicado cuya clave o título identifica «Reglamento»; al reemplazar su PDF y publicar, el enlace abre la nueva versión en una pestaña. Si no existe, el submenú indica que no está disponible.

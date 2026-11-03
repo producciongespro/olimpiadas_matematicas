@@ -4,16 +4,16 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **29-10-2026**.
+Última actualización: **03-11-2026**.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `a20c567`
-- Mensaje: `22-09-2026 Mejora la gestión editorial y consolida la documentación técnica`
-- Estado observado el 29-10-2026: la rama local estaba alineada con la referencia local de `origin/devUlate`, con cero commits adelantados y cero atrasados, antes de iniciar los cambios sin confirmar de la primera etapa del modo visual administrativo.
+- Commit de referencia: `e66cc0d`
+- Mensaje: `29-10-2026 Rediseña la edición visual y versiona documentos de la edición vigente`
+- Estado observado el 03-11-2026: la rama local estaba alineada con la referencia local de `origin/devUlate`, con cero commits adelantados y cero atrasados, antes de iniciar la incorporación editorial de Recursos, Header y Footer. La referencia remota no se actualizó mediante `git fetch` en esta sesión.
 
 El hash y la comparación con el upstream corresponden a las referencias Git disponibles localmente al momento de esta actualización. Antes de sincronizar o iniciar una nueva iteración se debe ejecutar `git fetch` y comprobar nuevamente la relación con la rama remota.
 
@@ -43,7 +43,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Están migrados encabezado, navegación, galería, presentación institucional, edición 2026, contacto y pie de página.
 - La sección “Acerca de nosotros” sintetiza el documento institucional `Antecedentes OLCOMEP.docx` mediante una cronología desde las experiencias regionales de la primera década de 2000 hasta la alianza actual con universidades públicas, e incluye las cifras de crecimiento 2022–2024 y la visión integral, humanista y STEAM.
 - La sección “Coordinaciones regionales” conserva como respaldo local las 27 fichas suministradas, con búsqueda por región, persona o correo; el gestor editorial permite publicar el directorio sin alterar las tablas de inscripción externa.
-- La sección “Información general” funciona como un centro de orientación hacia Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Adapta la arquitectura observada en la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
+- El bloque “Información general” se retiró. Preguntas frecuentes conserva sección propia; el submenú Información conduce directamente al PDF de Reglamento, Edición vigente, Calendario y Preguntas frecuentes. La arquitectura adapta la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
 - La sección “Calendario” publica las 12 actividades suministradas en `Cronograma OLCOMEP 2026.docx`, desde la inscripción del 8 de abril hasta la Premiación Nacional del 3 de diciembre; detalla la distribución de niveles para las pruebas y permite abrir o descargar el manual anual vigente.
 - La sección “Colaboradores y patrocinadores” reconoce a UCR, UNED, UNA, TEC y UTN como universidades públicas colaboradoras y al Centro Cultural Costarricense Norteamericano como patrocinador de OLCOMEP 2026; este último se presenta sin imagen hasta contar con un activo autorizado.
 - Los logotipos de las universidades aplican un zoom de 6 % al pasar el puntero, sin alterar la retícula y respetando `prefers-reduced-motion`.
@@ -61,6 +61,10 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Los años 2020 a 2022 incluyen 27 actividades interactivas con destinos directos de Genially.
 - La paridad funcional y las decisiones de migración están registradas en `docs/migration/public-site-parity.md`.
 - La vista fue auditada en 320, 768 y 1280 px sin desbordamiento horizontal ni controles menores de 44 px.
+- Recursos y cuadernillos consumen la sección editorial `resource-booklets`: el catálogo inicial preserva 124 materiales en 13 ediciones, y la vista pública y el administrador comparten el componente de presentación.
+- Header y Footer consumen sus publicaciones `site-header` y `site-footer` con respaldo local. El Header administra lema, nombre accesible y enlaces; el Footer administra identidad textual, enlaces y créditos. Las marcas y los destinos estructurales permanecen protegidos.
+- «Información» abre un submenú con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento abre el PDF vigente en otra pestaña; Cómo participar conduce directamente a Edición vigente; Calendario y Preguntas frecuentes conservan sus secciones. El enlace principal redundante de Calendario se oculta en publicaciones anteriores y se rechaza en nuevos borradores.
+- En el Header, «Acerca» se ubica entre «Galería» y «Contacto». El orden se normaliza en publicaciones anteriores y borradores sin modificar etiquetas, destinos ni el orden relativo de los demás enlaces.
 
 ### Vista administrativa
 
@@ -70,7 +74,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Incluye el primer módulo de “Contenido del sitio”, con edición estructurada de la portada, reemplazo de imagen, vista previa móvil/escritorio, guardado de borrador y publicación confirmada.
 - “Contenido del sitio” también administra “Conoce OLCOMEP”: el selector permite alternar secciones, editar antetítulo, título y dos párrafos, guardar un borrador independiente, previsualizar con el componente público compartido y publicar explícitamente.
 - El calendario es la tercera sección editorial: permite modificar textos generales, cargar o reemplazar el manual anual en PDF y administrar cualquier cantidad de actividades mediante campos estructurados. El destino del manual está protegido y se genera desde su UUID; el borrador conserva acceso privado hasta publicar.
-- El módulo “Contenido del sitio” presenta una copia continua y a ancho completo de la página pública con las nueve secciones compartidas y en su orden real. No mantiene un formulario lateral ni exige localizar la sección en pestañas administrativas; cada bloque ofrece su acción contextual “Editar”.
+- El módulo “Contenido del sitio” presenta una copia continua y a ancho completo de la página pública con las doce secciones compartidas y en su orden real. No mantiene un formulario lateral ni exige localizar la sección en pestañas administrativas; cada bloque ofrece su acción contextual “Editar”.
 - “Editar” abre un modal con todos los campos de la sección, estado textual y acciones “Cancelar”, “Guardar borrador” y “Publicar”. El modal ocupa la pantalla completa en móvil y una superficie centrada y desplazable en escritorio; al guardar correctamente se cierra y deja visible el resultado dentro de la copia pública.
 - Guardar y publicar permanecen separados; publicar exige un borrador confirmado y se bloquea ante cambios locales. Cerrar el modal, cambiar de módulo o cerrar sesión protege los cambios y archivos seleccionados mediante confirmación; cerrar o recargar la pestaña usa la advertencia nativa del navegador.
 - La superficie resume cuántas secciones están al día o tienen borrador pendiente, responde al ancho real del navegador y mantiene inactivos los enlaces y controles públicos para evitar navegación accidental. Los controles de simulación móvil/escritorio fueron retirados; la revisión responsive se conserva como validación técnica en 768 y 1280 px.
@@ -79,7 +83,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - “Usuarios” se trasladó al contenedor de sesión, junto a “Actualizar contenido” y “Cerrar sesión”, y solo se renderiza cuando `profile.role` es `master`; abre la gestión existente dentro de un modal independiente.
 - “Colaboradores y patrocinadores” es la cuarta sección editorial: administra listas independientes con altas, bajas, orden, enlaces, descripciones y logotipos opcionales vinculados a cada revisión.
 - “Acerca de nosotros” es la quinta sección editorial: administra párrafos introductorios, cronología y párrafos de cierre; los hitos y textos pueden agregarse, eliminarse y reordenarse dentro de un borrador independiente.
-- “Información general” es la sexta sección editorial: administra rutas informativas y preguntas frecuentes con altas, bajas y orden, destinos validados e iconos seleccionados desde un catálogo controlado.
+- La clave editorial histórica `general-information` administra únicamente Preguntas frecuentes con altas, bajas y orden; el editor y la API ocultan los campos de rutas y presentación retirados.
 - “Coordinaciones regionales” es la séptima sección editorial: administra encabezados, regiones, contactos y múltiples correos con altas, bajas y orden; la búsqueda pública filtra por región, persona o correo.
 - “Edición vigente” es la octava sección editorial: administra estado de inscripción, documentos descargables dinámicos, inscripción masiva, promoción audiovisual e imagen versionada.
 - Su encabezado incorpora el logotipo oficial de OLCOMEP con dimensiones reservadas y alternativa vacía porque el nombre aparece como texto adyacente.
@@ -106,7 +110,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - La identidad validada se comparte mediante un contexto de autenticación tipado y reiniciado por solicitud; filtros, auditoría y controladores ya no agregan propiedades dinámicas a `IncomingRequest` bajo PHP 8.2.
 - La arquitectura acordada es `Controller → Service → Repository → Database`.
 - El README y el contrato OpenAPI identifican visualmente la API mediante `public/assets/logo-olcomep.png`.
-- La documentación técnica tiene una única fuente canónica OpenAPI 3.1 en `apps/api/app/Docs/api/openapi-v1.yaml`; cubre las 32 operaciones, las nueve secciones editoriales, caché, errores y seguridad pública/administrativa.
+- La documentación técnica tiene una única fuente canónica OpenAPI 3.1 en `apps/api/app/Docs/api/openapi-v1.yaml`; cubre las 32 operaciones, las doce secciones editoriales, caché, errores y seguridad pública/administrativa.
 - En desarrollo, `/docs` presenta el contrato mediante Swagger UI servido íntegramente desde activos locales y enlaza guías de integración, seguridad, operaciones, errores y mantenimiento. El portal no depende de CDN, no se registra en producción y solo sirve archivos incluidos en listas cerradas.
 - `php spark docs:sync` publica una copia generada del contrato y `php spark docs:check` comprueba su SHA-256 y la correspondencia exacta entre OpenAPI y las rutas `/api/v1`.
 - Las dependencias PHP están fijadas en `composer.lock`; `vendor/` no se confirma en Git.
@@ -145,7 +149,7 @@ El seeder inicial registra de forma idempotente únicamente la edición OLCOMEP 
 - Entorno local de la API: `docs/migration/api-local-environment.md`.
 - Inicialización de MariaDB: `docs/migration/mysql-initialization.md`.
 - Respaldo, restauración y persistencia de medios: `docs/development/backup-restore-media.md`.
-- Las nueve secciones editoriales implementadas cuentan con especificación individual en `specs/features/004-content-management/sections/`.
+- Las doce secciones editoriales implementadas cuentan con especificación individual en `specs/features/004-content-management/sections/`.
 
 Las tareas fundacionales registradas en `specs/000-foundation/tasks.md` están completadas. La administración ya cubre contenido, medios y usuarios, y la API dispone de los endpoints relacionados; continúan pendientes la ampliación de capacidades de negocio, la configuración real de Entra ID, las validaciones integrales y el despliegue.
 
@@ -367,6 +371,21 @@ Verificación del 29-10-2026:
 - “Edición vigente” administra ahora sus documentos oficiales mediante carga PDF en lugar de campos manuales de formato, icono y destino. El editor solicita el año, muestra el nombre y tamaño del archivo actual y permite abrirlo, descargarlo o reemplazarlo. La API valida PDF de hasta 16 MB, almacena cada archivo con UUID bajo `sections/current-edition/{año}`, conserva la relación por revisión y mantiene un reemplazo privado hasta publicar; los destinos incluidos históricamente siguen funcionando como compatibilidad. El contrato OpenAPI canónico y su copia pública quedaron sincronizados. El build de `admin-web` finalizó con 1 748 módulos y `ContentEditor` de 102,02 kB; `composer --working-dir=apps/api verify` confirmó 45 pruebas, 178 aserciones y correspondencia exacta con las rutas `/api/v1`.
 - La plantilla de inscripción masiva de “Edición vigente” dejó de exponer un destino editable y se administra como un único XLSX por revisión: puede subirse, sustituirse o retirarse, conserva la versión pública mientras el cambio sea borrador y mantiene las relaciones históricas al publicar. La validación comprueba extensión, firma ZIP y estructura mínima XLSX sin depender de `ZipArchive`; el archivo se almacena con UUID bajo el año editorial. El formulario quedó organizado en cinco capítulos numerados —información principal, inscripción, documentos, plantilla y promoción— con descripciones y divisores semánticos. Los builds de `admin-web` y `public-web` finalizaron correctamente; `composer --working-dir=apps/api verify` confirmó 46 pruebas, 185 aserciones y OpenAPI sincronizado.
 
+Verificación del 03-11-2026:
+
+- Se incorporaron `resource-booklets`, `site-header` y `site-footer` al catálogo editorial con borrador y publicación independientes. El generador conserva 13 ediciones y 124 materiales (12 de 2025, 85 históricos y 27 interactivos), y prepara las imágenes decorativas para la copia administrativa.
+- `npm run build --workspace=@olcomep/public-web` y `npm run build --workspace=@olcomep/admin-web` finalizaron correctamente con 1 611 y 1 752 módulos transformados, respectivamente.
+- `php apps/api/spark docs:sync` regeneró la copia pública de OpenAPI. Con `CI_ENVIRONMENT=testing`, `composer --working-dir=apps/api verify` confirmó 50 pruebas, 198 aserciones y correspondencia exacta entre OpenAPI y las rutas `/api/v1`.
+- El ambiente local restringe el acceso de procesos PHP a dependencias y archivos `.env` en ejecución ordinaria; la verificación de Composer se ejecutó con acceso autorizado a dependencias locales y entorno de pruebas, sin leer ni mostrar secretos. La aceptación administrativa con cuenta MEP sigue pendiente.
+- El submenú de Información se verificó en el navegador local a 320, 1280 y 1600 px: cuatro destinos internos, regreso de foco con Escape, cierre tras seleccionar, anclas existentes y ausencia de desbordamiento horizontal. Se retiró el enlace principal duplicado de Calendario; las publicaciones previas se filtran en el cliente.
+- Tras ese ajuste, los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos transformados. `php apps/api/spark docs:sync` regeneró el contrato público y `composer --working-dir=apps/api verify` confirmó 52 pruebas, 204 aserciones y OpenAPI sincronizado con `/api/v1`.
+- «Cómo participar» en el submenú lleva ahora directamente a `#edicion-vigente`; se retiró su tarjeta de Información general. La API oculta la tarjeta en revisiones anteriores y rechaza volver a crearla en borradores. Ambos builds finalizaron con 1 611 y 1 752 módulos transformados; `docs:sync` actualizó OpenAPI y `composer --working-dir=apps/api verify` confirmó 53 pruebas, 209 aserciones y correspondencia exacta con `/api/v1`. En el navegador local se comprobó el destino `#edicion-vigente` y que Información general muestra solo Reglamento, Calendario y Preguntas frecuentes.
+- «Reglamento» en el submenú toma ahora el PDF de la revisión publicada de Edición vigente y usa una pestaña nueva. La tarjeta intermedia se retiró también de respuestas públicas y administrativas antiguas; la API rechaza recrearla. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 53 pruebas, 210 aserciones y correspondencia exacta con `/api/v1`. En el navegador local se comprobó que Información general conserva solo Calendario y Preguntas frecuentes y que el enlace de Reglamento apunta al PDF 2026 con `target="_blank"` y `rel="noopener noreferrer"`.
+- Se retiró el bloque público «Orientación para participar / Información general» completo. Preguntas frecuentes conserva su ancla y edición bajo la clave histórica `general-information`; el editor y las respuestas de la API exponen solo antetítulo, título y preguntas, aunque las revisiones antiguas tengan tarjetas. El destino estructural del elemento Información se normaliza a `#preguntas-frecuentes`. Calendario permanece únicamente en el submenú, sin enlace principal duplicado. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 53 pruebas, 210 aserciones y correspondencia exacta con `/api/v1`. El navegador local confirmó ausencia de `#informacion-general`, presencia de `#preguntas-frecuentes` y Calendario solo en el submenú.
+- Se reforzó la retirada de Calendario como enlace principal: el cliente y el componente compartido filtran tanto la clave `calendario` como cualquier enlace heredado a `#calendario`; la API rechaza ambos en nuevos borradores. Calendario continúa en el submenú de Información. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 54 pruebas, 212 aserciones y correspondencia exacta con `/api/v1`.
+- «Acerca» se movió entre «Galería» y «Contacto» en valores predeterminados, publicaciones previas y borradores del Header, conservando `#acerca-de-nosotros` y los demás destinos. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 55 pruebas, 215 aserciones y correspondencia exacta con `/api/v1`. El navegador local confirmó el orden Galería → Acerca → Contacto y sus anclas.
+- Estado final de la iteración antes del commit: doce secciones editoriales publicables, incluidos Recursos y cuadernillos, Header y Footer. La navegación de Información tiene cuatro opciones directas; el bloque de Información general se retiró y la clave histórica conserva únicamente Preguntas frecuentes. Calendario aparece solo en el submenú y Acerca ocupa su nueva posición. Se revisaron las especificaciones de secciones, criterios, tareas, contrato canónico y copia generada de OpenAPI, guía de API y documentación de créditos. La aceptación real con sesión MEP y la prueba controlada de interrupción/restauración de API siguen pendientes.
+
 ## 9. Regla de commits y sincronización
 
 - Formato obligatorio: `DD-MM-YYYY Descripción amplia en español`.
@@ -382,7 +401,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Validar con una sesión MEP autorizada el ciclo editorial de las nueve secciones, incluyendo contacto, carga de logotipos, cronología, rutas informativas, directorio regional y Edición vigente.
+1. Validar con una sesión MEP autorizada el ciclo editorial de las doce secciones, incluyendo recursos, Header, Footer, contacto, carga de logotipos, cronología, preguntas frecuentes, directorio regional y Edición vigente.
 2. Corregir el destino de foco del enlace de salto, ampliar las áreas táctiles señaladas y validar manualmente con lector de pantalla real y una herramienta especializada de contraste.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
@@ -393,7 +412,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 11. Próximo paso recomendado
 
-Iniciar sesión con una identidad MEP autorizada y validar el flujo real de las nueve secciones editoriales. Después, completar las secciones pendientes de Recursos y cuadernillos, Header y navegación, y Footer y créditos conforme a sus especificaciones individuales.
+Iniciar sesión con una identidad MEP autorizada y validar el flujo real de las doce secciones editoriales. Completar la inspección visual móvil y escritorio de los tres bloques incorporados el 03-11-2026 y los ajustes de accesibilidad pendientes antes de producción.
 
 ## 12. Prompt para retomar con Codex
 

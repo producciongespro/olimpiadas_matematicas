@@ -1,25 +1,23 @@
-# Información general (`general-information`)
+# Preguntas frecuentes (`general-information`)
+
+## Alcance y compatibilidad
+
+La clave editorial y de API `general-information` se conserva para mantener las revisiones existentes. La sección pública muestra únicamente Preguntas frecuentes. Se eliminan el bloque «Orientación para participar / Información general» y todas sus tarjetas; Reglamento, Cómo participar y Calendario se alcanzan desde el submenú de Información.
 
 ## Campos editables
 
-- Antetítulo, título y descripción de apertura.
-- Antetítulo y título de preguntas frecuentes.
-- Rutas informativas: título, descripción, texto accesible del enlace, destino, indicador de enlace externo e icono de catálogo.
-- Preguntas frecuentes: pregunta y respuesta.
+- Antetítulo y título de Preguntas frecuentes.
+- Colección ordenada de preguntas y respuestas, con altas, bajas y reordenamiento sin máximo funcional fijo.
 
-## Colecciones
+## Campos protegidos y validaciones
 
-- Las rutas y preguntas permiten agregar, editar, eliminar y reordenar sin máximo funcional fijo.
-- El catálogo de iconos permitido es `file`, `users`, `calendar` y `help`; no se aceptan clases, SVG ni código arbitrario.
-- Los enlaces admiten anclas internas, rutas absolutas del sitio y HTTP(S). Los externos se abren de forma segura.
-- Las colecciones vacías muestran un estado explícito y no rompen la navegación.
+- Ancla `#preguntas-frecuentes`, estructura semántica, acordeón y jerarquía de encabezados.
+- Títulos y textos obligatorios con límites del contrato; las preguntas y respuestas son texto plano.
+- El servidor acepta `faq_eyebrow`, `faq_title` y `faqs_json` al guardar. Ignora campos heredados de rutas y presentación. Las respuestas públicas y administrativas omiten `routes`, `eyebrow`, `title` y `description` de revisiones antiguas.
 
-## Campos protegidos
+## Estados y aceptación
 
-- Anclas `#informacion-general` y `#preguntas-frecuentes`, estructura semántica, estilos, acordeón y jerarquía de encabezados.
-
-## Flujo y aceptación
-
-- Borrador, copia editorial responsive según el ancho real del navegador y publicación confirmada.
-- La vista pública conserva el contenido actual como respaldo cuando la API falla.
-- La API valida longitudes, iconos y destinos y rechaza HTML libre.
+- Borrador, copia editorial responsive y publicación confirmada. La publicación vigente no cambia hasta confirmar.
+- Una colección vacía muestra un mensaje explícito y no rompe el ancla ni la navegación.
+- El editor administrativo se denomina «Preguntas frecuentes» y permite editar únicamente los campos vigentes.
+- La vista pública conserva las preguntas predeterminadas como respaldo si la API falla.

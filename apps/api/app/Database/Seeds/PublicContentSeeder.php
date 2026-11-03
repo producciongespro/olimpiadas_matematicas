@@ -93,14 +93,7 @@ class PublicContentSeeder extends Seeder
     ];
 
     private const GENERAL_INFORMATION = [
-        'eyebrow' => 'Orientación para participar', 'title' => 'Información general', 'description' => 'Encuentre los documentos, fechas y recorridos principales para conocer y participar en OLCOMEP.',
         'faq_eyebrow' => 'Respuestas rápidas', 'faq_title' => 'Preguntas frecuentes',
-        'routes' => [
-            ['key' => 'reglamento', 'title' => 'Reglamento', 'description' => 'Normas, condiciones y disposiciones oficiales para la edición OLCOMEP 2026.', 'href' => '/data/2026/reglamento-OLCOMEP-2026.pdf', 'label' => 'Abrir reglamento 2026 en PDF', 'icon' => 'file', 'external' => true],
-            ['key' => 'participar', 'title' => 'Cómo participar', 'description' => 'Participación dirigida a estudiantes de primero a sexto año de Educación Primaria mediante el proceso oficial de inscripción.', 'href' => '#edicion-vigente', 'label' => 'Consultar cómo participar en la edición vigente', 'icon' => 'users'],
-            ['key' => 'calendario', 'title' => 'Calendario', 'description' => 'El periodo de inscripción publicado para 2026 estuvo habilitado del 8 de abril al 6 de mayo.', 'href' => '#calendario', 'label' => 'Consultar el calendario oficial de OLCOMEP 2026', 'icon' => 'calendar'],
-            ['key' => 'preguntas', 'title' => 'Preguntas frecuentes', 'description' => 'Respuestas rápidas sobre población participante, inscripción, preparación y consultas regionales.', 'href' => '#preguntas-frecuentes', 'label' => 'Ir a preguntas frecuentes de OLCOMEP', 'icon' => 'help'],
-        ],
         'faqs' => [
             ['key' => 'participantes', 'question' => '¿Quiénes pueden participar?', 'answer' => 'Estudiantes de primero a sexto año diurno de la Educación General Básica de Costa Rica, de acuerdo con las condiciones establecidas para cada edición.'],
             ['key' => 'inscripcion', 'question' => '¿Cómo se realiza la inscripción?', 'answer' => 'La inscripción continúa mediante el formulario oficial externo. El periodo correspondiente a 2026 estuvo habilitado del 8 de abril al 6 de mayo y actualmente se encuentra cerrado.'],
@@ -158,13 +151,40 @@ class PublicContentSeeder extends Seeder
         $partnersRevisionId = $this->ensureSection('partners', 'Colaboradores y patrocinadores', self::PARTNERS, $now);
         $this->ensurePartnerMedia($partnersRevisionId, $now);
         $this->ensureSection('about', 'Acerca de nosotros', self::ABOUT, $now);
-        $this->ensureSection('general-information', 'Información general', self::GENERAL_INFORMATION, $now);
+        $this->ensureSection('general-information', 'Preguntas frecuentes', self::GENERAL_INFORMATION, $now);
         $regionalContent = self::REGIONAL_COORDINATIONS;
         $regionalContent['regions'] = json_decode((string) file_get_contents(APPPATH . 'Database/Seeds/Data/regional-coordinations.json'), true, 512, JSON_THROW_ON_ERROR);
         $this->ensureSection('regional-coordinations', 'Coordinaciones regionales', $regionalContent, $now);
         $editionMediaId = $this->ensureSectionMedia('current-edition', 'current-edition/centro-cultural.jpg', 'centro-cultural.jpg', 'Imagen promocional de la edición vigente', $now);
         $this->ensureSection('current-edition', 'Edición vigente', self::CURRENT_EDITION, $now, $editionMediaId);
         $this->ensureSection('contact', 'Contacto', self::CONTACT, $now);
+        $resourceContent = json_decode((string) file_get_contents(APPPATH . 'Database/Seeds/Data/resource-booklets.json'), true, 512, JSON_THROW_ON_ERROR);
+        $this->ensureSection('resource-booklets', 'Recursos y cuadernillos', $resourceContent, $now);
+        $this->ensureSection('site-header', 'Header y navegación', [
+            'home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria',
+            'links' => [
+                ['key' => 'informacion', 'label' => 'Información', 'href' => '#preguntas-frecuentes'],
+                ['key' => 'regionales', 'label' => 'Regionales', 'href' => '#coordinaciones-regionales'],
+                ['key' => 'edicion', 'label' => 'Edición 2026', 'href' => '#edicion-vigente'],
+                ['key' => 'practica', 'label' => 'Práctica', 'href' => '#cuadernillos'],
+                ['key' => 'interactivos', 'label' => 'Interactivos', 'href' => '#interactivos'],
+                ['key' => 'galeria', 'label' => 'Galería', 'href' => '#galeria'],
+                ['key' => 'acerca', 'label' => 'Acerca', 'href' => '#acerca-de-nosotros'],
+                ['key' => 'contacto', 'label' => 'Contacto', 'href' => '#contacto'],
+            ],
+        ], $now);
+        $this->ensureSection('site-footer', 'Footer y créditos', [
+            'program_name' => 'Olimpiadas Matemáticas OLCOMEP', 'organization' => 'Ministerio de Educación Pública de Costa Rica',
+            'links' => [
+                ['key' => 'mep', 'label' => 'Sitio oficial del MEP', 'href' => 'https://www.mep.go.cr/'],
+                ['key' => 'gespro', 'label' => 'Conozca GESPRO', 'href' => 'https://recursos.mep.go.cr/creditos_gespro/'],
+            ],
+            'credits' => [
+                ['key' => 'asesoria', 'title' => 'Asesoría curricular', 'names' => ['Yeri Charpentier Díaz']],
+                ['key' => 'gespro', 'title' => 'Recursos tecnológicos — GESPRO', 'names' => ['Patricia Hernández Conejo', 'Óscar Pérez Ramírez', 'Luis Chacón Campos']],
+                ['key' => 'diseno', 'title' => 'Diseño gráfico', 'names' => ['Mariana Molina Rojas']],
+            ],
+        ], $now);
     }
 
     private function ensureSection(string $key, string $label, array $content, string $now, ?int $mediaId = null): int

@@ -1,0 +1,1228 @@
+{
+  "eyebrow": "Recursos de preparación",
+  "title": "Colección de cuadernillos",
+  "description": "Estos materiales recopilan ejercicios aplicados en etapas circuitales y regionales. Ofrecen a estudiantes y docentes un panorama de los problemas que pueden encontrar durante las eliminatorias.",
+  "editions": [
+    {
+      "year": 2025,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2025-estudiante-1",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_1ero_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-01-2025.png"
+        },
+        {
+          "key": "2025-estudiante-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_2do_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-02-2025.png"
+        },
+        {
+          "key": "2025-estudiante-3",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_3ero_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-03-2025.png"
+        },
+        {
+          "key": "2025-estudiante-4",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_4to_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-04-2025.png"
+        },
+        {
+          "key": "2025-estudiante-5",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_5to_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-05-2025.png"
+        },
+        {
+          "key": "2025-estudiante-6",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo para estudiantes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_6to_2025-ESTUDIANTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-06-2025.png"
+        },
+        {
+          "key": "2025-docente-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_1ero_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-01-2025-docente.png"
+        },
+        {
+          "key": "2025-docente-2",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_2do_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-02-2025-docente.png"
+        },
+        {
+          "key": "2025-docente-3",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_3ero_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-03-2025-docente.png"
+        },
+        {
+          "key": "2025-docente-4",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_4to_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-04-2025-docente.png"
+        },
+        {
+          "key": "2025-docente-5",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_5to_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-05-2025-docente.png"
+        },
+        {
+          "key": "2025-docente-6",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo para docentes · PDF",
+          "href": "/data/2025/cuadernillos/cuadernillo_mateamtica_6to_2025-DOCENTE.pdf",
+          "image": "/assets/legacy/booklets/2025/ico-06-2025-docente.png"
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2024-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-1.png"
+        },
+        {
+          "key": "2024-estudiante-2-1",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_2er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-2.png"
+        },
+        {
+          "key": "2024-estudiante-3-2",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-3.png"
+        },
+        {
+          "key": "2024-estudiante-4-3",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_4er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-4.png"
+        },
+        {
+          "key": "2024-estudiante-5-4",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_5er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-5.png"
+        },
+        {
+          "key": "2024-estudiante-6-5",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2024 · PDF",
+          "href": "/data/2024/cuadernillo_estudiante_6er.grado.pdf",
+          "image": "/assets/legacy/booklets/2024/alumno-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2023-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-1.png"
+        },
+        {
+          "key": "2023-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-1.png"
+        },
+        {
+          "key": "2023-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_2er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-2.png"
+        },
+        {
+          "key": "2023-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_2er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-2.png"
+        },
+        {
+          "key": "2023-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-3.png"
+        },
+        {
+          "key": "2023-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-3.png"
+        },
+        {
+          "key": "2023-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-4.png"
+        },
+        {
+          "key": "2023-docente-4-7",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-4.png"
+        },
+        {
+          "key": "2023-estudiante-5-8",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-5.png"
+        },
+        {
+          "key": "2023-docente-5-9",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-5.png"
+        },
+        {
+          "key": "2023-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_estudiante_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/alumno-6.png"
+        },
+        {
+          "key": "2023-docente-6-11",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2023 · PDF",
+          "href": "/data/2023/cuadernillo_docente_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2023/docente-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2022-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-1.png"
+        },
+        {
+          "key": "2022-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-1.png"
+        },
+        {
+          "key": "2022-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_2er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-2.png"
+        },
+        {
+          "key": "2022-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_2er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-2.png"
+        },
+        {
+          "key": "2022-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-3.png"
+        },
+        {
+          "key": "2022-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-3.png"
+        },
+        {
+          "key": "2022-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-4.png"
+        },
+        {
+          "key": "2022-docente-2-7",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_4to.grado-2.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-4.png"
+        },
+        {
+          "key": "2022-estudiante-2-8",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_5to.grado-2.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-5.png"
+        },
+        {
+          "key": "2022-docente-2-9",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_5to.grado-2.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-5.png"
+        },
+        {
+          "key": "2022-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_estudiante_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2022/alumno-6.png"
+        },
+        {
+          "key": "2022-docente-2-11",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2022 · PDF",
+          "href": "/data/2022/cuadernillo_docente_6to.grado-2.pdf",
+          "image": "/assets/legacy/booklets/2022/docente-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2021-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-1.png"
+        },
+        {
+          "key": "2021-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-1.png"
+        },
+        {
+          "key": "2021-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_2do.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-2.png"
+        },
+        {
+          "key": "2021-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_2do.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-2.png"
+        },
+        {
+          "key": "2021-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-3.png"
+        },
+        {
+          "key": "2021-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-3.png"
+        },
+        {
+          "key": "2021-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-4.png"
+        },
+        {
+          "key": "2021-docente-4-7",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-4.png"
+        },
+        {
+          "key": "2021-estudiante-5-8",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-5.png"
+        },
+        {
+          "key": "2021-docente-5-9",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-5.png"
+        },
+        {
+          "key": "2021-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_estudiante_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/alumno-6.png"
+        },
+        {
+          "key": "2021-docente-6-11",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2021 · PDF",
+          "href": "/data/2021/cuadernillo_docente_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2021/docente-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2020-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-1.png"
+        },
+        {
+          "key": "2020-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_1er.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-1.png"
+        },
+        {
+          "key": "2020-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_2do.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-2.png"
+        },
+        {
+          "key": "2020-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_2do.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-2.png"
+        },
+        {
+          "key": "2020-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-3.png"
+        },
+        {
+          "key": "2020-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_3er.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-3.png"
+        },
+        {
+          "key": "2020-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-4.png"
+        },
+        {
+          "key": "2020-docente-4-7",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_4to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-4.png"
+        },
+        {
+          "key": "2020-estudiante-5-8",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-5.png"
+        },
+        {
+          "key": "2020-docente-5-9",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_5to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-5.png"
+        },
+        {
+          "key": "2020-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_estudiante_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-alumno-6.png"
+        },
+        {
+          "key": "2020-docente-6-11",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2020 · PDF",
+          "href": "/data/2020/Cuadernillo_docente_6to.grado.pdf",
+          "image": "/assets/legacy/booklets/2020/olimpiadas-mate-docente-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2019-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-1-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-1.png"
+        },
+        {
+          "key": "2019-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-1-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-1.png"
+        },
+        {
+          "key": "2019-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-2-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-2.png"
+        },
+        {
+          "key": "2019-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-2-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-2.png"
+        },
+        {
+          "key": "2019-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-3-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-3.png"
+        },
+        {
+          "key": "2019-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-3-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-3.png"
+        },
+        {
+          "key": "2019-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-4-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-4.png"
+        },
+        {
+          "key": "2019-docente-4-7",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-4-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-4.png"
+        },
+        {
+          "key": "2019-estudiante-5-8",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-5-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-5.png"
+        },
+        {
+          "key": "2019-docente-5-9",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-5-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-5.png"
+        },
+        {
+          "key": "2019-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-est-6-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/e-2019-6.png"
+        },
+        {
+          "key": "2019-docente-6-11",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2019 · PDF",
+          "href": "/data/2019/cuadernillo-doc-6-2019.pdf",
+          "image": "/assets/legacy/booklets/2019/d-2019-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2018-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-est-1-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-1.png"
+        },
+        {
+          "key": "2018-docente-1-1",
+          "grade": 1,
+          "role": "docente",
+          "title": "Primer año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-doc-1-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-1.png"
+        },
+        {
+          "key": "2018-estudiante-2-2",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-est-2-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-2.png"
+        },
+        {
+          "key": "2018-docente-2-3",
+          "grade": 2,
+          "role": "docente",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-doc-2-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-2.png"
+        },
+        {
+          "key": "2018-estudiante-3-4",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-est-3-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-3.png"
+        },
+        {
+          "key": "2018-docente-3-5",
+          "grade": 3,
+          "role": "docente",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-doc-3-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-3.png"
+        },
+        {
+          "key": "2018-estudiante-4-6",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-est-4-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-4.png"
+        },
+        {
+          "key": "2018-docente-4-7",
+          "grade": 4,
+          "role": "docente",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-doc-4-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-4.png"
+        },
+        {
+          "key": "2018-estudiante-5-8",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-est-5-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-5.png"
+        },
+        {
+          "key": "2018-docente-5-9",
+          "grade": 5,
+          "role": "docente",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/cuadernillo-doc-5-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-5.png"
+        },
+        {
+          "key": "2018-estudiante-6-10",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/apoyo-estudiantes-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/e-2018-6.png"
+        },
+        {
+          "key": "2018-docente-6-11",
+          "grade": 6,
+          "role": "docente",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2018 · PDF",
+          "href": "/data/2018/apoyo-docente-2018.pdf",
+          "image": "/assets/legacy/booklets/2018/d-2018-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2017-estudiante-1-0",
+          "grade": 1,
+          "role": "estudiante",
+          "title": "Primer año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo1-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-1.png"
+        },
+        {
+          "key": "2017-estudiante-2-1",
+          "grade": 2,
+          "role": "estudiante",
+          "title": "Segundo año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo2-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-2.png"
+        },
+        {
+          "key": "2017-estudiante-3-2",
+          "grade": 3,
+          "role": "estudiante",
+          "title": "Tercer año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo3-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-3.png"
+        },
+        {
+          "key": "2017-estudiante-4-3",
+          "grade": 4,
+          "role": "estudiante",
+          "title": "Cuarto año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo4-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-4.png"
+        },
+        {
+          "key": "2017-estudiante-5-4",
+          "grade": 5,
+          "role": "estudiante",
+          "title": "Quinto año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo5-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-5.png"
+        },
+        {
+          "key": "2017-estudiante-6-5",
+          "grade": 6,
+          "role": "estudiante",
+          "title": "Sexto año",
+          "description": "Cuadernillo 2017 · PDF",
+          "href": "/data/2017/cuadernillo6-2017.pdf",
+          "image": "/assets/legacy/booklets/2017/e-2017-6.png"
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "type": "pdf",
+      "materials": [
+        {
+          "key": "2016-general-general-0",
+          "grade": null,
+          "role": "general",
+          "title": "Colección completa",
+          "description": "Cuadernillo 2016 · PDF",
+          "href": "/data/2016/Cuadernillo-2016.pdf",
+          "image": "/assets/legacy/booklets/2016/2016.png"
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "type": "interactive",
+      "materials": [
+        {
+          "key": "2022-interactive-1-a",
+          "grade": 1,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Primer año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/62b09aa543733a00138c9220",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-1a.png"
+        },
+        {
+          "key": "2022-interactive-1-b",
+          "grade": 1,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Primer año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/62ad0063a119e40011d1bd68",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-1b.png"
+        },
+        {
+          "key": "2022-interactive-2-a",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Segundo año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/62b8ce68c54eab0018d68806",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-2a.png"
+        },
+        {
+          "key": "2022-interactive-2-b",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Segundo año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/62b2120971c938001856babc",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-2b.png"
+        },
+        {
+          "key": "2022-interactive-3-a",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Tercer año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/62c1dee53a235d001d7cba2f",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-3a.png"
+        },
+        {
+          "key": "2022-interactive-3-b",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Tercer año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/62c0d1c95f94e70016535365",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-3b.png"
+        },
+        {
+          "key": "2022-interactive-4-a",
+          "grade": 4,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Cuarto año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/62c4c30ab57ba9001097fecf",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-4a.png"
+        },
+        {
+          "key": "2022-interactive-4-b",
+          "grade": 4,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Cuarto año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/62c0c60e904251001161225d",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-4b.png"
+        },
+        {
+          "key": "2022-interactive-5-a",
+          "grade": 5,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Quinto año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/62c0c60ab012f60018199727",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-5a.png"
+        },
+        {
+          "key": "2022-interactive-5-b",
+          "grade": 5,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Quinto año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/62c1dede59ebc8001693f130",
+          "image": "/assets/legacy/booklets/2022/int/guia-estudiante-5b.png"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "type": "interactive",
+      "materials": [
+        {
+          "key": "2021-interactive-1-a",
+          "grade": 1,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Primer año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/6127a4c98e89e10d404671c5",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-1a.png"
+        },
+        {
+          "key": "2021-interactive-1-b",
+          "grade": 1,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Primer año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/6143ca1ca6d4510d84e24aaa",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-1b.png"
+        },
+        {
+          "key": "2021-interactive-2-a",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Segundo año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/61343566c9f49f0d6e515b83",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-2a.png"
+        },
+        {
+          "key": "2021-interactive-2-b",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Segundo año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/61490dda8271660d8410d216",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-2b.png"
+        },
+        {
+          "key": "2021-interactive-3-a",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Tercer año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/6131609c0596190d611b8372",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-3a.png"
+        },
+        {
+          "key": "2021-interactive-3-b",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Tercer año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/612a75e255b8400d4c7028fe",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-3b.png"
+        },
+        {
+          "key": "2021-interactive-4-a",
+          "grade": 4,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Cuarto año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/612e77b648aac90d8946a4bb",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-4a.png"
+        },
+        {
+          "key": "2021-interactive-4-b",
+          "grade": 4,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Cuarto año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/614cca594691c70d429b46f9",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-4b.png"
+        },
+        {
+          "key": "2021-interactive-5-a",
+          "grade": 5,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Quinto año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/6134e42608de150d59895ab7",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-5a.png"
+        },
+        {
+          "key": "2021-interactive-5-b",
+          "grade": 5,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Quinto año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/61491b7e270ddb0dbb1f8b4e",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-5b.png"
+        },
+        {
+          "key": "2021-interactive-6-a",
+          "grade": 6,
+          "role": "estudiante",
+          "part": "A",
+          "title": "Sexto año",
+          "description": "Actividad A · Genially",
+          "href": "https://view.genially.com/613bc8598c0fd10d5c8a687b",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-6a.png"
+        },
+        {
+          "key": "2021-interactive-6-b",
+          "grade": 6,
+          "role": "estudiante",
+          "part": "B",
+          "title": "Sexto año",
+          "description": "Actividad B · Genially",
+          "href": "https://view.genially.com/61363c09ba9d630d9ce767f0",
+          "image": "/assets/legacy/booklets/2021/guia-estudiante-6b.png"
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "type": "interactive",
+      "materials": [
+        {
+          "key": "2020-interactive-1-i",
+          "grade": 1,
+          "role": "estudiante",
+          "part": "I",
+          "title": "Primer año",
+          "description": "Parte I · Genially",
+          "href": "https://view.genially.com/62b09aa543733a00138c9220",
+          "image": "/assets/legacy/booklets/2020/int/1a_1p.png"
+        },
+        {
+          "key": "2020-interactive-2-i",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "I",
+          "title": "Segundo año",
+          "description": "Parte I · Genially",
+          "href": "https://view.genially.com/62b8ce68c54eab0018d68806",
+          "image": "/assets/legacy/booklets/2020/int/2a_1p.png"
+        },
+        {
+          "key": "2020-interactive-2-ii",
+          "grade": 2,
+          "role": "estudiante",
+          "part": "II",
+          "title": "Segundo año",
+          "description": "Parte II · Genially",
+          "href": "https://view.genially.com/62b2120971c938001856babc",
+          "image": "/assets/legacy/booklets/2020/int/2a_2p.png"
+        },
+        {
+          "key": "2020-interactive-3-i",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "I",
+          "title": "Tercer año",
+          "description": "Parte I · Genially",
+          "href": "https://view.genially.com/62c1dee53a235d001d7cba2f",
+          "image": "/assets/legacy/booklets/2020/int/3a_1p.png"
+        },
+        {
+          "key": "2020-interactive-3-ii",
+          "grade": 3,
+          "role": "estudiante",
+          "part": "II",
+          "title": "Tercer año",
+          "description": "Parte II · Genially",
+          "href": "https://view.genially.com/62c0d1c95f94e70016535365",
+          "image": "/assets/legacy/booklets/2020/int/3a_2p.png"
+        }
+      ]
+    }
+  ]
+}

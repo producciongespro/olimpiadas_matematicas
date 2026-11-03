@@ -32,3 +32,12 @@ Administrar los textos y catálogos de cuadernillos recientes, archivo históric
 - vista pública y previsualización comparten componentes;
 - el contenido inicial conserva todos los recursos vigentes;
 - pruebas cubren validación, colecciones vacías y publicación.
+
+## Contrato implementado
+
+- Clave editorial: `resource-booklets`; se publica dentro de `GET /api/v1/site/home` y utiliza las rutas generales protegidas de borrador y publicación.
+- `eyebrow`, `title` y `description` son obligatorios. `editions_json` contiene una lista ordenada de `{year, type, materials}`; la respuesta expone `editions` como arreglo.
+- La pareja año/tipo es única. Cada edición admite cero o más materiales y exige claves únicas dentro de ella. Cada material conserva `key`, `grade` opcional, `role`, `title`, `description`, `href`, `image` decorativa opcional y `part` opcional.
+- El catálogo inicial contiene 13 ediciones y 124 materiales: 12 cuadernillos de 2025, 85 recursos históricos y 27 actividades interactivas. El generador reproducible está en `scripts/generate-resource-catalog.mjs`.
+- Los destinos se limitan a rutas internas, anclas o HTTP(S) sin credenciales, espacios ni barras invertidas. Esta capacidad edita referencias; no carga documentos.
+- La vista pública y la copia administrativa usan `ResourceBookletsSection` de `packages/ui`; si una colección está vacía muestran un mensaje explícito.

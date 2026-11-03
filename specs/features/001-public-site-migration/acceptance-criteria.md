@@ -5,8 +5,11 @@
 - El primer viewport informa que la población estudiantil corresponde de 1.º a 6.º año.
 - Todos los destinos del menú son válidos y únicos.
 - La navegación incluye un destino “Acerca de” que conduce a la sección “Acerca de nosotros”.
+- “Acerca” aparece entre “Galería” y “Contacto” en el encabezado, con su destino `#acerca-de-nosotros` intacto.
 - La navegación incluye un destino “Regionales” que conduce a “Coordinaciones regionales”.
-- La navegación incluye un destino “Información” que conduce a “Información general”.
+- La navegación incluye un control “Información” que despliega Reglamento, Cómo participar, Calendario y Preguntas frecuentes; Reglamento abre el PDF vigente en una pestaña nueva y los otros destinos llevan a secciones internas válidas.
+- El submenú se abre y cierra con teclado y en móvil; Escape devuelve el foco a “Información” y elegir una opción cierra el menú.
+- “Cómo participar” abre directamente `#edicion-vigente` y no aparece un bloque de Información general.
 - La navegación puede abrirse, recorrerse y cerrarse con teclado.
 - El menú utiliza su versión compacta mientras las marcas y todos los destinos no puedan coexistir sin recorte o desbordamiento.
 - No existe desbordamiento horizontal en 320 px, 768 px y 1280 px.
@@ -18,8 +21,8 @@
 - La experiencia conserva los logotipos, fotografías, contenido y carácter institucional del sitio vigente.
 - “Acerca de nosotros” sintetiza los antecedentes institucionales en una secuencia cronológica, conserva fechas, cifras, alcance regional, universidades participantes y visión educativa sin introducir datos no comprobados.
 - “Coordinaciones regionales” muestra las 27 regiones, permite buscar por región, persona o correo, genera enlaces `mailto:` únicamente para direcciones inequívocas y señala cualquier contacto pendiente de confirmación.
-- “Información general” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes mediante destinos válidos y contenido propio de OLCOMEP.
-- La navegación y “Información general” conducen a una sección “Calendario” única y reconocible.
+- El submenú “Información” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes; no aparece el bloque de Información general ni sus tarjetas.
+- La navegación conduce a una sección “Calendario” única y reconocible.
 - “Calendario” presenta en orden cronológico las 12 actividades confirmadas de abril a diciembre de 2026, diferencia fechas exactas de meses sin día confirmado y permite abrir o descargar el manual oficial publicado.
 - El cronograma conserva lectura lineal, fechas semánticas, contraste suficiente y ausencia de desbordamiento horizontal en móvil y escritorio.
 - “Colaboradores y patrocinadores” diferencia las cinco universidades públicas del patrocinador de la edición 2026.

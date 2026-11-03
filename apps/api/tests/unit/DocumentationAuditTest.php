@@ -27,6 +27,6 @@ final class DocumentationAuditTest extends CIUnitTestCase
         $this->assertStringContainsString('openapi: 3.1.0', $contract);
         $this->assertStringContainsString('entraBearer:', $contract);
         $this->assertStringContainsString('security: []', $contract);
-        $this->assertStringContainsString('enum: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact]', $contract);
+        $this->assertStringContainsString('enum: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact, resource-booklets, site-header, site-footer]', $contract);
     }
 }

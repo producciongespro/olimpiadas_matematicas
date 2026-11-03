@@ -1,3 +1,53 @@
+import resourceBooklets from './resourceBooklets.json'
+
+export const defaultSiteHeaderContent = Object.freeze({
+  home_label: 'OLCOMEP, inicio', slogan: 'Matemática para Primaria',
+  links: [
+    { key: 'informacion', label: 'Información', href: '#preguntas-frecuentes' },
+    { key: 'regionales', label: 'Regionales', href: '#coordinaciones-regionales' },
+    { key: 'edicion', label: 'Edición 2026', href: '#edicion-vigente' },
+    { key: 'practica', label: 'Práctica', href: '#cuadernillos' },
+    { key: 'interactivos', label: 'Interactivos', href: '#interactivos' },
+    { key: 'galeria', label: 'Galería', href: '#galeria' },
+    { key: 'acerca', label: 'Acerca', href: '#acerca-de-nosotros' },
+    { key: 'contacto', label: 'Contacto', href: '#contacto' },
+  ],
+})
+export function mergeSiteHeaderContent(content) {
+  const links = (content?.links || defaultSiteHeaderContent.links)
+    .filter((item) => item.key !== 'calendario' && item.href !== '#calendario')
+    .map((item) => item.key === 'informacion' ? { key: 'informacion', label: 'Información', href: '#preguntas-frecuentes' } : item)
+  if (!links.some((item) => item.key === 'informacion')) links.unshift(defaultSiteHeaderContent.links[0])
+  const aboutIndex = links.findIndex((item) => item.key === 'acerca')
+  if (aboutIndex !== -1) {
+    const [about] = links.splice(aboutIndex, 1)
+    const galleryIndex = links.findIndex((item) => item.key === 'galeria')
+    const contactIndex = links.findIndex((item) => item.key === 'contacto')
+    links.splice(galleryIndex !== -1 ? galleryIndex + 1 : contactIndex !== -1 ? contactIndex : links.length, 0, about)
+  }
+  return { ...defaultSiteHeaderContent, ...(content || {}), links }
+}
+
+export const defaultSiteFooterContent = Object.freeze({
+  program_name: 'Olimpiadas Matemáticas OLCOMEP', organization: 'Ministerio de Educación Pública de Costa Rica',
+  links: [
+    { key: 'mep', label: 'Sitio oficial del MEP', href: 'https://www.mep.go.cr/' },
+    { key: 'gespro', label: 'Conozca GESPRO', href: 'https://recursos.mep.go.cr/creditos_gespro/' },
+  ],
+  credits: [
+    { key: 'asesoria', title: 'Asesoría curricular', names: ['Yeri Charpentier Díaz'] },
+    { key: 'gespro', title: 'Recursos tecnológicos — GESPRO', names: ['Patricia Hernández Conejo', 'Óscar Pérez Ramírez', 'Luis Chacón Campos'] },
+    { key: 'diseno', title: 'Diseño gráfico', names: ['Mariana Molina Rojas'] },
+  ],
+})
+export const mergeSiteFooterContent = (content) => ({ ...defaultSiteFooterContent, ...(content || {}), links: content?.links || defaultSiteFooterContent.links, credits: content?.credits || defaultSiteFooterContent.credits })
+
+export const defaultResourceBookletsContent = Object.freeze(resourceBooklets)
+
+export function mergeResourceBookletsContent(content) {
+  return { ...defaultResourceBookletsContent, ...(content || {}), editions: content?.editions || defaultResourceBookletsContent.editions }
+}
+
 export const defaultHeroContent = Object.freeze({
   eyebrow: 'OLCOMEP · Costa Rica',
   title: 'Olimpiada de Matemática para Primaria',
@@ -104,14 +154,7 @@ export function mergeAboutContent(content) {
 }
 
 export const defaultGeneralInformationContent = Object.freeze({
-  eyebrow: 'Orientación para participar', title: 'Información general', description: 'Encuentre los documentos, fechas y recorridos principales para conocer y participar en OLCOMEP.',
   faq_eyebrow: 'Respuestas rápidas', faq_title: 'Preguntas frecuentes',
-  routes: [
-    { key: 'reglamento', title: 'Reglamento', description: 'Normas, condiciones y disposiciones oficiales para la edición OLCOMEP 2026.', href: '/data/2026/reglamento-OLCOMEP-2026.pdf', label: 'Abrir reglamento 2026 en PDF', icon: 'file', external: true },
-    { key: 'participar', title: 'Cómo participar', description: 'Participación dirigida a estudiantes de primero a sexto año de Educación Primaria mediante el proceso oficial de inscripción.', href: '#edicion-vigente', label: 'Consultar cómo participar en la edición vigente', icon: 'users' },
-    { key: 'calendario', title: 'Calendario', description: 'El periodo de inscripción publicado para 2026 estuvo habilitado del 8 de abril al 6 de mayo.', href: '#calendario', label: 'Consultar el calendario oficial de OLCOMEP 2026', icon: 'calendar' },
-    { key: 'preguntas', title: 'Preguntas frecuentes', description: 'Respuestas rápidas sobre población participante, inscripción, preparación y consultas regionales.', href: '#preguntas-frecuentes', label: 'Ir a preguntas frecuentes de OLCOMEP', icon: 'help' },
-  ],
   faqs: [
     { key: 'participantes', question: '¿Quiénes pueden participar?', answer: 'Estudiantes de primero a sexto año diurno de la Educación General Básica de Costa Rica, de acuerdo con las condiciones establecidas para cada edición.' },
     { key: 'inscripcion', question: '¿Cómo se realiza la inscripción?', answer: 'La inscripción continúa mediante el formulario oficial externo. El periodo correspondiente a 2026 estuvo habilitado del 8 de abril al 6 de mayo y actualmente se encuentra cerrado.' },
@@ -121,7 +164,7 @@ export const defaultGeneralInformationContent = Object.freeze({
 })
 
 export function mergeGeneralInformationContent(content) {
-  return { ...defaultGeneralInformationContent, ...(content || {}), routes: content?.routes || defaultGeneralInformationContent.routes, faqs: content?.faqs || defaultGeneralInformationContent.faqs }
+  return { faq_eyebrow: content?.faq_eyebrow || defaultGeneralInformationContent.faq_eyebrow, faq_title: content?.faq_title || defaultGeneralInformationContent.faq_title, faqs: content?.faqs || defaultGeneralInformationContent.faqs }
 }
 
 export const defaultRegionalCoordinationsContent = Object.freeze({

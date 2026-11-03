@@ -37,7 +37,11 @@
 - [x] Administrar la plantilla XLSX como medio anual sustituible o retirable y reorganizar Edición vigente en capítulos editoriales claros.
 - [x] Retirar la simulación móvil/escritorio del editor y delegar el comportamiento responsive al ancho real del navegador.
 - [x] Delimitar cada bloque con un separador editorial y nombrar explícitamente su acción de edición.
-- [ ] Implementar y verificar Recursos y cuadernillos.
-- [ ] Implementar y verificar Header y navegación.
-- [ ] Implementar y verificar Footer y créditos.
+- [x] Dirigir Cómo participar a Edición vigente y retirar su tarjeta intermedia de Información general, incluidas revisiones anteriores.
+- [x] Abrir directamente el PDF vigente desde Reglamento y retirar su tarjeta intermedia de Información general, incluidas revisiones anteriores.
+- [x] Retirar el bloque de Información general y sus tarjetas, y mantener Preguntas frecuentes como sección y editor propios bajo la clave de API existente.
+- [x] Mover Acerca entre Galería y Contacto en el Header, incluidos borradores y publicaciones anteriores, conservando destinos.
+- [x] Implementar y verificar Recursos y cuadernillos.
+- [x] Implementar y verificar Header y navegación.
+- [x] Implementar y verificar Footer y créditos.
 - [ ] Completar la aceptación real con sesión MEP e interrupción/restauración controlada de la API.
