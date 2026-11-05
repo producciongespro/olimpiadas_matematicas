@@ -4,16 +4,17 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **03-11-2026**.
+Última actualización: **05-11-2026**.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `e66cc0d`
-- Mensaje: `29-10-2026 Rediseña la edición visual y versiona documentos de la edición vigente`
+- Commit de referencia: `8f5b99c`
+- Mensaje: `03-11-2026 Integra recursos y navegación editorial y actualiza API y documentación`
 - Estado observado el 03-11-2026: la rama local estaba alineada con la referencia local de `origin/devUlate`, con cero commits adelantados y cero atrasados, antes de iniciar la incorporación editorial de Recursos, Header y Footer. La referencia remota no se actualizó mediante `git fetch` en esta sesión.
+- Estado observado el 05-11-2026 antes del commit de cuadernillos: `devUlate` estaba alineada con la referencia local de `origin/devUlate`. La iteración reúne el selector de la colección vigente, la aclaración editorial y la prueba de conservación de la edición anterior.
 
 El hash y la comparación con el upstream corresponden a las referencias Git disponibles localmente al momento de esta actualización. Antes de sincronizar o iniciar una nueva iteración se debe ejecutar `git fetch` y comprobar nuevamente la relación con la rama remota.
 
@@ -57,6 +58,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Las 15 fotografías heredadas cuentan con un seeder idempotente que las importa como diapositivas publicadas del carrusel. La galería de eventos inicia vacía.
 - Las diapositivas heredadas no muestran título; “OLCOMEP en acción” fue retirado del carrusel.
 - Se conservan 12 cuadernillos de 2025 para estudiantes y docentes.
+- La colección PDF vigente muestra un selector Todos/Estudiantes/Docentes sin selector de año. Todos se selecciona al abrir y muestra todos los materiales; las opciones de rol filtran la colección. La edición vigente se calcula por el año PDF más reciente; al publicar una edición posterior desde administración, la anterior aparece automáticamente en Archivo histórico con sus roles y enlaces intactos.
 - El catálogo histórico contiene 85 recursos entre 2016 y 2024.
 - Los años 2020 a 2022 incluyen 27 actividades interactivas con destinos directos de Genially.
 - La paridad funcional y las decisiones de migración están registradas en `docs/migration/public-site-parity.md`.
@@ -385,6 +387,14 @@ Verificación del 03-11-2026:
 - Se reforzó la retirada de Calendario como enlace principal: el cliente y el componente compartido filtran tanto la clave `calendario` como cualquier enlace heredado a `#calendario`; la API rechaza ambos en nuevos borradores. Calendario continúa en el submenú de Información. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 54 pruebas, 212 aserciones y correspondencia exacta con `/api/v1`.
 - «Acerca» se movió entre «Galería» y «Contacto» en valores predeterminados, publicaciones previas y borradores del Header, conservando `#acerca-de-nosotros` y los demás destinos. Los builds de `public-web` y `admin-web` finalizaron con 1 611 y 1 752 módulos; `docs:sync` regeneró OpenAPI y `composer --working-dir=apps/api verify` confirmó 55 pruebas, 215 aserciones y correspondencia exacta con `/api/v1`. El navegador local confirmó el orden Galería → Acerca → Contacto y sus anclas.
 - Estado final de la iteración antes del commit: doce secciones editoriales publicables, incluidos Recursos y cuadernillos, Header y Footer. La navegación de Información tiene cuatro opciones directas; el bloque de Información general se retiró y la clave histórica conserva únicamente Preguntas frecuentes. Calendario aparece solo en el submenú y Acerca ocupa su nueva posición. Se revisaron las especificaciones de secciones, criterios, tareas, contrato canónico y copia generada de OpenAPI, guía de API y documentación de créditos. La aceptación real con sesión MEP y la prueba controlada de interrupción/restauración de API siguen pendientes.
+
+Verificación del 05-11-2026:
+
+- La colección vigente de cuadernillos filtra por rol: seis enlaces PDF de Estudiantes y seis de Docentes en 2025, sin selector de año. Archivo histórico conserva su selector de edición y rol. El navegador local confirmó ausencia de desbordamiento a 320 y 1280 px.
+- El administrador permite agregar una edición PDF posterior con materiales de ambos roles. Una prueba de servicio guardó y publicó una edición de prueba de 2026, confirmó que la publicación vigente no cambió antes de publicar y que los doce registros de 2025 conservaron todos sus campos y destinos. No se trasladaron ni cargaron archivos reales.
+- `npm run build --workspace=@olcomep/public-web` y `npm run build --workspace=@olcomep/admin-web` finalizaron correctamente con 1 611 y 1 752 módulos transformados. `composer --working-dir=apps/api verify` confirmó 56 pruebas, 220 aserciones y OpenAPI sincronizado con las rutas `/api/v1`; el contrato no cambió en esta iteración.
+- El selector de la colección vigente incluye ahora Todos como opción inicial, además de Estudiantes y Docentes. Tras el ajuste, los builds de la vista pública y administrativa volvieron a finalizar correctamente con 1 611 y 1 752 módulos transformados; `git diff --check` no encontró errores. No se modificó el contrato de la API.
+- La comprobación en navegador corresponde a los filtros por rol antes de agregar Todos. La comprobación visual de Todos quedó pendiente porque el navegador integrado no estuvo disponible.
 
 ## 9. Regla de commits y sincronización
 

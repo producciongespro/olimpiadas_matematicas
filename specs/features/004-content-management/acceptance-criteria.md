@@ -95,6 +95,8 @@
 - Las ediciones y sus materiales pueden agregarse, quitarse y reordenarse sin modificar archivos físicos; año/tipo y claves de material repetidos se rechazan.
 - Un borrador no cambia la vista pública hasta publicar; las colecciones vacías comunican su estado.
 - La vista pública y la previsualización administrativa comparten el componente y conservan las anclas `#cuadernillos` y `#interactivos`.
+- La colección vigente muestra un selector con Todos como opción inicial, Estudiantes y Docentes; Todos presenta todos los cuadernillos y las otras opciones filtran por rol. El archivo histórico conserva selectores de año y rol.
+- Al publicar una edición PDF posterior desde administración, la edición anterior aparece en el archivo histórico con sus materiales y destinos originales, sin una operación de traslado ni cambio de contrato API.
 
 # Header y Footer
 

@@ -643,6 +643,33 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame('Materiales revisados', $service->publicHome()['resource-booklets']['content']['title']);
     }
 
+    public function testResourceCatalogAcceptsNextYearWithoutLosingPreviousEdition(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $previous = array_values(array_filter($content['editions'], static fn (array $edition): bool => $edition['type'] === 'pdf' && $edition['year'] === 2025))[0];
+        $this->assertSame(['estudiante' => 6, 'docente' => 6], array_count_values(array_column($previous['materials'], 'role')));
+        $content['editions'][] = [
+            'year' => 2026, 'type' => 'pdf', 'materials' => [
+                ['key' => 'ensayo-estudiante', 'grade' => 1, 'role' => 'estudiante', 'title' => 'Ensayo estudiante', 'description' => 'Material de prueba', 'href' => '/data/prueba-estudiante.pdf'],
+                ['key' => 'ensayo-docente', 'grade' => 1, 'role' => 'docente', 'title' => 'Ensayo docente', 'description' => 'Material de prueba', 'href' => '/data/prueba-docente.pdf'],
+            ],
+        ];
+        $service->saveDraft('resource-booklets', [
+            'eyebrow' => $content['eyebrow'], 'title' => $content['title'], 'description' => $content['description'],
+            'editions_json' => json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ]);
+        $this->assertCount(13, $service->publicHome()['resource-booklets']['content']['editions']);
+        $service->publish('resource-booklets');
+        $published = $service->publicHome()['resource-booklets']['content']['editions'];
+        $this->assertCount(14, $published);
+        $this->assertSame(2026, max(array_column(array_filter($published, static fn (array $edition): bool => $edition['type'] === 'pdf'), 'year')));
+        $preserved = array_values(array_filter($published, static fn (array $edition): bool => $edition['type'] === 'pdf' && $edition['year'] === 2025))[0];
+        $this->assertSame($previous, $preserved);
+    }
+
     public function testResourceCatalogRejectsUnsafeLinksAndDuplicateKeys(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);

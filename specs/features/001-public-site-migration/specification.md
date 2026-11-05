@@ -37,6 +37,8 @@ Los 155 enlaces y las 154 referencias de imagen inventariadas deben conservarse 
 
 Los documentos desde 2016 hasta 2026 deben seguir disponibles mediante rutas estables o redirecciones documentadas.
 
+La colección PDF más reciente presenta un selector de Todos, Estudiantes y Docentes sin selector de año. Todos es la opción inicial y muestra la colección completa; las otras opciones filtran por rol. Cuando se publica una edición PDF posterior, la anterior se muestra en el archivo histórico con sus archivos y destinos intactos; el archivo histórico mantiene sus selectores de año y tipo de material.
+
 ### PUB-003 — Jerarquía semántica
 
 La página tendrá un único `h1`; las secciones y subsecciones mantendrán un orden de encabezados coherente.

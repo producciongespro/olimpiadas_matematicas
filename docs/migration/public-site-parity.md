@@ -15,7 +15,7 @@ La nueva vista conserva el contenido y los recorridos funcionales del sitio here
 | Galería histórica | Selector de eventos publicados; estado vacío mientras no existan eventos | Verificado |
 | Presentación | Descripción y propósito de OLCOMEP | Verificado |
 | Edición 2026 | Manual, temarios, reglamento, protocolo, inscripción individual y masiva, patrocinio y video | Verificado |
-| Cuadernillos 2025 | 6 grados para estudiantes y 6 para docentes | Verificado |
+| Cuadernillos 2025 | 6 grados para estudiantes y 6 para docentes; selector Todos/Estudiantes/Docentes en la colección vigente | Verificado |
 | Histórico 2024–2016 | 85 archivos, consultables por año y rol | Verificado |
 | Interactivos 2020–2022 | 27 actividades, enlazadas directamente a Genially | Verificado |
 | Contacto y créditos | Correo, canal de YouTube, Calificame, responsables y GESPRO | Verificado |
