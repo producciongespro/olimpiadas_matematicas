@@ -5,7 +5,7 @@ export const defaultSiteHeaderContent = Object.freeze({
   links: [
     { key: 'informacion', label: 'Información', href: '#preguntas-frecuentes' },
     { key: 'regionales', label: 'Regionales', href: '#coordinaciones-regionales' },
-    { key: 'edicion', label: 'Edición 2026', href: '#edicion-vigente' },
+    { key: 'edicion', label: 'Edición vigente', href: '#edicion-vigente' },
     { key: 'practica', label: 'Práctica', href: '#cuadernillos' },
     { key: 'interactivos', label: 'Interactivos', href: '#interactivos' },
     { key: 'galeria', label: 'Galería', href: '#galeria' },
@@ -13,20 +13,6 @@ export const defaultSiteHeaderContent = Object.freeze({
     { key: 'contacto', label: 'Contacto', href: '#contacto' },
   ],
 })
-export function mergeSiteHeaderContent(content) {
-  const links = (content?.links || defaultSiteHeaderContent.links)
-    .filter((item) => item.key !== 'calendario' && item.href !== '#calendario')
-    .map((item) => item.key === 'informacion' ? { key: 'informacion', label: 'Información', href: '#preguntas-frecuentes' } : item)
-  if (!links.some((item) => item.key === 'informacion')) links.unshift(defaultSiteHeaderContent.links[0])
-  const aboutIndex = links.findIndex((item) => item.key === 'acerca')
-  if (aboutIndex !== -1) {
-    const [about] = links.splice(aboutIndex, 1)
-    const galleryIndex = links.findIndex((item) => item.key === 'galeria')
-    const contactIndex = links.findIndex((item) => item.key === 'contacto')
-    links.splice(galleryIndex !== -1 ? galleryIndex + 1 : contactIndex !== -1 ? contactIndex : links.length, 0, about)
-  }
-  return { ...defaultSiteHeaderContent, ...(content || {}), links }
-}
 
 export const defaultSiteFooterContent = Object.freeze({
   program_name: 'Olimpiadas Matemáticas OLCOMEP', organization: 'Ministerio de Educación Pública de Costa Rica',

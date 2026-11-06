@@ -110,7 +110,7 @@ La administración incorpora una única copia editorial de la página pública. 
 
 La vista previa resuelve sus activos de respaldo desde la propia aplicación administrativa. No requiere que `public-web` esté levantada; las imágenes persistidas por la API conservan sus URL absolutas controladas.
 
-El modo de edición visual presenta una copia continua y a ancho completo de la página pública. Compone las doce secciones editoriales con los mismos componentes compartidos y en el mismo orden relativo de `public-web`. Cada bloque comienza con un separador editorial no adherente que incluye la etiqueta “Sección editorial”, su nombre completo y una acción explícita —por ejemplo, “Editar Portada principal”— operable por teclado. Así, la pertenencia del control no depende de su proximidad con el bloque anterior. Los enlaces, formularios y controles propios del sitio permanecen inactivos para evitar navegación accidental.
+El modo de edición visual presenta una copia continua y a ancho completo de la página pública. Compone las once secciones editoriales y el encabezado fijo con los mismos componentes compartidos y en el mismo orden relativo de `public-web`. Cada bloque editable comienza con un separador editorial no adherente que incluye la etiqueta “Sección editorial”, su nombre completo y una acción explícita —por ejemplo, “Editar Portada principal”— operable por teclado. Así, la pertenencia del control no depende de su proximidad con el bloque anterior. Los enlaces, formularios y controles propios del sitio permanecen inactivos para evitar navegación accidental.
 
 Al activar “Editar”, se abre un diálogo modal con todos los campos de esa sección. El diálogo ocupa la pantalla completa en móvil y una superficie centrada y desplazable en escritorio; comunica el estado publicado, borrador o cambios locales, traslada el foco a su título y concentra “Cancelar”, “Guardar borrador” y “Publicar”. Los cambios se reflejan en la copia pública local y, después de guardar correctamente, el modal se cierra para mostrar el resultado dentro de su contexto.
 
@@ -172,4 +172,4 @@ La carga centralizada no altera la regla editorial: solo las revisiones `publish
 
 ## 8. Evolución prevista
 
-Después de validar contacto, el patrón se extiende en este orden: recursos, header y footer. Las colecciones con búsqueda, orden dinámico o relaciones usarán tablas propias y no un documento JSON genérico.
+Después de validar contacto, el patrón se extiende en este orden: recursos y footer. El encabezado es fijo. Las colecciones con búsqueda, orden dinámico o relaciones usarán tablas propias y no un documento JSON genérico.

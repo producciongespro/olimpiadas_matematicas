@@ -70,7 +70,7 @@
 - El HTML de ambas SPA exige revalidación, los bundles con hash usan caché inmutable de un año y los activos sin hash se revalidan.
 - El artefacto compilado conserva la configuración de caché y el fallback de rutas de la SPA sin interceptar archivos existentes.
 - Guardar y publicar tienen acciones, mensajes y estados claramente diferenciados.
-- El administrador presenta un lienzo continuo con las doce secciones editoriales, reutiliza sus componentes públicos y muestra los cambios locales de la sección seleccionada dentro del contexto completo de la página.
+- El administrador presenta un lienzo continuo con las once secciones editoriales y el encabezado fijo, reutiliza sus componentes públicos y muestra los cambios locales de la sección seleccionada dentro del contexto completo de la página.
 - La copia pública ocupa el ancho disponible y no mantiene un formulario o inspector lateral permanente.
 - La copia editorial y sus modales se validan técnicamente en 768 y 1280 px sin desbordamiento horizontal ni pérdida de controles.
 - Cada sección permite abrir un modal de edición mediante un botón con nombre accesible; el foco se traslada al título del diálogo.
@@ -78,6 +78,8 @@
 - Los enlaces y controles propios del contenido público no ejecutan navegación ni acciones dentro del lienzo administrativo.
 - El modal diferencia mediante texto los estados publicado, borrador pendiente y cambios sin guardar; guardar se habilita ante cambios y publicar únicamente para un borrador confirmado sin cambios locales.
 - Guardar correctamente cierra el modal y deja visible el resultado dentro de la copia pública; en móvil el modal ocupa la pantalla completa y en escritorio permanece centrado y desplazable.
+- Si falla el guardado, el modal conserva los cambios y muestra el mensaje de error junto a las acciones. El año de Edición vigente admite enteros entre 2000 y 2100.
+- Guardar un borrador de Edición vigente mediante multipart permite cambiar solo el año y conservar los documentos existentes.
 - Cerrar el modal con cambios sin guardar solicita confirmación y cancelar conserva el contenido y los archivos seleccionados.
 - Con cambios locales sin guardar, cambiar de sección, abrir otro módulo o cerrar sesión solicita confirmación antes de descartar el trabajo; cancelar conserva el contenido y los archivos seleccionados.
 - Con cambios locales sin guardar, recargar o cerrar la pestaña activa la advertencia nativa del navegador; después de guardar el borrador no se presenta la advertencia.
@@ -95,15 +97,20 @@
 - Las ediciones y sus materiales pueden agregarse, quitarse y reordenarse sin modificar archivos físicos; año/tipo y claves de material repetidos se rechazan.
 - Un borrador no cambia la vista pública hasta publicar; las colecciones vacías comunican su estado.
 - La vista pública y la previsualización administrativa comparten el componente y conservan las anclas `#cuadernillos` y `#interactivos`.
+- La copia editorial comparte la paleta del sitio público, incluido el azul medio del archivo histórico. La paleta se aplica dentro de la copia.
+- Cuadernillos interactivos filtra solo por edición. Cada resultado conserva su descripción de actividad o parte.
 - La colección vigente muestra un selector con Todos como opción inicial, Estudiantes y Docentes; Todos presenta todos los cuadernillos y las otras opciones filtran por rol. El archivo histórico conserva selectores de año y rol.
 - Al publicar una edición PDF posterior desde administración, la edición anterior aparece en el archivo histórico con sus materiales y destinos originales, sin una operación de traslado ni cambio de contrato API.
 
 # Header y Footer
 
-- El Header permite editar nombre accesible, lema y navegación ordenada sin alterar marcas, menú responsive ni destino estructural de inicio.
-- El Header conserva el elemento `Información` y sus cuatro opciones protegidas; la API normaliza su etiqueta y destino y rechaza borradores que lo eliminen.
+- Publicar un nuevo año en Edición vigente actualiza la etiqueta «Edición AAAA» del menú público. Guardar un borrador mantiene el año público anterior y el destino sigue siendo `#edicion-vigente`.
+
+- El encabezado conserva el nombre accesible, lema, enlaces y orden fijos. Se muestra en la copia sin botón de edición. La API omite la clave de la lista editorial y devuelve HTTP 422 al guardar o publicar.
 - Calendario aparece una sola vez, dentro del submenú de Información, incluso al leer publicaciones anteriores con el enlace principal heredado o con otra clave que apunta a `#calendario`.
 - `Acerca` aparece entre `Galería` y `Contacto` en el encabezado público y la copia administrativa; se conservan sus destinos y el orden relativo de los demás enlaces.
 - “Cómo participar” lleva directamente a Edición vigente; las tarjetas heredadas de Información general se omiten en las respuestas y no pueden editarse.
 - El Footer permite editar nombre institucional, enlaces y créditos ordenados, con nombres en texto plano y destinos seguros.
 - Ambas secciones utilizan el componente público en la copia administrativa; las colecciones vacías conservan un estado legible y el borrador no cambia la publicación hasta confirmar.
+
+- Los campos de imagen indican dimensiones recomendadas según su uso. Portada 1500 × 500, promoción 740 × 600, logotipos 600 × 600, retratos 500 × 700 e imágenes decorativas de cuadernillos 256 × 256 píxeles.

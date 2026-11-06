@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { MsalProvider } from '@azure/msal-react'
 import './styles/index.css'
+import '@olcomep/ui/site-palette.css'
 import { AuthGate } from './auth/AuthGate.jsx'
 import { msalInstance } from './auth/msal.js'
 

@@ -10,7 +10,6 @@ import {
   defaultPartnersContent,
   defaultRegionalCoordinationsContent,
   defaultResourceBookletsContent,
-  defaultSiteHeaderContent,
   defaultSiteFooterContent,
   mergeAboutContent,
   mergeCalendarContent,
@@ -22,7 +21,6 @@ import {
   mergePartnersContent,
   mergeRegionalCoordinationsContent,
   mergeResourceBookletsContent,
-  mergeSiteHeaderContent,
   mergeSiteFooterContent,
 } from '@olcomep/shared'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -30,7 +28,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 const REFRESH_INTERVAL_MS = 30_000
 
 const sectionDefinitions = {
-  'site-header': { fallback: defaultSiteHeaderContent, merge: mergeSiteHeaderContent },
   'site-footer': { fallback: defaultSiteFooterContent, merge: mergeSiteFooterContent },
   'resource-booklets': { fallback: defaultResourceBookletsContent, merge: mergeResourceBookletsContent },
   hero: { fallback: defaultHeroContent, merge: mergeHeroContent },

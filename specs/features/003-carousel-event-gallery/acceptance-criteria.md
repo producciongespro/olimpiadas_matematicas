@@ -72,3 +72,5 @@
 - Los workspaces frontend afectados compilan correctamente.
 - La base y `writable/uploads` cuentan con una estrategia coordinada de respaldo y restauración antes de producción.
 - `app/` permanece intacta hasta aprobar la paridad.
+
+- Los formularios de imagen recomiendan 1800 × 320 píxeles para el carrusel y 1200 × 900 para la galería, con el elemento principal centrado para los recortes.

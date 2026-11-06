@@ -14,6 +14,10 @@ export function SiteHeader({ content, currentEdition, preview = false }) {
   const headerRef = useRef(null)
   const menuButtonRef = useRef(null)
   const informationButtonRef = useRef(null)
+  const editionYear = Number(currentEdition?.edition_year)
+  const editionLabel = Number.isInteger(editionYear) && editionYear >= 2000 && editionYear <= 2100
+    ? `Edición ${editionYear}`
+    : 'Edición vigente'
   const regulation = currentEdition?.resources?.find((resource) => /^reglamento(?:-|$)/i.test(resource.key || '') || /reglamento/i.test(resource.title || ''))
 
   useEffect(() => {
@@ -70,7 +74,7 @@ export function SiteHeader({ content, currentEdition, preview = false }) {
               return href ? <a className="flex min-h-11 items-center rounded-md px-4 py-2 text-sm font-bold text-white/90 hover:bg-white/10 hover:text-white" href={href} key={destination.key} onClick={closeNavigation} tabIndex={preview ? -1 : undefined} {...(destination.key === 'reglamento' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{destination.label}</a> : <span className="flex min-h-11 items-center px-4 py-2 text-sm text-white/60" key={destination.key}>Reglamento no disponible</span>
             })}
           </nav>
-        </div> : <a className="flex min-h-11 items-center rounded-md px-4 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white/90 hover:bg-white/10 hover:text-white" href={item.href} key={item.key} onClick={closeNavigation} tabIndex={preview ? -1 : undefined} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{item.label}</a>)}
+        </div> : <a className="flex min-h-11 items-center rounded-md px-4 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white/90 hover:bg-white/10 hover:text-white" href={item.href} key={item.key} onClick={closeNavigation} tabIndex={preview ? -1 : undefined} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{item.key === 'edicion' ? editionLabel : item.label}</a>)}
         {content.links.length === 0 && <span className="px-4 py-3 text-sm">No hay enlaces de navegación publicados.</span>}
       </nav>
     </div>

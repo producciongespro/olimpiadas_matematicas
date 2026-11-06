@@ -5,6 +5,7 @@ namespace App\Controllers\Api\Admin;
 use App\Controllers\BaseController;
 use App\Services\ContentService;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use CodeIgniter\HTTP\Exceptions\HTTPException;
 use CodeIgniter\HTTP\ResponseInterface;
 use InvalidArgumentException;
 use Throwable;
@@ -12,7 +13,20 @@ use Throwable;
 class ContentAdminController extends BaseController
 {
     private function service(): ContentService { return new ContentService(); }
-    private function input(): array { return $this->request->getJSON(true) ?: $this->request->getPost(); }
+    private function input(): array
+    {
+        $contentType = strtolower(trim(explode(';', $this->request->getHeaderLine('Content-Type'), 2)[0]));
+        if ($contentType !== 'application/json') return $this->request->getPost();
+
+        try {
+            $input = $this->request->getJSON(true);
+        } catch (HTTPException $exception) {
+            throw new InvalidArgumentException('El cuerpo JSON del borrador no es válido.', 0, $exception);
+        }
+        if (! is_array($input) || array_is_list($input)) throw new InvalidArgumentException('El cuerpo JSON del borrador debe ser un objeto con campos.');
+
+        return $input;
+    }
     private function image(): ?UploadedFile { $file = $this->request->getFile('image'); return $file instanceof UploadedFile ? $file : null; }
     private function run(callable $action): ResponseInterface
     {

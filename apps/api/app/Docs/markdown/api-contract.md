@@ -14,3 +14,11 @@ Después de modificar rutas, entradas o respuestas:
 Como comprobación final puede ejecutar `composer verify`, que agrupa pruebas y auditoría documental.
 
 `docs:check` compara la copia generada en `public/openapi/openapi-v1.yaml` por SHA-256 y contrasta cada operación `/api/v1` registrada en CodeIgniter con OpenAPI. Una ruta real sin contrato, o una operación documentada inexistente, hace fallar la verificación.
+
+## Encabezado fijo
+
+La respuesta pública conserva la clave site-header con el encabezado fijo. La lista de secciones editables la omite y su detalle administrativo devuelve un borrador nulo. Los intentos de guardar o publicar esa clave responden con HTTP 422.
+
+La etiqueta «Edición AAAA» se calcula a partir del año publicado en Edición vigente. El destino es #edicion-vigente y, si falta un año válido, se muestra «Edición vigente».
+
+Los borradores editoriales se envían como campos de formulario multipart o como un objeto JSON, según Content-Type. Un JSON inválido recibe HTTP 422.

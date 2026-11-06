@@ -32,14 +32,6 @@ body {
   min-height: 100vh;
 }
 
-.header-logo { height: 2.6rem; }
-.header-olcomep-logo { height: 3rem; }
-
-@media (min-width: 640px) {
-  .header-logo { height: 3.45rem; }
-  .header-olcomep-logo { height: 3.75rem; }
-}
-
 button,
 a {
   -webkit-tap-highlight-color: transparent;
@@ -54,7 +46,7 @@ a {
   border-radius: 0.375rem;
   background: #ffffff;
   padding: 0.75rem 1rem;
-  color: #4a245f;
+  color: rgb(var(--brand-primary));
   font-weight: 800;
 }
 
@@ -69,7 +61,7 @@ a {
 
 .section-title {
   max-width: 48rem;
-  color: #172033;
+  color: rgb(var(--brand-primary));
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 900;
   line-height: 1.1;
@@ -88,8 +80,6 @@ a {
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
 }
 
-.button-primary { background: #f6b52c; color: #35220a; }
-.button-primary:hover { background: #ffd16b; }
 .button-secondary { border: 1px solid rgb(255 255 255 / 55%); color: #ffffff; }
 .button-secondary:hover { background: rgb(255 255 255 / 12%); }
 
@@ -101,14 +91,14 @@ a {
   justify-content: center;
   border: 1px solid #cfd5df;
   border-radius: 0.5rem;
-  color: #4a245f;
+  color: rgb(var(--brand-primary));
   transition: background-color 160ms ease, border-color 160ms ease;
 }
 
-.icon-button:hover { border-color: #4a245f; background: #f8f2fa; }
+.icon-button:hover { border-color: rgb(var(--brand-primary)); background: rgb(var(--brand-soft)); }
 
 .carousel-button { display: inline-flex; min-height: 2.75rem; min-width: 2.75rem; align-items: center; justify-content: center; border-radius: 9999px; background: rgb(15 23 42 / 78%); color: #ffffff; }
-.carousel-button:hover { background: #4a245f; }
+.carousel-button:hover { background: rgb(var(--brand-primary)); }
 
 .main-carousel-image { height: 9rem; }
 
@@ -121,8 +111,15 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid #f6b52c;
+  outline: 3px solid rgb(var(--brand-accent));
   outline-offset: 3px;
+}
+
+#root header:has(#navegacion-principal) :focus-visible,
+#historicos :focus-visible,
+#root footer :focus-visible,
+.carousel-button:focus-visible {
+  outline-color: rgb(var(--brand-highlight));
 }
 
 .regional-carousel {

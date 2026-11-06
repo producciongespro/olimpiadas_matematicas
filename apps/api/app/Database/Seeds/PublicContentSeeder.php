@@ -160,19 +160,7 @@ class PublicContentSeeder extends Seeder
         $this->ensureSection('contact', 'Contacto', self::CONTACT, $now);
         $resourceContent = json_decode((string) file_get_contents(APPPATH . 'Database/Seeds/Data/resource-booklets.json'), true, 512, JSON_THROW_ON_ERROR);
         $this->ensureSection('resource-booklets', 'Recursos y cuadernillos', $resourceContent, $now);
-        $this->ensureSection('site-header', 'Header y navegación', [
-            'home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria',
-            'links' => [
-                ['key' => 'informacion', 'label' => 'Información', 'href' => '#preguntas-frecuentes'],
-                ['key' => 'regionales', 'label' => 'Regionales', 'href' => '#coordinaciones-regionales'],
-                ['key' => 'edicion', 'label' => 'Edición 2026', 'href' => '#edicion-vigente'],
-                ['key' => 'practica', 'label' => 'Práctica', 'href' => '#cuadernillos'],
-                ['key' => 'interactivos', 'label' => 'Interactivos', 'href' => '#interactivos'],
-                ['key' => 'galeria', 'label' => 'Galería', 'href' => '#galeria'],
-                ['key' => 'acerca', 'label' => 'Acerca', 'href' => '#acerca-de-nosotros'],
-                ['key' => 'contacto', 'label' => 'Contacto', 'href' => '#contacto'],
-            ],
-        ], $now);
+        $this->ensureSection('site-header', 'Header y navegación', \Config\SiteNavigation::HEADER, $now);
         $this->ensureSection('site-footer', 'Footer y créditos', [
             'program_name' => 'Olimpiadas Matemáticas OLCOMEP', 'organization' => 'Ministerio de Educación Pública de Costa Rica',
             'links' => [

@@ -1,0 +1,119 @@
+.olcomep-site {
+  --brand-primary: 17 52 100;
+  --brand-accent: 23 103 125;
+  --brand-highlight: 255 203 46;
+  --brand-soft: 242 247 250;
+  --brand-surface: #55bbd0;
+  --brand-turquoise: #29a2c1;
+  --brand-orange: #f17d34;
+  --brand-purple: #8c388c;
+}
+
+/* Keep the main public surfaces in sync even if Vite reuses old utilities. */
+.olcomep-site .bg-brand-primary,
+.olcomep-site footer {
+  background-color: rgb(var(--brand-primary));
+}
+
+.olcomep-site .bg-brand-soft {
+  background-color: rgb(var(--brand-soft));
+}
+
+.olcomep-site .text-brand-primary {
+  color: rgb(var(--brand-primary));
+}
+
+.olcomep-site .text-brand-highlight {
+  color: rgb(var(--brand-highlight));
+}
+
+.olcomep-site header:has(#navegacion-principal),
+.olcomep-site #navegacion-principal,
+.olcomep-site #submenu-informacion {
+  background-color: rgb(var(--brand-primary));
+  color: #ffffff;
+}
+
+.olcomep-site #navegacion-principal :is(a, button) {
+  color: #ffffff;
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] {
+  background-color: var(--brand-surface);
+  color: rgb(var(--brand-primary));
+  border-color: rgb(var(--brand-primary) / 25%);
+}
+
+.olcomep-site header .header-logo {
+  height: 2.6rem;
+  border-radius: 0.25rem;
+  background-color: rgb(var(--brand-primary));
+}
+
+.olcomep-site header .header-olcomep-logo {
+  height: 3rem;
+}
+
+@media (min-width: 640px) {
+  .olcomep-site header .header-logo {
+    height: 3.45rem;
+  }
+
+  .olcomep-site header .header-olcomep-logo {
+    height: 3.75rem;
+  }
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] :is(p, .button-secondary) {
+  color: rgb(var(--brand-primary));
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] :is(p[class~="border"], .button-secondary) {
+  border-color: rgb(var(--brand-primary) / 55%);
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] .button-secondary:hover {
+  background-color: rgb(var(--brand-primary) / 9%);
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] {
+  border-bottom: 4px solid rgb(var(--brand-primary));
+}
+
+.olcomep-site section[aria-labelledby="titulo-principal"] :focus-visible {
+  outline-color: rgb(var(--brand-primary));
+}
+
+.olcomep-site #historicos {
+  background-color: #245783;
+}
+
+.olcomep-site #historicos .section-title {
+  color: #ffffff;
+}
+
+.olcomep-site #acerca-de-nosotros .border-brand-highlight {
+  border-color: var(--brand-turquoise);
+}
+
+.olcomep-site #cuadernillos .eyebrow {
+  border-inline-start: 4px solid var(--brand-orange);
+  padding-inline-start: 0.65rem;
+}
+
+.olcomep-site #interactivos .eyebrow {
+  color: var(--brand-purple);
+}
+
+.olcomep-site .section-title {
+  color: rgb(var(--brand-primary));
+}
+
+.olcomep-site .button-primary {
+  background-color: rgb(var(--brand-highlight));
+  color: rgb(var(--brand-primary));
+}
+
+.olcomep-site .button-primary:hover {
+  background-color: #ffda64;
+}

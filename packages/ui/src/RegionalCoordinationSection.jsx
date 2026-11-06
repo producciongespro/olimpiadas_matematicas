@@ -3,6 +3,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const prefersReducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+function getCardPositions(carousel) {
+  const viewportLeft = carousel.getBoundingClientRect().left + carousel.clientLeft
+  return Array.from(carousel.children, (card) => (
+    card.getBoundingClientRect().left - viewportLeft + carousel.scrollLeft
+  ))
+}
+
 export function RegionalCoordinationSection({ content }) {
   const [query, setQuery] = useState('')
   const [carouselState, setCarouselState] = useState({ canNext: false, canPrevious: false, current: 1 })
@@ -22,9 +29,9 @@ export function RegionalCoordinationSection({ content }) {
       return
     }
 
-    const children = Array.from(carousel.children)
-    const current = children.reduce((nearestIndex, child, index) => (
-      Math.abs(child.offsetLeft - carousel.scrollLeft) < Math.abs(children[nearestIndex].offsetLeft - carousel.scrollLeft) ? index : nearestIndex
+    const positions = getCardPositions(carousel)
+    const current = positions.reduce((nearestIndex, position, index) => (
+      Math.abs(position - carousel.scrollLeft) < Math.abs(positions[nearestIndex] - carousel.scrollLeft) ? index : nearestIndex
     ), 0)
     setCarouselState({
       canNext: carousel.scrollLeft + carousel.clientWidth < carousel.scrollWidth - 2,
@@ -50,14 +57,14 @@ export function RegionalCoordinationSection({ content }) {
   const moveCarousel = (direction) => {
     const carousel = carouselRef.current
     if (!carousel) return
-    const children = Array.from(carousel.children)
-    const targets = direction > 0 ? children : children.reverse()
-    const target = targets.find((child) => direction > 0
-      ? child.offsetLeft > carousel.scrollLeft + 8
-      : child.offsetLeft < carousel.scrollLeft - 8)
+    const positions = getCardPositions(carousel)
+    const target = direction > 0
+      ? positions.find((position) => position > carousel.scrollLeft + 2)
+      : positions.findLast((position) => position < carousel.scrollLeft - 2)
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth
     carousel.scrollTo({
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-      left: target?.offsetLeft ?? (direction > 0 ? carousel.scrollWidth : 0),
+      left: Math.max(0, Math.min(target ?? (direction > 0 ? maxScroll : 0), maxScroll)),
     })
   }
 

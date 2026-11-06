@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./site-palette.css": "./src/site-palette.css"
+  },
   "peerDependencies": {
     "lucide-react": "^0.468.0",
     "react": "^18.3.1"

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\ContentRepository;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use Config\SiteNavigation;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -37,6 +38,9 @@ class ContentService
             $revision = $this->repository->revision((int) $section['id'], 'published');
             if ($revision !== null) $result[$section['section_key']] = $this->presentSection($section['section_key'], $revision);
         }
+        if (isset($result['site-header'])) {
+            $result['site-header']['content'] = SiteNavigation::headerForEdition($result['current-edition']['content']['edition_year'] ?? null);
+        }
         return $result;
     }
 
@@ -53,21 +57,30 @@ class ContentService
 
     public function adminSections(): array
     {
-        return array_map(fn (array $section): array => $this->adminSection($section['section_key']), $this->repository->sections());
+        $editable = array_filter($this->repository->sections(), static fn (array $section): bool => $section['section_key'] !== 'site-header');
+        return array_values(array_map(fn (array $section): array => $this->adminSection($section['section_key']), $editable));
     }
 
     public function adminSection(string $key): array
     {
         $section = $this->requireSection($key);
+        $published = $this->nullablePresent($key, $this->repository->revision((int) $section['id'], 'published'));
+        if ($key === 'site-header' && $published !== null) {
+            $edition = $this->repository->section('current-edition');
+            $revision = $edition === null ? null : $this->repository->revision((int) $edition['id'], 'published');
+            $editionContent = $revision === null ? [] : json_decode($revision['content_json'], true, 512, JSON_THROW_ON_ERROR);
+            $published['content'] = SiteNavigation::headerForEdition($editionContent['edition_year'] ?? null);
+        }
         return [
             'key' => $section['section_key'], 'label' => $key === 'general-information' ? 'Preguntas frecuentes' : $section['label'], 'schema_version' => (int) $section['schema_version'],
-            'draft' => $this->nullablePresent($section['section_key'], $this->repository->revision((int) $section['id'], 'draft')),
-            'published' => $this->nullablePresent($section['section_key'], $this->repository->revision((int) $section['id'], 'published')),
+            'draft' => $key === 'site-header' ? null : $this->nullablePresent($key, $this->repository->revision((int) $section['id'], 'draft')),
+            'published' => $published,
         ];
     }
 
     public function saveDraft(string $key, array $input, ?UploadedFile $file = null, ?string $actor = null, array $files = [], array $localFiles = []): array
     {
+        $this->requireEditableSection($key);
         $section = $this->requireSection($key);
         $content = $this->validate($key, $input);
         $published = $this->repository->revision((int) $section['id'], 'published');
@@ -105,6 +118,7 @@ class ContentService
 
     public function publish(string $key): array
     {
+        $this->requireEditableSection($key);
         $section = $this->requireSection($key);
         $draft = $this->repository->revision((int) $section['id'], 'draft');
         if ($draft === null) throw new InvalidArgumentException('La sección no tiene un borrador para publicar.');
@@ -116,6 +130,11 @@ class ContentService
         $this->db->transComplete();
         if (! $this->db->transStatus()) throw new RuntimeException('No fue posible publicar la sección.');
         return $this->adminSection($key);
+    }
+
+    private function requireEditableSection(string $key): void
+    {
+        if ($key === 'site-header') throw new InvalidArgumentException('El encabezado y la navegación son de solo lectura.');
     }
 
     private function validate(string $key, array $input): array
@@ -131,7 +150,6 @@ class ContentService
             'current-edition' => ['eyebrow' => 80, 'title' => 160, 'description' => 600, 'registration_title' => 180, 'registration_description' => 600, 'registration_label' => 120, 'bulk_eyebrow' => 80, 'bulk_title' => 180, 'bulk_description' => 600, 'bulk_label' => 120, 'promotion_label' => 120, 'image_alt' => 255],
             'contact' => ['eyebrow' => 80, 'title' => 120, 'description' => 600, 'contact_name' => 180, 'contact_role' => 240],
             'resource-booklets' => ['eyebrow' => 80, 'title' => 120, 'description' => 600],
-            'site-header' => ['home_label' => 120, 'slogan' => 120],
             'site-footer' => ['program_name' => 180, 'organization' => 180],
             default => throw new InvalidArgumentException('La sección todavía no admite edición.'),
         };
@@ -178,42 +196,27 @@ class ContentService
             $result['resources'] = $this->validateContactResources((string) ($input['resources_json'] ?? ''));
         }
         if ($key === 'resource-booklets') $result['editions'] = $this->validateResourceEditions((string) ($input['editions_json'] ?? ''));
-        if ($key === 'site-header' || $key === 'site-footer') $result['links'] = $this->validateEditorialLinks((string) ($input['links_json'] ?? ''), $key === 'site-header');
+        if ($key === 'site-footer') $result['links'] = $this->validateEditorialLinks((string) ($input['links_json'] ?? ''));
         if ($key === 'site-footer') $result['credits'] = $this->validateEditorialCredits((string) ($input['credits_json'] ?? ''));
         return $result;
     }
 
-    private function validateEditorialLinks(string $json, bool $requireInformation = false): array
+    private function validateEditorialLinks(string $json): array
     {
         if (strlen($json) > 200_000) throw new InvalidArgumentException('La navegación supera el tamaño permitido.');
         $items = json_decode($json, true);
         if (! is_array($items) || ! array_is_list($items)) throw new InvalidArgumentException('Los enlaces no son válidos.');
         $keys = [];
-        $result = array_map(function (mixed $item) use (&$keys, $requireInformation): array {
+        $result = array_map(function (mixed $item) use (&$keys): array {
             if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('La clave de un enlace no es válida.');
             $key = (string) $item['key'];
             if (isset($keys[$key])) throw new InvalidArgumentException('Hay un enlace repetido.');
-            if ($requireInformation && ($key === 'calendario' || ($item['href'] ?? '') === '#calendario')) throw new InvalidArgumentException('Calendario ya pertenece al submenú de Información.');
             $keys[$key] = true;
             $label = trim((string) ($item['label'] ?? ''));
             if ($label === '' || str_contains($label, '<') || str_contains($label, '>')) throw new InvalidArgumentException('La etiqueta del enlace no es válida.');
-            if ($requireInformation && $key === 'informacion') return ['key' => $key, 'label' => 'Información', 'href' => '#preguntas-frecuentes'];
             return ['key' => $key, 'label' => mb_substr($label, 0, 120), 'href' => $this->validateResourceHref((string) ($item['href'] ?? ''), 'href')];
         }, $items);
-        if ($requireInformation && ! isset($keys['informacion'])) throw new InvalidArgumentException('La navegación debe conservar Información y su submenú.');
-        return $requireInformation ? $this->positionAboutLink($result) : $result;
-    }
-
-    private function positionAboutLink(array $links): array
-    {
-        $aboutIndex = array_search('acerca', array_column($links, 'key'), true);
-        if ($aboutIndex === false) return $links;
-        $about = array_splice($links, $aboutIndex, 1)[0];
-        $galleryIndex = array_search('galeria', array_column($links, 'key'), true);
-        $contactIndex = array_search('contacto', array_column($links, 'key'), true);
-        $position = $galleryIndex !== false ? $galleryIndex + 1 : ($contactIndex !== false ? $contactIndex : count($links));
-        array_splice($links, $position, 0, [$about]);
-        return $links;
+        return $result;
     }
 
     private function validateEditorialCredits(string $json): array
@@ -581,7 +584,7 @@ class ContentService
         if ($key === 'general-information') {
             $presented['content'] = array_intersect_key($presented['content'], array_flip(['faq_eyebrow', 'faq_title', 'faqs']));
         }
-        if ($key === 'site-header') $presented['content']['links'] = $this->positionAboutLink($presented['content']['links'] ?? []);
+        if ($key === 'site-header') $presented['content'] = SiteNavigation::HEADER;
         return $presented;
     }
     private function present(array $revision): array

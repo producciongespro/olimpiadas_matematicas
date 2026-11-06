@@ -13,8 +13,8 @@ La guía `docs/development/arquitectura-y-gestion-de-contenido.md` resume el fun
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
 - Rama de trabajo: `devUlate`
 - Upstream: `origin/devUlate`
-- Commit de referencia: `8f5b99c`
-- Mensaje: `03-11-2026 Integra recursos y navegación editorial y actualiza API y documentación`
+- Commit de referencia previo a esta iteración: `362c003`
+- Mensaje: `06-11-2026 Documenta la arquitectura y el flujo editorial vigentes de OLCOMEP`
 - Estado observado el 03-11-2026: la rama local estaba alineada con la referencia local de `origin/devUlate`, con cero commits adelantados y cero atrasados, antes de iniciar la incorporación editorial de Recursos, Header y Footer. La referencia remota no se actualizó mediante `git fetch` en esta sesión.
 - Estado observado el 05-11-2026 antes del commit de cuadernillos: `devUlate` estaba alineada con la referencia local de `origin/devUlate`. La iteración reúne el selector de la colección vigente, la aclaración editorial y la prueba de conservación de la edición anterior.
 
@@ -38,6 +38,7 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 ### Vista pública
 
 - La nueva aplicación vive en `apps/public-web`.
+- El tema de la vista pública usa azul marino en el encabezado y el menú, con texto blanco y foco amarillo. La portada usa turquesa luminoso con texto y separadores azul marino, acción principal amarilla y pie de página azul marino. El logotipo blanco del MEP conserva un fondo oscuro para mantener su legibilidad.
 - El header presenta conjuntamente el activo institucional `public/logotipo MEP.png` y la versión oficial más reciente `Logo OLCOMEP V2.png`, publicada como `public/logo-olcomep.png` con el fondo exterior convertido a transparencia.
 - La sección “Conoce OLCOMEP” utiliza el logotipo oficial como aparición principal dentro del contenido, a mayor escala que en el header y el footer.
 - El footer reutiliza ambas marcas como firma institucional de cierre; fuera de “Conoce OLCOMEP”, se evita repetir el logotipo en el hero, carrusel, galería y demás secciones.
@@ -46,6 +47,9 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Están migrados encabezado, navegación, galería, presentación institucional, edición 2026, contacto y pie de página.
 - La sección “Acerca de nosotros” sintetiza el documento institucional `Antecedentes OLCOMEP.docx` mediante una cronología desde las experiencias regionales de la primera década de 2000 hasta la alianza actual con universidades públicas, e incluye las cifras de crecimiento 2022–2024 y la visión integral, humanista y STEAM.
 - La sección “Coordinaciones regionales” conserva como respaldo local las 27 fichas suministradas, con búsqueda por región, persona o correo; el gestor editorial permite publicar el directorio sin alterar las tablas de inscripción externa.
+- Las flechas de Coordinaciones regionales y el indicador de tarjeta usan posiciones relativas al carrusel para permitir avanzar y volver en la vista pública y la copia editorial.
+- El formulario de fotografías de Coordinaciones regionales recomienda retratos verticales de 500 × 700 píxeles con el rostro centrado.
+- El administrador indica las dimensiones recomendadas junto a los campos de imagen de carrusel, galería, portada, promoción de Edición vigente, logotipos e imágenes decorativas de cuadernillos.
 - El bloque “Información general” se retiró. Preguntas frecuentes conserva sección propia; el submenú Información conduce directamente al PDF de Reglamento, Edición vigente, Calendario y Preguntas frecuentes. La arquitectura adapta la referencia de OBM a contenido confirmado de OLCOMEP, sin trasladar reglas brasileñas.
 - La sección “Calendario” publica las 12 actividades suministradas en `Cronograma OLCOMEP 2026.docx`, desde la inscripción del 8 de abril hasta la Premiación Nacional del 3 de diciembre; detalla la distribución de niveles para las pruebas y permite abrir o descargar el manual anual vigente.
 - La sección “Colaboradores y patrocinadores” reconoce a UCR, UNED, UNA, TEC y UTN como universidades públicas colaboradoras y al Centro Cultural Costarricense Norteamericano como patrocinador de OLCOMEP 2026; este último se presenta sin imagen hasta contar con un activo autorizado.
@@ -61,24 +65,33 @@ La aplicación heredada permanece en `app/` como referencia funcional y de conte
 - Las diapositivas heredadas no muestran título; “OLCOMEP en acción” fue retirado del carrusel.
 - Se conservan 12 cuadernillos de 2025 para estudiantes y docentes.
 - La colección PDF vigente muestra un selector Todos/Estudiantes/Docentes sin selector de año. Todos se selecciona al abrir y muestra todos los materiales; las opciones de rol filtran la colección. La edición vigente se calcula por el año PDF más reciente; al publicar una edición posterior desde administración, la anterior aparece automáticamente en Archivo histórico con sus roles y enlaces intactos.
-- El catálogo histórico contiene 85 recursos entre 2016 y 2024.
-- Los años 2020 a 2022 incluyen 27 actividades interactivas con destinos directos de Genially.
+- El catálogo histórico contiene 85 recursos entre 2016 y 2024 y usa un fondo azul medio `#245783` con texto claro.
+- Los años 2020 a 2022 incluyen 27 actividades interactivas con destinos directos de Genially. Cuadernillos interactivos filtra solo por edición y muestra todos sus materiales con la actividad o parte indicada.
 - La paridad funcional y las decisiones de migración están registradas en `docs/migration/public-site-parity.md`.
 - La vista fue auditada en 320, 768 y 1280 px sin desbordamiento horizontal ni controles menores de 44 px.
 - Recursos y cuadernillos consumen la sección editorial `resource-booklets`: el catálogo inicial preserva 124 materiales en 13 ediciones, y la vista pública y el administrador comparten el componente de presentación.
-- Header y Footer consumen sus publicaciones `site-header` y `site-footer` con respaldo local. El Header administra lema, nombre accesible y enlaces; el Footer administra identidad textual, enlaces y créditos. Las marcas y los destinos estructurales permanecen protegidos.
+- El encabezado es fijo en la vista pública y en la copia administrativa. El Footer conserva la edición de su identidad, enlaces y créditos.
+- La etiqueta «Edición AAAA» toma el año publicado de Edición vigente y lleva a `#edicion-vigente`. Se actualiza al publicar el nuevo año.
+- Durante la carga inicial, el menú y la sección de edición muestran un texto sin año para evitar que se vea el año de respaldo antes del publicado.
 - «Información» abre un submenú con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento abre el PDF vigente en otra pestaña; Cómo participar conduce directamente a Edición vigente; Calendario y Preguntas frecuentes conservan sus secciones. El enlace principal redundante de Calendario se oculta en publicaciones anteriores y se rechaza en nuevos borradores.
 - En el Header, «Acerca» se ubica entre «Galería» y «Contacto». El orden se normaliza en publicaciones anteriores y borradores sin modificar etiquetas, destinos ni el orden relativo de los demás enlaces.
 
 ### Vista administrativa
 
 - La base de la aplicación vive en `apps/admin-web`.
+- El diálogo editorial muestra los errores junto a Guardar borrador y Publicar. El campo de año de Edición vigente aplica el mismo intervalo que la API.
+- La API lee el borrador editorial según su tipo de contenido. El guardado multipart de Edición vigente acepta cambiar solo el año y conserva los documentos de la revisión anterior.
+- La copia administrativa muestra el encabezado fijo sin botón de edición. La API conserva la lectura de `site-header` y rechaza sus operaciones de borrador y publicación.
+- Los logotipos del encabezado tienen las mismas dimensiones en la copia administrativa y en la vista pública, tanto en móvil como en escritorio.
+- La última verificación de esta iteración completó las dos compilaciones de frontend y 53 pruebas de API con 219 aserciones. OpenAPI quedó sincronizado con las rutas vigentes. Queda pendiente confirmar en navegador el tamaño de los logotipos en la copia administrativa.
+- La protección del encabezado se verificó con una publicación antigua y un borrador previo. Las compilaciones pública y administrativa pasaron. La verificación de la API completó 52 pruebas y 211 aserciones y confirmó la sincronización de OpenAPI.
+- La copia editorial comparte los estilos de color del sitio público para mostrar el encabezado azul marino, la portada turquesa y el archivo histórico azul medio. Los cuadernillos interactivos muestran el selector de edición mediante el componente compartido.
 - El workspace React/Vite/Tailwind compila correctamente.
 - Incluye módulos funcionales para administrar diapositivas, eventos y fotografías.
 - Incluye el primer módulo de “Contenido del sitio”, con edición estructurada de la portada, reemplazo de imagen, vista previa móvil/escritorio, guardado de borrador y publicación confirmada.
 - “Contenido del sitio” también administra “Conoce OLCOMEP”: el selector permite alternar secciones, editar antetítulo, título y dos párrafos, guardar un borrador independiente, previsualizar con el componente público compartido y publicar explícitamente.
 - El calendario es la tercera sección editorial: permite modificar textos generales, cargar o reemplazar el manual anual en PDF y administrar cualquier cantidad de actividades mediante campos estructurados. El destino del manual está protegido y se genera desde su UUID; el borrador conserva acceso privado hasta publicar.
-- El módulo “Contenido del sitio” presenta una copia continua y a ancho completo de la página pública con las doce secciones compartidas y en su orden real. No mantiene un formulario lateral ni exige localizar la sección en pestañas administrativas; cada bloque ofrece su acción contextual “Editar”.
+- El módulo “Contenido del sitio” presenta una copia continua y a ancho completo de la página pública con las doce secciones compartidas y en su orden real. No mantiene un formulario lateral ni exige localizar la sección en pestañas administrativas; cada bloque editable ofrece su acción contextual “Editar”.
 - “Editar” abre un modal con todos los campos de la sección, estado textual y acciones “Cancelar”, “Guardar borrador” y “Publicar”. El modal ocupa la pantalla completa en móvil y una superficie centrada y desplazable en escritorio; al guardar correctamente se cierra y deja visible el resultado dentro de la copia pública.
 - Guardar y publicar permanecen separados; publicar exige un borrador confirmado y se bloquea ante cambios locales. Cerrar el modal, cambiar de módulo o cerrar sesión protege los cambios y archivos seleccionados mediante confirmación; cerrar o recargar la pestaña usa la advertencia nativa del navegador.
 - La superficie resume cuántas secciones están al día o tienen borrador pendiente, responde al ancho real del navegador y mantiene inactivos los enlaces y controles públicos para evitar navegación accidental. Los controles de simulación móvil/escritorio fueron retirados; la revisión responsive se conserva como validación técnica en 768 y 1280 px.
@@ -413,7 +426,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 10. Riesgos y pendientes recomendados
 
-1. Validar con una sesión MEP autorizada el ciclo editorial de las doce secciones, incluyendo recursos, Header, Footer, contacto, carga de logotipos, cronología, preguntas frecuentes, directorio regional y Edición vigente.
+1. Validar con una sesión MEP autorizada el ciclo editorial de las once secciones editables, incluyendo recursos, Footer, contacto, carga de logotipos, cronología, preguntas frecuentes, directorio regional y Edición vigente.
 2. Corregir el destino de foco del enlace de salto, ampliar las áreas táctiles señaladas y validar manualmente con lector de pantalla real y una herramienta especializada de contraste.
 3. Mantener la inscripción externa y no activar las tablas reservadas sin una nueva decisión aprobada.
 4. Definir el proceso oficial de resultados, puntajes, medallas y premiación antes de modelarlo.
@@ -424,7 +437,7 @@ El estado exacto de archivos pendientes debe obtenerse siempre mediante `git sta
 
 ## 11. Próximo paso recomendado
 
-Iniciar sesión con una identidad MEP autorizada y validar el flujo real de las doce secciones editoriales. Completar la inspección visual móvil y escritorio de los tres bloques incorporados el 03-11-2026 y los ajustes de accesibilidad pendientes antes de producción.
+Iniciar sesión con una identidad MEP autorizada y validar el flujo real de las once secciones editables. Completar la inspección visual móvil y escritorio de los tres bloques incorporados el 03-11-2026 y los ajustes de accesibilidad pendientes antes de producción.
 
 ## 12. Prompt para retomar con Codex
 

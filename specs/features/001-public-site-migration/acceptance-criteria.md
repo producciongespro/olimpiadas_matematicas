@@ -23,6 +23,7 @@
 - “Coordinaciones regionales” muestra las 27 regiones, permite buscar por región, persona o correo, genera enlaces `mailto:` únicamente para direcciones inequívocas y señala cualquier contacto pendiente de confirmación.
 - El submenú “Información” organiza Reglamento, Cómo participar, Calendario y Preguntas frecuentes; no aparece el bloque de Información general ni sus tarjetas.
 - La navegación conduce a una sección “Calendario” única y reconocible.
+- El encabezado y el menú muestran fondo azul marino con texto blanco y foco amarillo. La portada muestra fondo turquesa con texto y separador azul marino. La acción principal conserva el amarillo, el pie de página usa azul marino y el foco es visible sobre superficies claras y oscuras.
 - Los cuadernillos de la edición PDF vigente muestran Todos por defecto y permiten filtrar por Estudiantes o Docentes sin selector de año; una edición anterior conserva ambos roles y sus destinos en el archivo histórico cuando se publica un año posterior.
 - “Calendario” presenta en orden cronológico las 12 actividades confirmadas de abril a diciembre de 2026, diferencia fechas exactas de meses sin día confirmado y permite abrir o descargar el manual oficial publicado.
 - El cronograma conserva lectura lineal, fechas semánticas, contraste suficiente y ausencia de desbordamiento horizontal en móvil y escritorio.

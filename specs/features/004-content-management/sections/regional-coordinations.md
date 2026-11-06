@@ -31,6 +31,7 @@
 - Proporción y espacio reservado del retrato, silueta de respaldo y alternativa accesible no editable.
 - El directorio presenta una tarjeta por contacto dentro de un carrusel manual, sin avance automático: una tarjeta con indicio de continuidad en móvil, dos en tableta y tres en escritorio.
 - El carrusel admite desplazamiento táctil, rueda o trackpad, flechas anterior/siguiente y navegación por teclado nativa; los controles tienen nombre accesible, foco visible y estado deshabilitado en los límites.
+- Después de avanzar, la flecha anterior vuelve a la tarjeta anterior y actualiza el indicador. El desplazamiento se calcula respecto al área visible del carrusel, incluso si el bloque está centrado o tiene márgenes.
 - El movimiento es breve y funcional, y se elimina cuando el sistema solicita `prefers-reduced-motion`.
 
 ## Flujo y aceptación
@@ -39,6 +40,7 @@
 - La búsqueda pública filtra la revisión publicada por región, persona o correo.
 - Al cambiar la búsqueda, el carrusel vuelve al primer resultado y actualiza el total de asesorías y regiones coincidentes.
 - Cada asesor muestra su fotografía publicada o una silueta neutra cuando no dispone de ella.
+- El selector de archivos indica los formatos admitidos, el límite de 8 MB y el tamaño recomendado de 500 × 700 píxeles (ancho × alto, formato vertical 5:7). Recomienda centrar el rostro y dejar un margen alrededor.
 - La previsualización administrativa refleja inmediatamente una selección o retiro, pero la vista pública solo cambia después de publicar.
 - Los medios exclusivos del borrador se consultan mediante una ruta administrativa autenticada y `private, no-store`; no quedan disponibles desde la ruta pública de medios.
 - Una lista vacía muestra un estado explícito y no rompe la sección.

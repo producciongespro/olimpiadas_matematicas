@@ -10,12 +10,17 @@ use App\Database\Migrations\CreateContentRevisionMedia;
 use App\Database\Seeds\OlcomepInitialSeeder;
 use App\Services\GalleryService;
 use App\Services\ContentService;
+use App\Controllers\Api\Admin\ContentAdminController;
 use App\Services\AdminUserService;
 use App\Exceptions\ForbiddenException;
 use CodeIgniter\Database\Config as DatabaseConfig;
 use CodeIgniter\Database\Migration;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use CodeIgniter\HTTP\IncomingRequest;
+use CodeIgniter\HTTP\SiteURI;
+use CodeIgniter\HTTP\UserAgent;
 use CodeIgniter\Test\CIUnitTestCase;
+use CodeIgniter\Test\ControllerTestTrait;
 
 require_once APPPATH . 'Database/Migrations/2026-09-04-120000_CreateEditionsAndResources.php';
 require_once APPPATH . 'Database/Migrations/2026-09-04-120100_CreateEducationDirectory.php';
@@ -30,6 +35,8 @@ require_once APPPATH . 'Database/Migrations/2026-09-18-120000_CreateContentRevis
  */
 final class OlcomepSchemaTest extends CIUnitTestCase
 {
+    use ControllerTestTrait;
+
     /** @var list<Migration> */
     private array $domainMigrations = [];
 
@@ -494,6 +501,35 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame('Edición de prueba', $service->publicHome()['current-edition']['content']['title']);
     }
 
+    public function testCurrentEditionYearCanChangeWithoutReplacingDocuments(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $published = $service->adminSection('current-edition')['published']['content'];
+        $input = $published;
+        $input['edition_year'] = '2027';
+        $input['resources_json'] = json_encode($published['resources']);
+
+        $appConfig = config(\Config\App::class);
+        $request = $this->getMockBuilder(IncomingRequest::class)
+            ->setConstructorArgs([$appConfig, new SiteURI($appConfig), null, new UserAgent()])
+            ->onlyMethods(['getPost'])
+            ->getMock();
+        $request->setHeader('Content-Type', 'multipart/form-data; boundary=olcomep-test');
+        $request->method('getPost')->willReturn($input);
+        $this->withRequest($request)
+            ->withBody("--olcomep-test\r\nContent-Disposition: form-data; name=\"edition_year\"\r\n\r\n2027\r\n--olcomep-test--")
+            ->controller(ContentAdminController::class)
+            ->execute('saveDraft', 'current-edition')
+            ->assertOK();
+        $draft = $service->adminSection('current-edition')['draft']['content'];
+        $this->assertSame(2027, $draft['edition_year']);
+        $this->assertSame(array_column($published['resources'], 'href'), array_column($draft['resources'], 'href'));
+        $this->assertSame(2026, $service->publicHome()['current-edition']['content']['edition_year']);
+        $this->assertSame(2027, $service->publish('current-edition')['published']['content']['edition_year']);
+    }
+
     public function testCurrentEditionPdfRemainsPrivateUntilPublicationAndUsesEditionYear(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
@@ -524,6 +560,8 @@ final class OlcomepSchemaTest extends CIUnitTestCase
             $draft = $service->adminSection('current-edition')['draft']['content'];
             $resource = $draft['resources'][0];
             $this->assertSame(2027, $draft['edition_year']);
+            $headerLinks = array_column($service->publicHome()['site-header']['content']['links'], null, 'key');
+            $this->assertSame('Edición 2026', $headerLinks['edicion']['label']);
             $this->assertSame('manual-olcomep-2027.pdf', $resource['file_name']);
             $this->assertSame('PDF', $resource['format']);
             $this->assertSame('file', $resource['icon']);
@@ -535,6 +573,12 @@ final class OlcomepSchemaTest extends CIUnitTestCase
             $this->assertFileExists($storedPath);
 
             $service->publish('current-edition');
+            $headerLinks = array_column($service->publicHome()['site-header']['content']['links'], null, 'key');
+            $this->assertSame(['key' => 'edicion', 'label' => 'Edición 2027', 'href' => '#edicion-vigente'], $headerLinks['edicion']);
+            $this->assertSame(
+                $headerLinks,
+                array_column($service->adminSection('site-header')['published']['content']['links'], null, 'key'),
+            );
             $publishedResource = $service->publicHome()['current-edition']['content']['resources'][0];
             $this->assertSame($resource['file_uuid'], $publishedResource['file_uuid']);
             $this->assertNotNull((new GalleryService($this->db))->media($resource['file_uuid']));
@@ -688,19 +732,11 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $service->saveDraft('resource-booklets', $input);
     }
 
-    public function testHeaderAndFooterCollectionsPublishIndependently(): void
+    public function testFooterCollectionsRemainEditable(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
         $seeder->setSilent(true)->run();
         $service = new ContentService($this->db);
-        $header = $service->adminSection('site-header')['published']['content'];
-        $original = $service->publicHome()['site-header']['content']['slogan'];
-        $service->saveDraft('site-header', ['home_label' => $header['home_label'], 'slogan' => 'Lema revisado', 'links_json' => json_encode([['key' => 'informacion', 'label' => 'Información', 'href' => '#informacion-general']])]);
-        $this->assertSame($original, $service->publicHome()['site-header']['content']['slogan']);
-        $service->publish('site-header');
-        $this->assertCount(1, $service->publicHome()['site-header']['content']['links']);
-        $this->assertSame('Lema revisado', $service->publicHome()['site-header']['content']['slogan']);
-
         $footer = $service->adminSection('site-footer')['published']['content'];
         $service->saveDraft('site-footer', ['program_name' => $footer['program_name'], 'organization' => $footer['organization'], 'links_json' => '[]', 'credits_json' => '[]']);
         $service->publish('site-footer');
@@ -708,80 +744,33 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame([], $service->publicHome()['site-footer']['content']['links']);
     }
 
-    public function testHeaderRejectsCredentialedDestination(): void
+    public function testFixedHeaderIgnoresOldRevisionsAndRejectsEditorialWrites(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
         $seeder->setSilent(true)->run();
         $service = new ContentService($this->db);
-        $this->expectException(InvalidArgumentException::class);
-        $service->saveDraft('site-header', [
-            'home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria',
-            'links_json' => json_encode([['key' => 'informacion', 'label' => 'Información', 'href' => '#informacion-general'], ['key' => 'externo', 'label' => 'Destino', 'href' => 'https://user:pass@example.com']]),
+        $section = $this->db->table('content_sections')->where('section_key', 'site-header')->get()->getRowArray();
+        $oldContent = json_encode(['slogan' => 'Lema anterior', 'links' => []]);
+        $this->db->table('content_revisions')->where('section_id', $section['id'])->where('status', 'published')->update(['content_json' => $oldContent]);
+        $this->db->table('content_revisions')->insert([
+            'section_id' => $section['id'], 'content_json' => $oldContent,
+            'status' => 'draft', 'created_at' => '2026-11-05 12:00:00',
         ]);
-    }
 
-    public function testHeaderProtectsInformationSubmenuDestination(): void
-    {
-        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
-        $seeder->setSilent(true)->run();
-        $service = new ContentService($this->db);
-        $draft = ['home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria', 'links_json' => json_encode([['key' => 'informacion', 'label' => 'Otro texto', 'href' => 'https://example.com']])];
-        $service->saveDraft('site-header', $draft);
-        $links = $service->adminSection('site-header')['draft']['content']['links'];
-        $this->assertSame('Información', $links[0]['label']);
-        $this->assertSame('#preguntas-frecuentes', $links[0]['href']);
-        $draft['links_json'] = '[]';
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Información');
-        $service->saveDraft('site-header', $draft);
-    }
+        $header = $service->adminSection('site-header');
+        $this->assertNull($header['draft']);
+        $this->assertNotContains('site-header', array_column($service->adminSections(), 'key'));
+        $this->assertSame(\Config\SiteNavigation::headerForEdition(2026), $header['published']['content']);
+        $this->assertSame($header['published']['content'], $service->publicHome()['site-header']['content']);
 
-    public function testHeaderRejectsCalendarAsSeparateTopLevelLink(): void
-    {
-        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
-        $seeder->setSilent(true)->run();
-        $service = new ContentService($this->db);
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('submenú');
-        $service->saveDraft('site-header', [
-            'home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria',
-            'links_json' => json_encode([
-                ['key' => 'informacion', 'label' => 'Información', 'href' => '#informacion-general'],
-                ['key' => 'calendario', 'label' => 'Calendario', 'href' => '#calendario'],
-            ]),
-        ]);
-    }
-
-    public function testHeaderRejectsCalendarDestinationWithAnotherKey(): void
-    {
-        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
-        $seeder->setSilent(true)->run();
-        $service = new ContentService($this->db);
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('submenú');
-        $service->saveDraft('site-header', [
-            'home_label' => 'OLCOMEP, inicio', 'slogan' => 'Matemática para Primaria',
-            'links_json' => json_encode([
-                ['key' => 'informacion', 'label' => 'Información', 'href' => '#preguntas-frecuentes'],
-                ['key' => 'agenda', 'label' => 'Calendario', 'href' => '#calendario'],
-            ]),
-        ]);
-    }
-
-    public function testHeaderPlacesAboutBetweenGalleryAndContactWithoutChangingDestinations(): void
-    {
-        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
-        $seeder->setSilent(true)->run();
-        $service = new ContentService($this->db);
-        $published = $service->adminSection('site-header')['published']['content'];
-        $this->assertSame(['galeria', 'acerca', 'contacto'], array_slice(array_column($published['links'], 'key'), -3));
-        $links = $published['links'];
-        $about = array_splice($links, array_search('acerca', array_column($links, 'key'), true), 1)[0];
-        array_splice($links, 1, 0, [$about]);
-        $service->saveDraft('site-header', ['home_label' => $published['home_label'], 'slogan' => $published['slogan'], 'links_json' => json_encode($links)]);
-        $draft = $service->adminSection('site-header')['draft']['content']['links'];
-        $this->assertSame(['galeria', 'acerca', 'contacto'], array_slice(array_column($draft, 'key'), -3));
-        $this->assertSame('#acerca-de-nosotros', $draft[count($draft) - 2]['href']);
+        foreach (['saveDraft', 'publish'] as $operation) {
+            try {
+                $operation === 'saveDraft' ? $service->saveDraft('site-header', []) : $service->publish('site-header');
+                $this->fail('El encabezado debe rechazar cambios editoriales.');
+            } catch (InvalidArgumentException $exception) {
+                $this->assertStringContainsString('solo lectura', $exception->getMessage());
+            }
+        }
     }
 
     public function testCannotDeactivateLastActiveMaster(): void

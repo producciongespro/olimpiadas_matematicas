@@ -41,6 +41,8 @@ La colección PDF más reciente presenta un selector de Todos, Estudiantes y Doc
 
 ### PUB-003 — Jerarquía semántica
 
+El encabezado y el menú usan azul marino `#113464`, con texto blanco y foco amarillo. La portada usa turquesa luminoso `#55BBD0` con texto y separador azul marino. El pie de página usa azul marino y el archivo histórico usa azul medio `#245783` con texto claro. El amarillo `#FFCB2E` destaca las acciones principales, el turquesa `#29A2C1` distingue detalles gráficos y su variante oscura `#17677D` marca el foco sobre superficies claras. Blanco y azul claro `#F2F7FA` sirven como fondos de contenido. Naranja `#F17D34` y morado `#8C388C` distinguen recursos; verde `#1E8C3B` y rojo `#D13717` se reservan para estados acompañados de texto o iconos.
+
 La página tendrá un único `h1`; las secciones y subsecciones mantendrán un orden de encabezados coherente.
 
 ### PUB-004 — Navegación accesible

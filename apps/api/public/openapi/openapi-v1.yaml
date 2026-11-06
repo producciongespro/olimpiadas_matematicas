@@ -146,6 +146,7 @@ paths:
       tags: [Gestión editorial]
       operationId: listEditorialSections
       summary: Lista el estado editorial de las secciones
+      description: El encabezado fijo queda fuera de esta lista.
       security: [{ entraBearer: [] }]
       responses:
         '200': { $ref: '#/components/responses/EditorialSections' }
@@ -154,6 +155,7 @@ paths:
       tags: [Gestión editorial]
       operationId: getEditorialSection
       summary: Obtiene el borrador y la publicación de una sección
+      description: Para site-header devuelve el encabezado fijo y un borrador nulo.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:
@@ -164,7 +166,7 @@ paths:
       tags: [Gestión editorial]
       operationId: saveEditorialDraft
       summary: Guarda el contenido completo como borrador
-      description: Guardar no modifica la publicación vigente. El objeto content depende de la clave de sección.
+      description: Guardar no modifica la publicación vigente. Los campos dependen de la clave de sección. Se leen como formulario multipart o como objeto JSON según Content-Type. Un JSON inválido devuelve 422. La clave site-header devuelve 422 porque es de solo lectura.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       requestBody: { $ref: '#/components/requestBodies/EditorialDraft' }
@@ -176,6 +178,7 @@ paths:
       tags: [Gestión editorial]
       operationId: publishEditorialSection
       summary: Publica el borrador vigente de una sección
+      description: La clave site-header devuelve 422, incluso si existe un borrador anterior.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:
@@ -343,6 +346,8 @@ components:
       content:
         multipart/form-data:
           schema: { $ref: '#/components/schemas/EditorialDraftInput' }
+        application/json:
+          schema: { $ref: '#/components/schemas/EditorialDraftInput' }
   responses:
     Health: { description: Servicio disponible, content: { application/json: { schema: { type: object, required: [data], properties: { data: { type: object, required: [service, status], properties: { service: { type: string, const: olcomep-api }, status: { type: string, const: ok } } } } } } } }
     PublicHome: { description: Mapa de las doce publicaciones vigentes, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } }, content: { application/json: { schema: { $ref: '#/components/schemas/PublicHomeResponse' } } } }
@@ -400,11 +405,11 @@ components:
     ResourceBookletsContent: { type: object, required: [eyebrow, title, description, editions], properties: { eyebrow: { type: string, maxLength: 80 }, title: { type: string, maxLength: 120 }, description: { type: string, maxLength: 600 }, editions: { type: array, items: { $ref: '#/components/schemas/ResourceEdition' } } }, additionalProperties: false }
     EditorialLink: { type: object, required: [key, label, href], properties: { key: { type: string, pattern: '^[a-z0-9-]{3,80}$' }, label: { type: string, maxLength: 120 }, href: { type: string, format: uri-reference, maxLength: 512 } }, additionalProperties: false }
     EditorialCredit: { type: object, required: [key, title, names], properties: { key: { type: string, pattern: '^[a-z0-9-]{3,80}$' }, title: { type: string, maxLength: 180 }, names: { type: array, items: { type: string, maxLength: 180 } } }, additionalProperties: false }
-    SiteHeaderContent: { type: object, description: El enlace de clave informacion es obligatorio. Su etiqueta y destino se normalizan a Información y #preguntas-frecuentes; abre un submenú estructural con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Cómo participar apunta a #edicion-vigente y Reglamento abre el PDF publicado en Edición vigente en una pestaña nueva. La clave calendario y cualquier enlace principal con destino #calendario se rechazan. Acerca se presenta y guarda después de Galería y antes de Contacto cuando existen; sus etiquetas y destinos se conservan., required: [home_label, slogan, links], properties: { home_label: { type: string, maxLength: 120 }, slogan: { type: string, maxLength: 120 }, links: { type: array, items: { $ref: '#/components/schemas/EditorialLink' } } }, additionalProperties: false }
+    SiteHeaderContent: { type: object, readOnly: true, description: Encabezado fijo con enlaces y etiquetas definidos por el sitio. Las revisiones anteriores del encabezado no cambian su contenido. La etiqueta Edición AAAA deriva del año publicado de Edición vigente y lleva al ancla de Edición vigente. Sin un año válido se usa Edición vigente. Información agrupa Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento sigue el PDF publicado en Edición vigente., required: [home_label, slogan, links], properties: { home_label: { type: string, maxLength: 120 }, slogan: { type: string, maxLength: 120 }, links: { type: array, items: { $ref: '#/components/schemas/EditorialLink' } } }, additionalProperties: false }
     SiteFooterContent: { type: object, required: [program_name, organization, links, credits], properties: { program_name: { type: string, maxLength: 180 }, organization: { type: string, maxLength: 180 }, links: { type: array, items: { $ref: '#/components/schemas/EditorialLink' } }, credits: { type: array, items: { $ref: '#/components/schemas/EditorialCredit' } } }, additionalProperties: false }
-    SectionContent: { oneOf: [{ $ref: '#/components/schemas/HeroContent' }, { $ref: '#/components/schemas/PresentationContent' }, { $ref: '#/components/schemas/CalendarContent' }, { $ref: '#/components/schemas/PartnersContent' }, { $ref: '#/components/schemas/AboutContent' }, { $ref: '#/components/schemas/GeneralInformationContent' }, { $ref: '#/components/schemas/RegionalCoordinationsContent' }, { $ref: '#/components/schemas/CurrentEditionContent' }, { $ref: '#/components/schemas/ContactContent' }, { $ref: '#/components/schemas/ResourceBookletsContent' }, { $ref: '#/components/schemas/SiteHeaderContent' }, { $ref: '#/components/schemas/SiteFooterContent' }] }
-    EditorialDraftInput: { type: object, required: [content], properties: { editions_json: { type: string, contentMediaType: application/json, description: Catálogo ordenado de Recursos y cuadernillos. }, links_json: { type: string, contentMediaType: application/json, description: Enlaces ordenados de Header o Footer. }, credits_json: { type: string, contentMediaType: application/json, description: Grupos ordenados de créditos del Footer. }, content: { description: JSON serializado o estructura correspondiente a la sección, oneOf: [{ type: string, contentMediaType: application/json }, { $ref: '#/components/schemas/SectionContent' }] }, image: { type: string, contentEncoding: binary }, manual: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: Manual anual del calendario en PDF, con un máximo de 16 MB. }, document_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Los documentos de Edición vigente se envían como campos dinámicos document_{key}; cada PDF admite hasta 16 MB y se almacena bajo el año editorial.' }, bulk_template: { type: string, contentEncoding: binary, contentMediaType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, description: Plantilla XLSX de inscripción masiva de hasta 16 MB; sustituye la relación de la nueva revisión. }, bulk_remove: { type: boolean, description: Retira la plantilla de la nueva revisión sin modificar revisiones anteriores. }, photo_contact_key: { type: string, contentEncoding: binary, description: 'Las fotografías regionales se envían como campos dinámicos photo_{key}; reemplazar crea un medio UUID nuevo.' } } }
-    EditorialRevision: { type: object, required: [id, status, content], properties: { id: { type: integer }, status: { type: string, enum: [draft, published, superseded] }, content: { $ref: '#/components/schemas/SectionContent' }, created_at: { type: [string, 'null'], format: date-time }, published_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
+    SectionContent: { oneOf: [{ $ref: '#/components/schemas/HeroContent' }, { $ref: '#/components/schemas/PresentationContent' }, { $ref: '#/components/schemas/CalendarContent' }, { $ref: '#/components/schemas/PartnersContent' }, { $ref: '#/components/schemas/AboutContent' }, { $ref: '#/components/schemas/GeneralInformationContent' }, { $ref: '#/components/schemas/RegionalCoordinationsContent' }, { $ref: '#/components/schemas/CurrentEditionContent' }, { $ref: '#/components/schemas/ContactContent' }, { $ref: '#/components/schemas/ResourceBookletsContent' }, { $ref: '#/components/schemas/SiteFooterContent' }] }
+    EditorialDraftInput: { type: object, description: Campos directos de la sección. Los archivos requieren multipart., properties: { editions_json: { type: string, contentMediaType: application/json, description: Catálogo ordenado de Recursos y cuadernillos. }, links_json: { type: string, contentMediaType: application/json, description: Enlaces ordenados del Footer. }, credits_json: { type: string, contentMediaType: application/json, description: Grupos ordenados de créditos del Footer. }, image: { type: string, contentEncoding: binary }, manual: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: Manual anual del calendario en PDF, con un máximo de 16 MB. }, document_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Los documentos de Edición vigente se envían como campos dinámicos document_{key}; cada PDF admite hasta 16 MB y se almacena bajo el año editorial.' }, bulk_template: { type: string, contentEncoding: binary, contentMediaType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, description: Plantilla XLSX de inscripción masiva de hasta 16 MB; sustituye la relación de la nueva revisión. }, bulk_remove: { type: boolean, description: Retira la plantilla de la nueva revisión sin modificar revisiones anteriores. }, photo_contact_key: { type: string, contentEncoding: binary, description: 'Las fotografías regionales se envían como campos dinámicos photo_{key}; reemplazar crea un medio UUID nuevo.' } } }
+    EditorialRevision: { type: object, required: [id, status, content], properties: { id: { type: integer }, status: { type: string, enum: [draft, published, superseded] }, content: { oneOf: [{ $ref: '#/components/schemas/SectionContent' }, { $ref: '#/components/schemas/SiteHeaderContent' }] }, created_at: { type: [string, 'null'], format: date-time }, published_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
     EditorialSectionSummary: { type: object, required: [key, name], properties: { key: { type: string }, name: { type: string }, has_draft: { type: boolean }, has_publication: { type: boolean }, updated_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
     EditorialSection: { type: object, required: [key], properties: { key: { type: string }, draft: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] }, published: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] } }, additionalProperties: true }
     PublicHomeResponse:

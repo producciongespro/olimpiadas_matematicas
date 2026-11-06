@@ -30,6 +30,7 @@ Administrar los textos y catálogos de cuadernillos recientes, archivo históric
 
 - administración permite agregar, eliminar, editar y reordenar ediciones y materiales;
 - vista pública y previsualización comparten componentes;
+- Cuadernillos interactivos ofrece solo el selector de edición y muestra todos los materiales de la edición elegida, con su actividad o parte en la descripción;
 - la edición PDF más reciente muestra un selector de Todos, Estudiantes y Docentes sin selector de año; Todos es la opción inicial y muestra todos los materiales vigentes, mientras las opciones por rol muestran únicamente sus materiales; una selección vacía comunica su estado;
 - al agregar y publicar una edición PDF de un año posterior, la anterior pasa automáticamente al archivo histórico con sus materiales, roles, claves y destinos intactos, sin traslado manual ni modificación de archivos físicos;
 - el contenido inicial conserva todos los recursos vigentes;

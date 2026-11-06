@@ -42,7 +42,10 @@
 - [x] Retirar el bloque de Información general y sus tarjetas, y mantener Preguntas frecuentes como sección y editor propios bajo la clave de API existente.
 - [x] Mover Acerca entre Galería y Contacto en el Header, incluidos borradores y publicaciones anteriores, conservando destinos.
 - [x] Implementar y verificar Recursos y cuadernillos.
+- [x] Mostrar todos los cuadernillos interactivos de la edición seleccionada con un único selector de edición.
 - [x] Agregar selector Todos/Estudiantes/Docentes a los cuadernillos vigentes y comprobar la transición automática de una edición anterior al archivo histórico.
 - [x] Implementar y verificar Header y navegación.
+- [x] Fijar el encabezado y sus enlaces, retirar su edición y rechazar sus escrituras en la API.
+- [x] Derivar el año de la etiqueta de Edición del año publicado en Edición vigente.
 - [x] Implementar y verificar Footer y créditos.
 - [ ] Completar la aceptación real con sesión MEP e interrupción/restauración controlada de la API.
