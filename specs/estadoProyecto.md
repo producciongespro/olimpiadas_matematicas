@@ -4,7 +4,9 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **05-11-2026**.
+Última actualización: **06-11-2026**.
+
+La guía `docs/development/arquitectura-y-gestion-de-contenido.md` resume el funcionamiento vigente del monorepo, el flujo editorial, la entrega de archivos y los pendientes de operación. Se incorporó como documentación de consulta sin cambios funcionales.
 
 ## 2. Repositorio y rama activa
 
