@@ -6,3 +6,4 @@
 - Imagen: JPEG, PNG o WebP validada y vinculada a la revisión.
 - Flujo: borrador, copia editorial responsive según el ancho real del navegador y publicación confirmada.
 - Respaldo: contenido e imagen locales cuando la API no responde.
+- La vista pública sitúa después de la portada un bloque fijo de accesos por tarea; no agrega campos ni cambia los destinos editoriales del hero.

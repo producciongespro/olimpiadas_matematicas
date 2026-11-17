@@ -6,6 +6,12 @@ Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora 
 
 Última actualización: **17-11-2026**.
 
+## Actualización del 17-11-2026 — Navegación pública en rama de mejora
+
+- En `codex/mejoras-interfaz-publica` se incorporó `game-ui-frontend` desde Nutridos a `.agents/skills/game-ui-frontend/`. Se retiraron enlaces a referencias auxiliares ausentes en el proyecto de origen para que la skill local sea autocontenida. Para OLCOMEP se aplicaron sus pautas de jerarquía y controles claros dentro de la paleta institucional, sin introducir elementos de videojuego.
+- La portada incluye cuatro accesos por tarea a Edición vigente, Cuadernillos, Calendario y Coordinaciones regionales. La edición y los cuadernillos aparecen antes de los contenidos institucionales extensos. Se actualizaron la especificación pública, los criterios, la especificación individual de esta sección y las tareas.
+- `npm run build --workspace=@olcomep/public-web` finalizó con 1 613 módulos transformados y `git diff --check` no detectó errores. La inspección visual en móvil y escritorio sigue pendiente: la herramienta de navegador se detuvo al no poder determinar la URL local con suficiente certeza. No se cambió el contrato de la API.
+
 ## Actualización del 17-11-2026 — Recuperación de imágenes públicas en Docker
 
 - La base Docker contenía el carrusel, pero ninguna sección editorial. `PublicContentSeeder` publicó las doce secciones iniciales y registró portada, promoción y cinco logotipos; conservó los 27 registros regionales y 28 contactos.

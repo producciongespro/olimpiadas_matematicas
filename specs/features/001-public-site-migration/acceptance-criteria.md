@@ -38,3 +38,5 @@
 - La sección “Conoce OLCOMEP” utiliza el logotipo a mayor escala que el header y el footer, sin desplazar ni dificultar la lectura de su contenido en móvil o escritorio.
 - El footer cierra la página con las marcas MEP y OLCOMEP; el MEP conserva contraste sobre el fondo oscuro y ambas permanecen sin deformación, desbordamiento en 320 px ni lectura redundante por tecnología de asistencia.
 - `app/` permanece disponible hasta aprobar la paridad funcional.
+- Después de la portada hay cuatro accesos por tarea con destinos internos válidos y nombres claros; se recorren con teclado y funcionan a 320 px y en escritorio.
+- La edición vigente y los cuadernillos preceden a los contenidos institucionales extensos sin alterar el contenido publicado ni el contrato de la API.

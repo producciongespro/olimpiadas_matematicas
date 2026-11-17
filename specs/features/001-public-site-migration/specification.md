@@ -116,6 +116,10 @@ El Centro Cultural Costarricense Norteamericano se identifica como patrocinador 
 
 Al pasar el puntero por cada institución, únicamente su logotipo aumenta hasta un 6 % durante 300 ms. La transición no modifica el flujo ni las dimensiones de la retícula y se omite mediante `prefers-reduced-motion` cuando la persona usuaria solicita reducir el movimiento.
 
+### PUB-014 — Accesos por tarea en la portada
+
+La portada ofrece, después de su presentación principal, un bloque compacto de accesos a Edición vigente, Cuadernillos, Calendario y Coordinaciones regionales. Los destinos son anclas existentes y se mantienen en la misma página. La edición vigente y los cuadernillos aparecen antes de los bloques institucionales extensos para que la preparación y los documentos oficiales sean fáciles de encontrar. El bloque no sustituye al menú principal ni introduce contenido editorial nuevo. En móvil, los accesos se apilan y conservan un área táctil de al menos 44 px; el foco es visible y los enlaces no dependen del hover. La composición usa la paleta institucional y movimiento discreto, respetando la preferencia de movimiento reducido.
+
 ## Fuera de alcance de esta iteración
 
 - Panel administrativo.

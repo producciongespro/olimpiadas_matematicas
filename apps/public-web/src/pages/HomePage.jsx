@@ -3,6 +3,7 @@ import { PhotoGallery } from '../features/gallery/PhotoGallery.jsx'
 import { MainCarousel } from '../features/carousel/MainCarousel.jsx'
 import { AboutUsSection, CalendarSection, ContactSection, CurrentEditionSection, GeneralInformationSection, HeroSection, OlcomepIntroductionSection, PartnersSection, RegionalCoordinationSection, ResourceBookletsSection, SiteHeader, SiteFooter } from '@olcomep/ui'
 import { usePublishedSiteContent } from '../hooks/usePublishedSiteContent.js'
+import { PublicTaskNavigation } from '../components/PublicTaskNavigation.jsx'
 
 export function HomePage() {
   const { content, initialLoading, version } = usePublishedSiteContent()
@@ -16,16 +17,7 @@ export function HomePage() {
       <main id="contenido-principal">
         <MainCarousel />
         <HeroSection content={content.hero} />
-
-        <GeneralInformationSection content={content['general-information']} />
-        <CalendarSection content={content.calendar} />
-        <PhotoGallery />
-
-        <OlcomepIntroductionSection content={content['olcomep-introduction']} />
-
-        <AboutUsSection content={content.about} />
-        <PartnersSection content={content.partners} />
-        <RegionalCoordinationSection content={content['regional-coordinations']} />
+        <PublicTaskNavigation />
         {initialLoading ? (
           <section id="edicion-vigente" aria-labelledby="titulo-edicion" aria-busy="true" className="scroll-mt-28 bg-brand-soft py-16 sm:py-20">
             <div className="mx-auto max-w-content px-5 sm:px-8">
@@ -35,6 +27,13 @@ export function HomePage() {
           </section>
         ) : <CurrentEditionSection content={currentEdition} />}
         <ResourceBookletsSection content={content['resource-booklets']} />
+        <CalendarSection content={content.calendar} />
+        <GeneralInformationSection content={content['general-information']} />
+        <PhotoGallery />
+        <OlcomepIntroductionSection content={content['olcomep-introduction']} />
+        <AboutUsSection content={content.about} />
+        <PartnersSection content={content.partners} />
+        <RegionalCoordinationSection content={content['regional-coordinations']} />
         <ContactSection content={content.contact} />
       </main>
 
