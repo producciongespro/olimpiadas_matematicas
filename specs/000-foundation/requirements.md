@@ -15,3 +15,7 @@ La solución separará la vista pública, la administración y la API, permitien
 ## RF-004 — Accesibilidad y adaptación
 
 La nueva interfaz debe ofrecer navegación por teclado, foco visible, estructura semántica y adaptación a móvil, tableta y escritorio.
+
+## RF-005 — Base de datos local reproducible
+
+El desarrollo local usará MySQL 8.0 y phpMyAdmin mediante Docker Compose, con datos persistentes y credenciales privadas. La API y las dos aplicaciones React continuarán ejecutándose en el equipo anfitrión.

@@ -14,6 +14,7 @@ El sistema actual es un sitio estático de una sola página basado en HTML, Boot
 - Microsoft Entra ID y JWT RS256 para proteger las operaciones administrativas.
 - Arquitectura de API por capas: Controller → Service → Repository → Database.
 - npm workspaces para los paquetes JavaScript del monorepo.
+- Docker Compose para MySQL 8.0 y phpMyAdmin locales; PHP y Vite se ejecutan en Windows. La API se conecta por TCP a `127.0.0.1:3307` y el volumen nombrado conserva la base de datos.
 
 ## Estrategia de transición
 

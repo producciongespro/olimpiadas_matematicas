@@ -21,3 +21,5 @@
 - [x] Especificar el carrusel principal y la galería histórica administrable.
 - [x] Consolidar la documentación de la API en un contrato OpenAPI 3.1 canónico, portal de desarrollo y comprobación automática de rutas.
 - [x] Empaquetar Swagger UI localmente y verificar que `/docs` renderice el contrato sin conectividad externa.
+- [x] Definir Docker Compose para MySQL y phpMyAdmin y documentar el entorno local.
+- [x] Levantar los contenedores, aplicar las migraciones y comprobar la conexión de la API en un equipo con Docker Engine activo.

@@ -4,15 +4,37 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **06-11-2026**.
+Última actualización: **17-11-2026**.
+
+## Actualización del 17-11-2026 — Recuperación de imágenes públicas en Docker
+
+- La base Docker contenía el carrusel, pero ninguna sección editorial. `PublicContentSeeder` publicó las doce secciones iniciales y registró portada, promoción y cinco logotipos; conservó los 27 registros regionales y 28 contactos.
+- Se identificaron 14 PNG regionales previamente conservados en `apps/api/writable/uploads/sections/regional-coordinations`. Sus huellas visuales coincidieron exactamente con 14 fotografías de origen identificadas por región; se restauraron las asociaciones de medio con las claves estables de contacto en la publicación inicial sin mover ni borrar archivos. Heredia no se asignó: hay dos contactos y el retrato de origen no identifica a cuál corresponde.
+- La API pública entrega 14 retratos regionales. Se comprobaron 21 URL de imágenes editoriales con HTTP 200 y tipo de imagen, y 133 referencias estáticas únicas del frontend sin archivos faltantes. La galería histórica sigue sin eventos publicados; los demás contactos sin fotografía confirmada muestran la silueta prevista.
+- La guía local ahora recomienda `OlcomepInitialSeeder` para una base nueva y exige restaurar conjuntamente el volcado de MySQL y `writable/uploads` al migrar medios editoriales.
+
+## Actualización del 17-11-2026 — Carrusel en la base Docker
+
+- La base Docker recién creada tenía cero filas en `carousel_slides`; el componente público se ocultaba porque la API devolvía una lista vacía. Se comprobó previamente que el evento heredado que `LegacyCarouselSeeder` puede retirar no existía y que tampoco estaba su carpeta de archivos.
+- Se ejecutó `LegacyCarouselSeeder`: quedaron 15 diapositivas. La API local respondió HTTP 200 con las 15 y la primera imagen se entregó como `image/jpeg` con HTTP 200. Se agregó el seeder al procedimiento de inicialización local. La API debe estar en ejecución para que el carrusel aparezca.
+
+## Actualización del 17-11-2026 — Base local con Docker
+
+- Se preparó `docker-compose.yml` para MySQL 8.0 y phpMyAdmin, con volumen nombrado, comprobación de salud, puertos ligados a `127.0.0.1` y usuario `olcomep` separado de `root`. MySQL usa `utf8mb4_unicode_ci` y el puerto anfitrión predeterminado 3307 evita conflictos con XAMPP.
+- `.env.example` define las variables necesarias sin credenciales reales. La plantilla `apps/api/env` apunta a `127.0.0.1:3307` y requiere que cada desarrollador copie su contraseña privada a `.env.development`.
+- La API PHP y las vistas Vite siguen ejecutándose localmente en 3600, 5173 y 5174. No se añadieron las rutas ni los datos de ejemplo de la guía genérica. Las migraciones existentes crean el esquema OLCOMEP.
+- Se actualizaron requisitos, arquitectura, criterios, tareas, README y la guía `docs/development/docker-local.md`. `docker compose config --quiet` y `git diff --check` finalizaron correctamente.
+- Tras iniciar Docker Desktop, se crearon los contenedores `olcomep-db-1` y `olcomep-phpmyadmin-1` y el volumen `olcomep_mysql_datos`. MySQL quedó saludable; phpMyAdmin respondió HTTP 200 en `127.0.0.1:8080`.
+- Se generaron contraseñas locales privadas en `.env` y se sincronizó la contraseña de aplicación con `apps/api/.env.development`; ambos archivos están ignorados por Git. `composer install` confirmó las dependencias. La API se conectó a MySQL y aplicó las nueve migraciones; `migrate:status` confirmó su estado.
+- `composer --working-dir=apps/api verify` finalizó correctamente con 53 pruebas, 219 aserciones y OpenAPI sincronizado con `/api/v1`. No se cargaron datos reales ni los datos de ejemplo de la guía.
 
 La guía `docs/development/arquitectura-y-gestion-de-contenido.md` resume el funcionamiento vigente del monorepo, el flujo editorial, la entrega de archivos y los pendientes de operación. Se incorporó como documentación de consulta sin cambios funcionales.
 
 ## 2. Repositorio y rama activa
 
 - Repositorio: `https://github.com/producciongespro/olimpiadas_matematicas.git`
-- Rama de trabajo: `devUlate`
-- Upstream: `origin/devUlate`
+- Rama de trabajo: `codex/mejoras-interfaz-publica` (creada desde `devUlate`).
+- Upstream: sin configurar para la rama nueva; la rama base seguía `origin/devUlate`.
 - Commit de referencia previo a esta iteración: `362c003`
 - Mensaje: `06-11-2026 Documenta la arquitectura y el flujo editorial vigentes de OLCOMEP`
 - Estado observado el 03-11-2026: la rama local estaba alineada con la referencia local de `origin/devUlate`, con cero commits adelantados y cero atrasados, antes de iniciar la incorporación editorial de Recursos, Header y Footer. La referencia remota no se actualizó mediante `git fetch` en esta sesión.
