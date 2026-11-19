@@ -44,8 +44,15 @@
 - [x] Implementar y verificar Recursos y cuadernillos.
 - [x] Mostrar todos los cuadernillos interactivos de la edición seleccionada con un único selector de edición.
 - [x] Agregar selector Todos/Estudiantes/Docentes a los cuadernillos vigentes y comprobar la transición automática de una edición anterior al archivo histórico.
+- [x] Sustituir el destino editable de los cuadernillos PDF por carga de archivos por edición, conservar enlaces heredados y documentar la publicación versionada.
+- [x] Sustituir la ruta editable de imágenes decorativas de cuadernillos por carga opcional, reemplazo y retiro, manteniendo las rutas históricas.
 - [x] Implementar y verificar Header y navegación.
 - [x] Fijar el encabezado y sus enlaces, retirar su edición y rechazar sus escrituras en la API.
 - [x] Derivar el año de la etiqueta de Edición del año publicado en Edición vigente.
 - [x] Implementar y verificar Footer y créditos.
 - [ ] Completar la aceptación real con sesión MEP e interrupción/restauración controlada de la API.
+- [x] Separar las acciones editoriales de cada sección por tipo de contenido, incluida la portada principal.
+- [x] Refinar la presentación de acciones, tarjetas editoriales y diálogo con jerarquía y adaptación móvil.
+- [x] Mantener abierto el diálogo tras guardar un borrador y permitir publicarlo o cerrarlo desde allí.
+- [x] Ocultar las claves internas de enlaces y créditos del Footer y generarlas automáticamente al agregar elementos.
+- [x] Colocar las acciones en posiciones contextuales de cada vista previa y ofrecer una disposición en flujo para móvil.

@@ -62,3 +62,5 @@ Permitir que el equipo autorizado mantenga la información institucional de cont
 # Relación con Footer y créditos
 
 Los créditos históricos ya no forman parte de Contacto; se publican y previsualizan desde la sección editorial independiente `site-footer`.
+
+- Acciones administrativas: textos y datos de contacto se editan desde accesos separados y guardan un único borrador de la sección.

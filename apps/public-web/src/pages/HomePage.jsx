@@ -4,6 +4,7 @@ import { MainCarousel } from '../features/carousel/MainCarousel.jsx'
 import { AboutUsSection, CalendarSection, ContactSection, CurrentEditionSection, GeneralInformationSection, HeroSection, OlcomepIntroductionSection, PartnersSection, RegionalCoordinationSection, ResourceBookletsSection, SiteHeader, SiteFooter } from '@olcomep/ui'
 import { usePublishedSiteContent } from '../hooks/usePublishedSiteContent.js'
 import { PublicTaskNavigation } from '../components/PublicTaskNavigation.jsx'
+import { HowToParticipateSection } from '../components/HowToParticipateSection.jsx'
 
 export function HomePage() {
   const { content, initialLoading, version } = usePublishedSiteContent()
@@ -18,6 +19,10 @@ export function HomePage() {
         <MainCarousel />
         <HeroSection content={content.hero} />
         <PublicTaskNavigation />
+        <HowToParticipateSection currentEdition={currentEdition} loading={initialLoading} />
+        <CalendarSection content={content.calendar} />
+        <GeneralInformationSection content={content['general-information']} />
+        <RegionalCoordinationSection content={content['regional-coordinations']} />
         {initialLoading ? (
           <section id="edicion-vigente" aria-labelledby="titulo-edicion" aria-busy="true" className="scroll-mt-28 bg-brand-soft py-16 sm:py-20">
             <div className="mx-auto max-w-content px-5 sm:px-8">
@@ -27,13 +32,10 @@ export function HomePage() {
           </section>
         ) : <CurrentEditionSection content={currentEdition} />}
         <ResourceBookletsSection content={content['resource-booklets']} />
-        <CalendarSection content={content.calendar} />
-        <GeneralInformationSection content={content['general-information']} />
         <PhotoGallery />
         <OlcomepIntroductionSection content={content['olcomep-introduction']} />
         <AboutUsSection content={content.about} />
         <PartnersSection content={content.partners} />
-        <RegionalCoordinationSection content={content['regional-coordinations']} />
         <ContactSection content={content.contact} />
       </main>
 

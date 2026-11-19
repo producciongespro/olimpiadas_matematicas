@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 
 const informationDestinations = [
   { key: 'reglamento', label: 'Reglamento' },
-  { key: 'participar', label: 'Cómo participar', href: '#edicion-vigente' },
+  { key: 'participar', label: 'Cómo participar', href: '#como-participar' },
   { key: 'calendario', label: 'Calendario', href: '#calendario' },
   { key: 'preguntas', label: 'Preguntas frecuentes', href: '#preguntas-frecuentes' },
 ]

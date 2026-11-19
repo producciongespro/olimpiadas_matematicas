@@ -96,9 +96,9 @@ Los datos se mantienen como contenido estático de la vista pública: no se carg
 
 ### PUB-011 — Submenú de Información y preguntas frecuentes
 
-El control «Información» de la navegación principal despliega un submenú con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento abre en una pestaña nueva el PDF publicado en Edición vigente, sin tarjeta intermedia. Cómo participar conduce directamente a Edición vigente, sin tarjeta intermedia. Calendario y Preguntas frecuentes conservan sus secciones propias. El submenú funciona con clic y teclado en móvil y escritorio y cierra con Escape o al seleccionar una opción.
+El control «Información» de la navegación principal despliega un submenú con Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento abre en una pestaña nueva el PDF publicado en Edición vigente, sin tarjeta intermedia. Cómo participar conduce a `#como-participar`, un resumen público del estado de inscripción y los pasos de consulta; enlaza desde allí al detalle de Edición vigente sin duplicar su contenido editorial. Calendario y Preguntas frecuentes conservan sus secciones propias. El submenú funciona con clic y teclado en móvil y escritorio y cierra con Escape o al seleccionar una opción.
 
-La vista pública presenta Preguntas frecuentes como sección propia y elimina el bloque de orientación y sus tarjetas. Los cuatro destinos se resuelven directamente desde el submenú. La taxonomía toma como referencia la arquitectura de información de `https://www.obm.org.br/informacoes-gerais/`, sin copiar textos, reglas ni procesos de la olimpiada brasileña.
+La vista pública presenta Cómo participar, Calendario y Preguntas frecuentes consecutivamente como contenido de Información, sin restaurar el antiguo bloque de orientación y sus tarjetas. Los cuatro destinos se resuelven directamente desde el submenú. La taxonomía toma como referencia la arquitectura de información de `https://www.obm.org.br/informacoes-gerais/`, sin copiar textos, reglas ni procesos de la olimpiada brasileña.
 
 El contenido OLCOMEP se construye exclusivamente con datos confirmados en el sitio heredado, documentos institucionales y especificaciones vigentes: población de primero a sexto año, inscripción mediante formulario externo, periodo del 8 de abril al 6 de mayo de 2026, manual y reglamento 2026, materiales de preparación y directorio regional. Los temas conducen a documentos o anclas existentes, los PDF se identifican claramente y las preguntas frecuentes utilizan controles nativos operables con teclado.
 
@@ -118,7 +118,11 @@ Al pasar el puntero por cada institución, únicamente su logotipo aumenta hasta
 
 ### PUB-014 — Accesos por tarea en la portada
 
-La portada ofrece, después de su presentación principal, un bloque compacto de accesos a Edición vigente, Cuadernillos, Calendario y Coordinaciones regionales. Los destinos son anclas existentes y se mantienen en la misma página. La edición vigente y los cuadernillos aparecen antes de los bloques institucionales extensos para que la preparación y los documentos oficiales sean fáciles de encontrar. El bloque no sustituye al menú principal ni introduce contenido editorial nuevo. En móvil, los accesos se apilan y conservan un área táctil de al menos 44 px; el foco es visible y los enlaces no dependen del hover. La composición usa la paleta institucional y movimiento discreto, respetando la preferencia de movimiento reducido.
+La portada ofrece, después de su presentación principal, un bloque compacto de accesos en el mismo orden que la navegación: Información, Regionales, Edición vigente y Práctica. Llevan respectivamente a `#como-participar`, `#coordinaciones-regionales`, `#edicion-vigente` y `#cuadernillos`. El bloque no sustituye al menú principal ni introduce contenido editorial nuevo. En móvil, los accesos se apilan y conservan un área táctil de al menos 44 px; el foco es visible y los enlaces no dependen del hover. La composición usa la paleta institucional y movimiento discreto, respetando la preferencia de movimiento reducido.
+
+### PUB-015 — Orden del cuerpo según el menú
+
+Después del carrusel, la portada y los accesos rápidos, el cuerpo presenta Cómo participar, Calendario y Preguntas frecuentes; luego Coordinaciones regionales, Edición vigente, Práctica por nivel con su archivo histórico y cuadernillos interactivos, Galería, Acerca y Contacto. «Acerca» reúne Conoce OLCOMEP, Acerca de nosotros y Colaboradores y patrocinadores en ese orden. El PDF Reglamento permanece como recurso del submenú y de la edición, sin una sección duplicada. Reordenar componentes no cambia sus anclas, datos publicados, estados ni capacidad editorial.
 
 ## Fuera de alcance de esta iteración
 

@@ -3,6 +3,7 @@
 - El componente público de portada recibe contenido mediante propiedades y conserva el diseño actual con los valores de respaldo.
 - La ausencia o caída de la API no deja vacía la portada pública.
 - El contenido administrativo se guarda como borrador sin modificar la publicación vigente.
+- Al guardar correctamente un borrador desde una acción editorial, el diálogo sigue abierto, muestra el estado guardado y habilita “Publicar” sin tener que abrirlo de nuevo. “Cerrar” permite dejar el borrador pendiente para retomarlo después.
 - Publicar sustituye la versión pública completa dentro de una transacción y conserva la revisión anterior.
 - Una publicación exitosa deja exactamente una revisión `published`, ninguna revisión `draft` y la publicación anterior en estado `superseded` para la sección modificada.
 - Una publicación fallida conserva íntegramente la revisión pública anterior; contenido y medios nunca cambian parcialmente.
@@ -12,6 +13,10 @@
 - La base relaciona la revisión con `media_files.id`; no almacena base64 ni rutas absolutas.
 - La imagen solo es accesible públicamente cuando pertenece a una revisión publicada o a otro recurso público autorizado.
 - La copia editorial reutiliza el componente de portada y responde al ancho real del navegador; no presenta controles para simular móvil o escritorio.
+- Cada sección presenta acciones con nombres concretos según sus contenidos; la portada separa textos, nombres de botones e imagen. Cada acción muestra solo los campos relacionados, conserva los demás valores del borrador y mantiene los controles de guardar y publicar.
+- En Footer y créditos, las claves de enlaces y grupos son internas: el editor no las muestra, genera una al agregar cada elemento y conserva la misma al modificar etiqueta, destino, título o nombres.
+- Las acciones editoriales distinguen visualmente su tipo mediante icono y texto, admiten foco visible y tamaño táctil, se distribuyen sin desbordamiento en móvil y respetan la preferencia de movimiento reducido.
+- En escritorio, las acciones de la portada se ubican cerca de sus textos, botones e imagen; cada sección presenta sus acciones dentro de su propia vista previa. En móvil, los controles aparecen antes del contenido y no lo cubren.
 - La vista previa administrativa muestra el activo de respaldo aunque la vista pública no esté levantada.
 - “Conoce OLCOMEP” permite editar antetítulo, título y dos párrafos sin exponer HTML, estilos, logotipo ni anclas a edición libre.
 - La administración permite alternar entre portada y “Conoce OLCOMEP”; cada sección conserva de forma independiente su borrador, publicación y estado editorial.
@@ -101,6 +106,9 @@
 - Cuadernillos interactivos filtra solo por edición. Cada resultado conserva su descripción de actividad o parte.
 - La colección vigente muestra un selector con Todos como opción inicial, Estudiantes y Docentes; Todos presenta todos los cuadernillos y las otras opciones filtran por rol. El archivo histórico conserva selectores de año y rol.
 - Al publicar una edición PDF posterior desde administración, la edición anterior aparece en el archivo histórico con sus materiales y destinos originales, sin una operación de traslado ni cambio de contrato API.
+- Cada cuadernillo PDF nuevo requiere cargar un archivo PDF válido de hasta 16 MB. El administrador puede reemplazarlo sin editar el destino; la API genera la URL a partir del UUID y conserva los enlaces heredados hasta su reemplazo.
+- La imagen decorativa opcional de cualquier material se carga o reemplaza mediante archivo JPEG, PNG o WebP; su ruta no es editable. Las imágenes heredadas se conservan al guardar sin reemplazo y pueden retirarse. Un material sin imagen se muestra correctamente.
+- La carga queda asociada al año de la edición y privada mientras está en borrador. Al publicar, el archivo se sirve públicamente y los materiales de años anteriores conservan sus archivos o enlaces sin traslado físico.
 
 # Header y Footer
 

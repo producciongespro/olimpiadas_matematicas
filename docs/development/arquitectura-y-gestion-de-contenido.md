@@ -22,6 +22,8 @@ Los dos frontend y los paquetes compartidos se gestionan con **npm workspaces** 
 3. **Guardar borrador** envía los textos estructurados y, cuando hay archivos, un formulario `multipart/form-data` a la API. Los textos de las secciones se guardan como JSON en revisiones de la base de datos. El borrador y sus archivos se pueden consultar en la vista administrativa protegida, pero todavía no sustituyen la publicación pública.
 4. **Publicar** es una acción separada: la API marca esa revisión como publicada. La vista pública recibe la revisión publicada desde `GET /api/v1/site/home`. El carrusel y la galería tienen sus propias rutas y controles editoriales.
 
+Los cuadernillos PDF y sus imágenes decorativas opcionales se cargan desde el editor de materiales. La API almacena ambos bajo el año de la edición y genera las URL a partir de sus UUID. Las rutas de imágenes y enlaces PDF históricos se conservan mientras no se reemplacen; la imagen puede retirarse en una nueva revisión. Los archivos exclusivos de borrador requieren autenticación hasta publicar.
+
 El administrador reutiliza componentes de `packages/ui` para que la copia editorial se parezca a la página pública. aay doce secciones editoriales; carrusel y galería también se editan desde su posición en esa copia. La gestión de usuarios solo aparece para `master` y la API aplica la misma restricción.
 
 ## 3. Cómo funciona la vista pública

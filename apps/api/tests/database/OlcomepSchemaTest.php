@@ -697,14 +697,30 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(['estudiante' => 6, 'docente' => 6], array_count_values(array_column($previous['materials'], 'role')));
         $content['editions'][] = [
             'year' => 2026, 'type' => 'pdf', 'materials' => [
-                ['key' => 'ensayo-estudiante', 'grade' => 1, 'role' => 'estudiante', 'title' => 'Ensayo estudiante', 'description' => 'Material de prueba', 'href' => '/data/prueba-estudiante.pdf'],
-                ['key' => 'ensayo-docente', 'grade' => 1, 'role' => 'docente', 'title' => 'Ensayo docente', 'description' => 'Material de prueba', 'href' => '/data/prueba-docente.pdf'],
+                ['key' => 'ensayo-estudiante', 'grade' => 1, 'role' => 'estudiante', 'title' => 'Ensayo estudiante', 'description' => 'Material de prueba'],
+                ['key' => 'ensayo-docente', 'grade' => 1, 'role' => 'docente', 'title' => 'Ensayo docente', 'description' => 'Material de prueba'],
             ],
         ];
-        $service->saveDraft('resource-booklets', [
+        $input = [
             'eyebrow' => $content['eyebrow'], 'title' => $content['title'], 'description' => $content['description'],
             'editions_json' => json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-        ]);
+        ];
+        $temporaryPath = tempnam(sys_get_temp_dir(), 'olcomep-booklet-');
+        file_put_contents($temporaryPath, "%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF\n");
+        $document = $this->createMock(UploadedFile::class);
+        $document->method('isValid')->willReturn(true);
+        $document->method('hasMoved')->willReturn(false);
+        $document->method('getSize')->willReturn(filesize($temporaryPath));
+        $document->method('getTempName')->willReturn($temporaryPath);
+        $document->method('getClientName')->willReturn('ensayo-2026.pdf');
+        $document->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($temporaryPath): bool {
+            return copy($temporaryPath, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+        });
+        $service->saveDraft('resource-booklets', $input, null, null, ['booklet_2026_ensayo-estudiante' => $document, 'booklet_2026_ensayo-docente' => $document]);
+        unlink($temporaryPath);
+        $draftEdition = array_values(array_filter($service->adminSection('resource-booklets')['draft']['content']['editions'], static fn (array $edition): bool => $edition['type'] === 'pdf' && $edition['year'] === 2026))[0];
+        $this->assertSame('ensayo-2026.pdf', $draftEdition['materials'][0]['file_name']);
+        $this->assertStringContainsString('/api/v1/media/', $draftEdition['materials'][0]['href']);
         $this->assertCount(13, $service->publicHome()['resource-booklets']['content']['editions']);
         $service->publish('resource-booklets');
         $published = $service->publicHome()['resource-booklets']['content']['editions'];
@@ -712,6 +728,60 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(2026, max(array_column(array_filter($published, static fn (array $edition): bool => $edition['type'] === 'pdf'), 'year')));
         $preserved = array_values(array_filter($published, static fn (array $edition): bool => $edition['type'] === 'pdf' && $edition['year'] === 2025))[0];
         $this->assertSame($previous, $preserved);
+    }
+
+    public function testBookletDecorativeImageIsVersionedAndCanBeRemoved(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $editionIndex = array_key_first(array_filter($content['editions'], static fn (array $edition): bool => $edition['year'] === 2025 && $edition['type'] === 'pdf'));
+        $material = $content['editions'][$editionIndex]['materials'][0];
+        $originalImage = $material['image'];
+        $fixture = ROOTPATH . '../../apps/public-web/public/assets/legacy/booklets/2025/ico-01-2025.png';
+        $image = $this->createMock(UploadedFile::class);
+        $image->method('isValid')->willReturn(true);
+        $image->method('hasMoved')->willReturn(false);
+        $image->method('getSize')->willReturn(filesize($fixture));
+        $image->method('getTempName')->willReturn($fixture);
+        $image->method('getClientName')->willReturn('imagen-de-prueba.png');
+        $image->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($fixture): bool {
+            return copy($fixture, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+        });
+        $input = [
+            'eyebrow' => $content['eyebrow'], 'title' => $content['title'], 'description' => $content['description'],
+            'editions_json' => json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ];
+        $fileKey = 'booklet_image_2025_pdf_' . $material['key'];
+        $service->saveDraft('resource-booklets', $input, null, null, [$fileKey => $image]);
+        $draft = $service->adminSection('resource-booklets')['draft']['content']['editions'][$editionIndex]['materials'][0];
+        $this->assertSame('imagen-de-prueba.png', $draft['image_name']);
+        $this->assertStringContainsString('/api/v1/media/' . $draft['image_uuid'], $draft['image']);
+        $this->assertSame($originalImage, $service->publicHome()['resource-booklets']['content']['editions'][$editionIndex]['materials'][0]['image']);
+        $this->assertNull((new GalleryService($this->db))->media($draft['image_uuid']));
+        $stored = $this->db->table('media_files')->where('uuid', $draft['image_uuid'])->get()->getRowArray();
+        $this->assertStringStartsWith('sections/resource-booklets/2025/', $stored['storage_path']);
+        $this->assertSame('image/png', $stored['mime_type']);
+        $service->publish('resource-booklets');
+        $this->assertNotNull((new GalleryService($this->db))->media($draft['image_uuid']));
+
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $input['editions_json'] = json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $service->saveDraft('resource-booklets', $input);
+        $this->assertSame($draft['image_uuid'], $service->adminSection('resource-booklets')['draft']['content']['editions'][$editionIndex]['materials'][0]['image_uuid']);
+        $service->publish('resource-booklets');
+
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $content['editions'][$editionIndex]['materials'][0]['remove_image'] = true;
+        $input['editions_json'] = json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $service->saveDraft('resource-booklets', $input);
+        $removed = $service->adminSection('resource-booklets')['draft']['content']['editions'][$editionIndex]['materials'][0];
+        $this->assertArrayNotHasKey('image', $removed);
+        $this->assertSame($draft['image_uuid'], $service->publicHome()['resource-booklets']['content']['editions'][$editionIndex]['materials'][0]['image_uuid']);
+        $service->publish('resource-booklets');
+        $this->assertArrayNotHasKey('image', $service->publicHome()['resource-booklets']['content']['editions'][$editionIndex]['materials'][0]);
+        (new \App\Services\MediaStorageService())->delete($stored['storage_path']);
     }
 
     public function testResourceCatalogRejectsUnsafeLinksAndDuplicateKeys(): void

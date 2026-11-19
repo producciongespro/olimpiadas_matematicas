@@ -44,3 +44,5 @@
 - La previsualización administrativa refleja inmediatamente una selección o retiro, pero la vista pública solo cambia después de publicar.
 - Los medios exclusivos del borrador se consultan mediante una ruta administrativa autenticada y `private, no-store`; no quedan disponibles desde la ruta pública de medios.
 - Una lista vacía muestra un estado explícito y no rompe la sección.
+
+- Acciones administrativas: textos y directorio de regiones, personas y fotografías se editan desde accesos separados y guardan un único borrador de la sección.

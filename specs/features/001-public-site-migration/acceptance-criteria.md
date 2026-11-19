@@ -9,7 +9,7 @@
 - La navegación incluye un destino “Regionales” que conduce a “Coordinaciones regionales”.
 - La navegación incluye un control “Información” que despliega Reglamento, Cómo participar, Calendario y Preguntas frecuentes; Reglamento abre el PDF vigente en una pestaña nueva y los otros destinos llevan a secciones internas válidas.
 - El submenú se abre y cierra con teclado y en móvil; Escape devuelve el foco a “Información” y elegir una opción cierra el menú.
-- “Cómo participar” abre directamente `#edicion-vigente` y no aparece un bloque de Información general.
+- “Cómo participar” abre `#como-participar`, muestra el estado de inscripción publicado y enlaza al detalle de Edición vigente; no reaparece el antiguo bloque de Información general.
 - La navegación puede abrirse, recorrerse y cerrarse con teclado.
 - El menú utiliza su versión compacta mientras las marcas y todos los destinos no puedan coexistir sin recorte o desbordamiento.
 - No existe desbordamiento horizontal en 320 px, 768 px y 1280 px.
@@ -38,5 +38,5 @@
 - La sección “Conoce OLCOMEP” utiliza el logotipo a mayor escala que el header y el footer, sin desplazar ni dificultar la lectura de su contenido en móvil o escritorio.
 - El footer cierra la página con las marcas MEP y OLCOMEP; el MEP conserva contraste sobre el fondo oscuro y ambas permanecen sin deformación, desbordamiento en 320 px ni lectura redundante por tecnología de asistencia.
 - `app/` permanece disponible hasta aprobar la paridad funcional.
-- Después de la portada hay cuatro accesos por tarea con destinos internos válidos y nombres claros; se recorren con teclado y funcionan a 320 px y en escritorio.
-- La edición vigente y los cuadernillos preceden a los contenidos institucionales extensos sin alterar el contenido publicado ni el contrato de la API.
+- Después de la portada hay cuatro accesos por tarea en orden Información, Regionales, Edición vigente y Práctica, con destinos internos válidos y nombres claros; se recorren con teclado y funcionan a 320 px y en escritorio.
+- El orden visible del cuerpo sigue el menú: Información (Cómo participar, Calendario, Preguntas frecuentes), Regionales, Edición vigente, Práctica, Interactivos, Galería, Acerca y Contacto, sin alterar los datos publicados ni el contrato de la API.

@@ -9,7 +9,7 @@ Las dos vistas comparten las alturas de los logotipos. El del MEP mide 2,6 rem y
 - El enlace de inicio lleva a `#contenido-principal`.
 - La etiqueta «Edición AAAA» usa el año publicado de Edición vigente. Su destino fijo es `#edicion-vigente`. Si falta un año válido, la etiqueta es «Edición vigente». La copia editorial puede mostrar el año del borrador que se está previsualizando.
 - En la carga inicial, la vista pública usa «Edición vigente» sin mostrar el año de respaldo. El ancla conserva un estado de carga hasta que finaliza la primera consulta.
-- Información agrupa Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Cómo participar lleva a `#edicion-vigente`, Calendario a `#calendario` y Preguntas frecuentes a `#preguntas-frecuentes`.
+- Información agrupa Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Cómo participar lleva a `#como-participar`, Calendario a `#calendario` y Preguntas frecuentes a `#preguntas-frecuentes`; estas tres secciones aparecen consecutivamente en el cuerpo antes de Regionales.
 - Reglamento abre en otra pestaña el PDF publicado en Edición vigente. Si falta el documento, el menú muestra una opción inactiva.
 - Acerca aparece entre Galería y Contacto. El menú funciona con teclado, informa su estado mediante `aria-expanded` y se cierra con Escape.
 

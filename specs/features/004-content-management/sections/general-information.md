@@ -21,3 +21,5 @@ La clave editorial y de API `general-information` se conserva para mantener las 
 - Una colección vacía muestra un mensaje explícito y no rompe el ancla ni la navegación.
 - El editor administrativo se denomina «Preguntas frecuentes» y permite editar únicamente los campos vigentes.
 - La vista pública conserva las preguntas predeterminadas como respaldo si la API falla.
+
+- Acciones administrativas: títulos y preguntas frecuentes se editan desde accesos separados y guardan un único borrador de la sección.

@@ -8,3 +8,5 @@
 - El PDF exclusivo del borrador solo se abre mediante la ruta administrativa autenticada y `private, no-store`; no queda disponible en la ruta pública antes de publicar.
 - Al publicar, la vista pública ofrece acciones separadas para abrir y descargar el PDF. Si todavía no existe un archivo administrado, conserva el manual institucional incluido en el código como respaldo.
 - Protegidos: destino y metadatos del manual, diseño de cronología, iconos, numeración y ancla `#calendario`.
+
+- Acciones administrativas: textos, nombre del enlace al manual, actividades y manual PDF se editan desde accesos separados y guardan un único borrador de la sección.

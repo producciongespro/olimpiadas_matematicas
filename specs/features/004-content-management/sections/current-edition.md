@@ -37,6 +37,9 @@
 - Retirar la plantilla en un borrador no altera la descarga pública vigente; la acción se refleja públicamente al publicar ese borrador.
 - El formulario agrupa visual y semánticamente información principal, estado de inscripción, documentos oficiales, plantilla masiva y promoción.
 - La vista pública y la previsualización reutilizan el mismo componente.
+- El resumen público de Cómo participar reutiliza el estado, título y descripción de inscripción de la misma publicación; se muestra antes de Calendario, mientras el detalle completo de Edición vigente aparece después de Regionales.
 - Los valores y activos vigentes permanecen como respaldo local si la API no está disponible.
 - Una colección de documentos vacía y una imagen temporalmente no disponible no rompen la sección.
 - El submenú «Información → Reglamento» usa el documento publicado cuya clave o título identifica «Reglamento»; al reemplazar su PDF y publicar, el enlace abre la nueva versión en una pestaña. Si no existe, el submenú indica que no está disponible.
+
+- Acciones administrativas: textos, nombres de enlaces, documentos oficiales y archivos de inscripción/promoción se editan desde accesos separados y guardan un único borrador de la sección.

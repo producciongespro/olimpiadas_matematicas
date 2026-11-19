@@ -4,7 +4,50 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **17-11-2026**.
+Última actualización: **19-11-2026**.
+
+## Estado de la iteración antes del commit del 19-11-2026
+
+- La rama `codex/mejoras-interfaz-publica` reúne la reorganización de la portada pública, la sección «Cómo participar», acciones editoriales contextuales y su presentación visual, la permanencia del diálogo tras guardar borrador, claves internas del footer y carga versionada de PDF e imágenes decorativas en Recursos y cuadernillos. Las especificaciones de ambas superficies, la guía administrativa y el contrato OpenAPI están actualizados.
+- Verificación final: `npm run build --workspace=@olcomep/public-web` terminó con 1 614 módulos; `npm run build --workspace=@olcomep/admin-web` con 1 753 módulos; `composer --working-dir=apps/api verify` con 54 pruebas, 232 aserciones y OpenAPI sincronizado con `/api/v1`; `git diff --check` sin errores. La inspección visual de la carga de imagen decorativa se realizó en escritorio. Queda pendiente la revisión visual específica del formulario en móvil y la aceptación institucional de los flujos editoriales con una sesión MEP autorizada.
+
+## Actualización del 19-11-2026 — Imágenes decorativas de cuadernillos
+
+- «Editar cuadernillos» permite cargar, reemplazar o retirar la imagen decorativa opcional de materiales PDF e interactivos sin editar rutas `/assets`. La API valida imágenes JPEG, PNG o WebP, guarda los archivos bajo `writable/uploads/sections/resource-booklets/{año}`, relaciona cada imagen con la revisión mediante año, tipo y clave del material, y genera su URL al presentar el contenido. Las rutas históricas se conservan hasta reemplazo o retiro; los medios exclusivos del borrador requieren autenticación.
+- Se actualizaron la especificación individual de Recursos y cuadernillos, la especificación general, criterios, tareas, OpenAPI canónico y copia generada, guía de administración y documentación de arquitectura. `php apps/api/spark docs:sync` finalizó correctamente. `composer --working-dir=apps/api verify` confirmó 54 pruebas, 232 aserciones y correspondencia exacta de OpenAPI con `/api/v1`. El build de `admin-web` finalizó con 1 753 módulos y `git diff --check` sin errores. En el navegador administrativo de escritorio se comprobó el selector de archivo, el indicador de imagen histórica y la acción de retirarla; queda pendiente la inspección visual móvil.
+
+## Actualización del 19-11-2026 — Claves internas del footer
+
+- En «Editar enlaces y créditos», las claves estables dejaron de mostrarse. Al agregar un enlace o grupo, el administrador genera una clave interna única; editar la etiqueta, el destino, el título o los nombres conserva esa clave. El contrato de la API mantiene la validación y el uso de `key`. Se actualizaron la especificación individual, los criterios y las tareas de contenido.
+- `npm run build --workspace=@olcomep/admin-web` finalizó con 1 753 módulos; `git diff --check` no encontró errores de espacios en los archivos afectados. La validación visual en navegador queda pendiente.
+
+## Actualización del 19-11-2026 — Guía de administración
+
+- La explicación operativa de cambios locales, guardado de borradores, continuación posterior y publicación quedó registrada en `docs/development/guia-administracion-contenido.md`. `specs/features/004-content-management/specification.md` conserva la regla contractual y enlaza la guía; los criterios de aceptación ya distinguen borrador y publicación. El carrusel, la galería y los usuarios se identifican como flujos propios.
+
+## Actualización del 19-11-2026 — Guardado y publicación en el mismo editor
+
+- Guardar borrador desde una acción editorial conserva abierto el diálogo. La respuesta de la API actualiza el estado persistido, muestra «Borrador guardado» y habilita «Publicar» allí mismo; «Cerrar» deja el borrador pendiente para retomarlo después. Publicar sigue requiriendo confirmación y se bloquea si hay cambios locales posteriores al guardado.
+- Se actualizaron la especificación, los criterios de aceptación y las tareas del módulo. `npm run build --workspace=@olcomep/admin-web` finalizó con 1 753 módulos y `git diff --check` no detectó errores de espacios. La interacción visual real en navegador queda pendiente.
+
+## Actualización del 19-11-2026 — Cuadernillos PDF por edición
+
+- Administración carga o reemplaza los cuadernillos PDF desde cada material sin exponer el campo Destino. La API valida archivos PDF de hasta 16 MB, los almacena por año y relaciona cada medio con la revisión mediante una clave de edición y material. El enlace público se genera desde el UUID; los enlaces PDF heredados permanecen hasta que se reemplacen. Las actividades interactivas conservan su enlace editable.
+- La edición PDF publicada con el año mayor se presenta como vigente y las anteriores pasan al archivo histórico sin mover archivos ni perder enlaces. El borrador conserva sus archivos privados hasta publicar. Se actualizaron la especificación individual, los criterios generales, las tareas y OpenAPI canónico y generado.
+- `php apps/api/spark docs:sync` finalizó correctamente. `composer --working-dir=apps/api verify` confirmó 53 pruebas, 221 aserciones y correspondencia exacta de OpenAPI con `/api/v1`. El build de `admin-web` terminó con 1 753 módulos. `git diff --check` no encontró errores de espacios.
+
+## Actualización del 19-11-2026 — Acciones editoriales concretas
+
+- La vista administrativa del contenido ofrece acciones específicas en el encabezado de cada sección. La portada separa textos, nombres de botones e imagen; las demás secciones separan textos de listas, actividades, documentos y archivos cuando corresponde. Cada acción abre solo los campos relacionados y mantiene el borrador único de la sección, con guardado y publicación independientes.
+- Se refinó su presentación con las pautas de `game-ui-frontend`: jerarquía de controles contextuales, vista previa despejada, iconos y etiquetas por acción, tarjetas de sección y diálogo con acento institucional, tamaños táctiles y distribución flexible en móvil. Se conserva el movimiento reducido y la estructura de la vista pública.
+- Como ajuste visual posterior, los botones de edición se trasladaron de la franja superior a posiciones contextuales sobre la vista previa en escritorio. En móvil se muestran antes del contenido de la sección para no cubrirlo. El build administrativo finalizó correctamente con 1 753 módulos. Se verificó en la sesión administrativa local la portada en escritorio y en una vista móvil de 440 píxeles; «Editar nombres de botones» abrió únicamente sus dos campos y no se guardaron cambios de contenido.
+- Se actualizaron los criterios generales y las especificaciones individuales de las secciones afectadas. `npm run build --workspace=@olcomep/admin-web` finalizó correctamente con 1 753 módulos transformados y `git diff --check` no detectó errores. La revisión visual con sesión administrativa queda pendiente porque el servidor local en `localhost:5174` no estuvo accesible. Esta iteración no cambia el contrato de la API.
+
+## Actualización del 19-11-2026 — Orden de la portada pública
+
+- Se conservaron los accesos rápidos de la portada y se ordenaron como Información, Regionales, Edición vigente y Práctica. Después de la presentación de Matemática para Primaria, el cuerpo sigue Información (Cómo participar, Calendario y Preguntas frecuentes), Regionales, Edición 2026, Práctica, Galería, contenido institucional y Contacto.
+- La nueva sección «Cómo participar» reutiliza el título y la descripción de inscripción publicados en Edición vigente; el enlace del submenú Información conduce a esa sección. Se actualizaron la especificación pública, sus criterios y tareas, y las especificaciones individuales de las secciones afectadas.
+- Finalizaron correctamente `npm run build --workspace=@olcomep/public-web`, `npm run build --workspace=@olcomep/admin-web` y `git diff --check`. Se inspeccionó la portada local en escritorio y en una vista móvil de 440 píxeles: los cuatro accesos se muestran en secuencia y se adaptan a una columna en móvil. No hubo cambios en la API.
 
 ## Actualización del 17-11-2026 — Navegación pública en rama de mejora
 

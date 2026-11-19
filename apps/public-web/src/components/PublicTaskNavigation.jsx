@@ -1,10 +1,10 @@
-import { ArrowUpRight, BookOpen, CalendarDays, FileText, MapPinned } from 'lucide-react'
+import { ArrowUpRight, BookOpen, CircleHelp, FileText, MapPinned } from 'lucide-react'
 
 const destinations = [
+  { href: '#como-participar', label: 'Información', detail: 'Cómo participar, calendario y preguntas', Icon: CircleHelp },
+  { href: '#coordinaciones-regionales', label: 'Regionales', detail: 'Contactos en las regiones educativas', Icon: MapPinned },
   { href: '#edicion-vigente', label: 'Edición vigente', detail: 'Inscripción y documentos oficiales', Icon: FileText },
-  { href: '#cuadernillos', label: 'Cuadernillos', detail: 'Materiales para practicar por nivel', Icon: BookOpen },
-  { href: '#calendario', label: 'Calendario', detail: 'Fechas y etapas de la olimpiada', Icon: CalendarDays },
-  { href: '#coordinaciones-regionales', label: 'Coordinaciones', detail: 'Contactos en las regiones educativas', Icon: MapPinned },
+  { href: '#cuadernillos', label: 'Práctica', detail: 'Cuadernillos y materiales por nivel', Icon: BookOpen },
 ]
 
 export function PublicTaskNavigation() {

@@ -17,6 +17,8 @@ class ContentService
     ];
     private const CALENDAR_MANUAL_KEY = 'calendar-manual';
     private const EDITION_DOCUMENT_PREFIX = 'edition-document-';
+    private const BOOKLET_DOCUMENT_PREFIX = 'booklet-';
+    private const BOOKLET_IMAGE_PREFIX = 'booklet-image-';
     private const EDITION_BULK_TEMPLATE_KEY = 'edition-bulk-template';
     private const CALENDAR_FALLBACK_MANUAL = '/data/2026/manual-OLCOMEP-primaria-2026.pdf';
 
@@ -106,6 +108,7 @@ class ContentService
         if ($key === 'partners') $this->savePartnerMedia($revisionId, $content, $files, $sourceRevision);
         if ($key === 'calendar') $this->saveCalendarManual($revisionId, $content, $files, $sourceRevision);
         if ($key === 'current-edition') $this->saveEditionDocumentMedia($revisionId, $content, $files, $sourceRevision);
+        if ($key === 'resource-booklets') $this->saveResourceBookletMedia($revisionId, $content, $files, $sourceRevision);
         if ($key === 'regional-coordinations') $this->saveRegionalContactMedia($revisionId, $content, $files, $sourceRevision, $localFiles);
         $this->db->table('content_sections')->where('id', $section['id'])->update(['updated_at' => $now]);
         $this->db->transComplete();
@@ -255,7 +258,7 @@ class ContentService
             $items = $edition['materials'] ?? null;
             if (! is_array($items) || ! array_is_list($items)) throw new InvalidArgumentException('Los materiales de una edición no son válidos.');
             $materialKeys = [];
-            $materials = array_map(function (mixed $item) use (&$materialKeys): array {
+            $materials = array_map(function (mixed $item) use (&$materialKeys, $type): array {
                 if (! is_array($item) || ! preg_match('/^[a-z0-9-]{3,80}$/', (string) ($item['key'] ?? ''))) throw new InvalidArgumentException('La clave de un material no es válida.');
                 $key = $item['key'];
                 if (isset($materialKeys[$key])) throw new InvalidArgumentException('Hay un material repetido.');
@@ -270,11 +273,14 @@ class ContentService
                     if ($value === '') throw new InvalidArgumentException("El campo {$field} de un material es obligatorio.");
                     $result[$field] = mb_substr($value, 0, $limit);
                 }
-                $result['href'] = $this->validateResourceHref((string) ($item['href'] ?? ''), 'href');
+                $href = trim((string) ($item['href'] ?? ''));
+                if ($type === 'interactive') $result['href'] = $this->validateResourceHref($href, 'href');
+                elseif ($href !== '') $result['href'] = $this->validateResourceHref($href, 'href');
                 foreach (['part' => 30, 'image' => 512] as $field => $limit) {
                     $value = trim((string) ($item[$field] ?? ''));
                     if ($value !== '') $result[$field] = $field === 'image' ? $this->validateResourceHref($value, $field) : mb_substr($value, 0, $limit);
                 }
+                $result['remove_image'] = ! empty($item['remove_image']);
                 return $result;
             }, $items);
             return ['year' => (int) $edition['year'], 'type' => $type, 'materials' => $materials];
@@ -503,6 +509,70 @@ class ContentService
         $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
     }
 
+    private function saveResourceBookletMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision): void
+    {
+        $sourceMedia = [];
+        $sourceMaterials = [];
+        if ($sourceRevision !== null) {
+            foreach ($this->repository->revisionMedia((int) $sourceRevision['id']) as $media) $sourceMedia[$media['item_key']] = $media;
+            $sourceContent = json_decode($sourceRevision['content_json'], true, 512, JSON_THROW_ON_ERROR);
+            foreach ($sourceContent['editions'] ?? [] as $edition) {
+                foreach ($edition['materials'] ?? [] as $material) $sourceMaterials[$edition['year'] . '-' . $edition['type'] . '-' . $material['key']] = $material;
+            }
+        }
+        foreach ($content['editions'] as &$edition) {
+            foreach ($edition['materials'] as &$material) {
+                $key = $edition['year'] . '-' . $material['key'];
+                $sourceMaterial = $sourceMaterials[$edition['year'] . '-' . $edition['type'] . '-' . $material['key']] ?? [];
+                if ($edition['type'] === 'pdf') {
+                    $relationKey = self::BOOKLET_DOCUMENT_PREFIX . $key;
+                    $file = $files['booklet_' . $edition['year'] . '_' . $material['key']] ?? null;
+                    $mediaId = $sourceMedia[$relationKey]['media_file_id'] ?? null;
+                    if ($file instanceof UploadedFile && $file->isValid()) {
+                        $media = $this->storage->storePdf($file, 'sections/resource-booklets/' . $edition['year']);
+                        $this->db->table('media_files')->insert($media);
+                        $mediaId = (int) $this->db->insertID();
+                    }
+                    unset($material['file_uuid'], $material['file_name'], $material['file_size']);
+                    if ($mediaId !== null) {
+                        unset($material['href']);
+                        $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => $relationKey, 'media_file_id' => $mediaId, 'created_at' => date('Y-m-d H:i:s')]);
+                    } elseif (isset($sourceMaterial['href'])) {
+                        $material['href'] = $sourceMaterial['href'];
+                    } else {
+                        throw new InvalidArgumentException('Cada cuadernillo PDF nuevo debe incluir un archivo.');
+                    }
+                }
+                $imageRelationKey = $this->bookletImageRelationKey((int) $edition['year'], $edition['type'], $material['key']);
+                $imageFile = $files['booklet_image_' . $edition['year'] . '_' . $edition['type'] . '_' . $material['key']] ?? null;
+                $removeImage = ! empty($material['remove_image']);
+                $imageMediaId = ! $removeImage ? ($sourceMedia[$imageRelationKey]['media_file_id'] ?? null) : null;
+                if ($imageFile instanceof UploadedFile && $imageFile->isValid()) {
+                    $imageMedia = $this->storage->store($imageFile, 'sections/resource-booklets/' . $edition['year'], 64);
+                    $this->db->table('media_files')->insert($imageMedia);
+                    $imageMediaId = (int) $this->db->insertID();
+                }
+                unset($material['remove_image'], $material['image_uuid'], $material['image_name']);
+                if ($imageMediaId !== null) {
+                    unset($material['image']);
+                    $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => $imageRelationKey, 'media_file_id' => $imageMediaId, 'created_at' => date('Y-m-d H:i:s')]);
+                } elseif (! empty($sourceMaterial['image']) && ! $removeImage) {
+                    $material['image'] = $sourceMaterial['image'];
+                } else {
+                    unset($material['image']);
+                }
+            }
+            unset($material);
+        }
+        unset($edition);
+        $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+    }
+
+    private function bookletImageRelationKey(int $year, string $type, string $key): string
+    {
+        return self::BOOKLET_IMAGE_PREFIX . substr(hash('sha256', $year . ':' . $type . ':' . $key), 0, 32);
+    }
+
     private function saveRegionalContactMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision, array $localFiles = []): void
     {
         $sourceMedia = [];
@@ -652,6 +722,29 @@ class ContentService
                 $content['bulk_file_name'] = $template['original_name'];
                 $content['bulk_file_size'] = (int) $template['size_bytes'];
             }
+        }
+        if (isset($content['editions']) && is_array($content['editions'])) {
+            foreach ($content['editions'] as &$edition) {
+                foreach ($edition['materials'] as &$material) {
+                    if (($edition['type'] ?? '') === 'pdf') {
+                        $media = $revisionMedia[self::BOOKLET_DOCUMENT_PREFIX . $edition['year'] . '-' . ($material['key'] ?? '')] ?? null;
+                        if ($media !== null) {
+                            $material['file_uuid'] = $media['uuid'];
+                            $material['file_name'] = $media['original_name'];
+                            $material['file_size'] = (int) $media['size_bytes'];
+                            $material['href'] = site_url('api/v1/media/' . $media['uuid']);
+                        }
+                    }
+                    $image = $revisionMedia[$this->bookletImageRelationKey((int) $edition['year'], $edition['type'], $material['key'] ?? '')] ?? null;
+                    if ($image !== null) {
+                        $material['image_uuid'] = $image['uuid'];
+                        $material['image_name'] = $image['original_name'];
+                        $material['image'] = site_url('api/v1/media/' . $image['uuid']);
+                    }
+                }
+                unset($material);
+            }
+            unset($edition);
         }
         return ['revision_id' => (int) $revision['id'], 'status' => $revision['status'], 'content' => $content, 'created_at' => $revision['created_at'], 'published_at' => $revision['published_at']];
     }
