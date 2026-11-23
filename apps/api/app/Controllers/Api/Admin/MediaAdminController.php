@@ -28,6 +28,22 @@ class MediaAdminController extends BaseController
         return $this->run(function () use ($uuid) {
             $media = $this->service()->adminMedia($uuid);
             if ($media === null) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no existe.']);
+            if ((service('adminAuthContext')->user()['role'] ?? null) !== 'master') {
+                $identityDraft = db_connect()->table('content_revisions revisions')
+                    ->join('content_sections sections', 'sections.id = revisions.section_id')
+                    ->where('sections.section_key', 'institutional-identity')
+                    ->where('revisions.media_file_id', $media['id'])
+                    ->where('revisions.published_at IS NULL', null, false)
+                    ->countAllResults();
+                $identityDraft += db_connect()->table('content_revision_media links')
+                    ->join('content_revisions revisions', 'revisions.id = links.revision_id')
+                    ->join('content_sections sections', 'sections.id = revisions.section_id')
+                    ->where('sections.section_key', 'institutional-identity')
+                    ->where('links.media_file_id', $media['id'])
+                    ->where('revisions.published_at IS NULL', null, false)
+                    ->countAllResults();
+                if ($identityDraft > 0) return $this->response->setStatusCode(403)->setJSON(['message' => 'No tiene acceso a este borrador.']);
+            }
             $root = realpath(WRITEPATH . 'uploads');
             $resolved = realpath(WRITEPATH . 'uploads/' . $media['storage_path']);
             if ($root === false || $resolved === false || ! str_starts_with($resolved, $root . DIRECTORY_SEPARATOR) || ! is_file($resolved)) return $this->response->setStatusCode(404)->setJSON(['message' => 'El archivo no existe.']);

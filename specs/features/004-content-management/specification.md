@@ -46,7 +46,9 @@ La tercera implementación cubre el calendario: textos introductorios, nota fina
 
 La cuarta implementación cubre “Colaboradores y patrocinadores”. Ambas listas permiten agregar, eliminar, reordenar y editar instituciones, con nombre obligatorio, enlace opcional, descripción para patrocinadores y logotipo opcional. Los logotipos se vinculan a cada revisión mediante `content_revision_media`; no se guardan rutas privadas en el JSON. Las revisiones publicadas anteriores conservan sus relaciones y la entrega pública de medios solo autoriza archivos asociados a una publicación vigente.
 
-La quinta implementación cubre “Acerca de nosotros”: introducción con párrafos dinámicos, cronología ordenada y cierre institucional con título y párrafos dinámicos. Los hitos permiten altas, bajas, orden, periodo, título y descripción. No se admite HTML libre y una lista vacía se representa sin romper el diseño.
+La quinta implementación cubre “Acerca de nosotros”: introducción con párrafos dinámicos, cronología ordenada y cierre institucional con título y párrafos dinámicos. El editor agrupa títulos y párrafos en un acceso, e hitos de la historia en otro; ambos comparten un borrador y una publicación. Los hitos permiten altas, bajas, orden, periodo, título y descripción. No se admite HTML libre y una lista vacía se representa sin romper el diseño.
+
+En «Recursos y cuadernillos», la acción PDF se presenta junto a la edición vigente y la acción de interactivos junto a su colección. Cada editor muestra las ediciones de su propio tipo; los interactivos usan enlaces y un ícono individual opcional, recomendado de 256 × 256 píxeles y limitado a 1 MB y 512 píxeles por lado para nuevas cargas. Los cuadernillos PDF anteriores forman el archivo histórico y son de solo consulta; sus materiales y archivos no pueden alterarse desde el editor ni mediante la API. Los textos generales de la sección permanecen editables.
 
 La sexta implementación conserva la clave `general-information` para Preguntas frecuentes conforme a `sections/general-information.md`. El bloque informativo y las rutas editoriales se retiraron; la colección dinámica de preguntas y respuestas conserva edición y publicación.
 
@@ -126,7 +128,11 @@ La guía operativa de este flujo está en `docs/development/guia-administracion-
 
 La superficie mantiene un resumen de cuántas secciones están al día o tienen un borrador pendiente y responde naturalmente al ancho real del navegador, sin controles de simulación móvil o escritorio dentro del flujo editorial. La aceptación responsive se realiza técnicamente en 768 y 1280 px. No existe navegación separada para contenido, carrusel o eventos: el carrusel aparece primero en su posición pública y la galería aparece después del calendario. Ambos exponen “Editar” y abren modales contextuales que reutilizan sus operaciones existentes. El carrusel permite agregar, ordenar, publicar y ocultar diapositivas; la galería permite crear o seleccionar eventos, editar sus datos y fotografías y habilitar u ocultar cada evento desde la lista.
 
-“Usuarios” se muestra únicamente al rol `master` dentro del mismo contenedor que identifica la sesión, junto a “Actualizar contenido” y “Cerrar sesión”. Abre un modal independiente y no forma parte de la navegación ni de la copia pública. Los roles `admin` y `editor` no reciben este acceso visual.
+“Usuarios” se muestra a los roles `master` y `admin` dentro del mismo contenedor que identifica la sesión, junto a “Cerrar sesión”. Abre un modal independiente y no forma parte de la navegación ni de la copia pública. Master gestiona los tres roles; Administrador solo editores. Editor no recibe este acceso visual. La administración carga carrusel, eventos y secciones al abrirse; sus acciones vuelven a consultar los datos necesarios después de guardar. No hay botón manual «Actualizar contenido».
+
+La interfaz administrativa, incluidos el acceso, la barra de sesión, los controles de usuarios, los diálogos y las acciones editoriales, comparte los tonos primario azul, acento turquesa, amarillo de realce y fondo azul claro de la vista pública. Los estados de peligro y éxito conservan colores semánticos con contraste suficiente. La copia pública dentro de la previsualización mantiene sus propios componentes y tokens.
+
+La identidad institucional global se define en `sections/institutional-identity.md`. Los logotipos OLCOMEP y MEP se administran de forma independiente desde una opción propia exclusiva de Master, con un borrador conjunto y publicación, y se consumen desde la misma identidad publicada en ambas aplicaciones. No forman parte de los textos editables de «Conoce OLCOMEP».
 
 ## 7.1 Carga centralizada en la vista pública
 

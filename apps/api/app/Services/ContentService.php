@@ -57,9 +57,16 @@ class ContentService
         ];
     }
 
+    public function publicIdentity(): array
+    {
+        $section = $this->repository->section('institutional-identity');
+        $revision = $section === null ? null : $this->repository->revision((int) $section['id'], 'published');
+        return $revision === null ? ['logo_url' => '/logo-olcomep.png', 'logo_width' => 690, 'logo_height' => 690, 'mep_logo_url' => '/logotipo%20MEP.png', 'mep_logo_width' => 2531, 'mep_logo_height' => 754] : $this->presentSection('institutional-identity', $revision)['content'];
+    }
+
     public function adminSections(): array
     {
-        $editable = array_filter($this->repository->sections(), static fn (array $section): bool => $section['section_key'] !== 'site-header');
+        $editable = array_filter($this->repository->sections(), static fn (array $section): bool => ! in_array($section['section_key'], ['site-header', 'institutional-identity'], true));
         return array_values(array_map(fn (array $section): array => $this->adminSection($section['section_key']), $editable));
     }
 
@@ -85,11 +92,21 @@ class ContentService
         $this->requireEditableSection($key);
         $section = $this->requireSection($key);
         $content = $this->validate($key, $input);
+        if ($key === 'institutional-identity') {
+            if ($file !== null && $file->getError() === UPLOAD_ERR_NO_FILE) $file = null;
+            $mepFile = $files['mep_logo'] ?? null;
+            if ($mepFile instanceof UploadedFile && $mepFile->getError() === UPLOAD_ERR_NO_FILE) { unset($files['mep_logo']); $mepFile = null; }
+            if (($file === null || ! $file->isValid()) && (! $mepFile instanceof UploadedFile || ! $mepFile->isValid())) throw new InvalidArgumentException('Seleccione al menos un logotipo válido.');
+            if ($file !== null) $this->validateIdentityImage($file, 'OLCOMEP');
+            if ($mepFile instanceof UploadedFile) $this->validateIdentityImage($mepFile, 'MEP');
+        }
         $published = $this->repository->revision((int) $section['id'], 'published');
         $draft = $this->repository->revision((int) $section['id'], 'draft');
+        if ($key === 'resource-booklets' && $published !== null) $this->assertHistoricalBookletsUnchanged($content['editions'], $published, $files);
+        if ($key === 'resource-booklets') $this->validateInteractiveBookletFiles($content['editions'], $files);
         $sourceRevision = $draft ?? $published;
         $newMedia = null;
-        if ($file !== null && $file->isValid()) $newMedia = $this->storage->store($file, 'sections/' . $key, $key === 'current-edition' ? 300 : null);
+        if ($file !== null && $file->isValid()) $newMedia = $this->storage->store($file, 'sections/' . $key, $key === 'current-edition' ? 300 : ($key === 'institutional-identity' ? 256 : null));
         $mediaId = $newMedia === null ? ($draft['media_file_id'] ?? $published['media_file_id'] ?? null) : null;
         $now = date('Y-m-d H:i:s');
 
@@ -106,6 +123,7 @@ class ContentService
         ]);
         $revisionId = (int) $this->db->insertID();
         if ($key === 'partners') $this->savePartnerMedia($revisionId, $content, $files, $sourceRevision);
+        if ($key === 'institutional-identity') $this->saveIdentityMepMedia($revisionId, $files, $sourceRevision);
         if ($key === 'calendar') $this->saveCalendarManual($revisionId, $content, $files, $sourceRevision);
         if ($key === 'current-edition') $this->saveEditionDocumentMedia($revisionId, $content, $files, $sourceRevision);
         if ($key === 'resource-booklets') $this->saveResourceBookletMedia($revisionId, $content, $files, $sourceRevision);
@@ -143,6 +161,7 @@ class ContentService
     private function validate(string $key, array $input): array
     {
         $limits = match ($key) {
+            'institutional-identity' => [],
             'hero' => ['eyebrow' => 80, 'title' => 120, 'audience' => 100, 'description' => 420, 'primary_label' => 60, 'secondary_label' => 60, 'image_alt' => 255],
             'olcomep-introduction' => ['eyebrow' => 80, 'title' => 120, 'first_paragraph' => 600, 'second_paragraph' => 600],
             'calendar' => ['eyebrow' => 80, 'title' => 120, 'description' => 500, 'notice' => 400, 'footer' => 500, 'manual_label' => 80],
@@ -240,6 +259,28 @@ class ContentService
             $names = array_map(static function (mixed $name): string { $value = trim((string) $name); if ($value === '' || strpbrk($value, '<>') !== false) throw new InvalidArgumentException('Un nombre de créditos no es válido.'); return mb_substr($value, 0, 180); }, $names);
             return ['key' => $key, 'title' => mb_substr($title, 0, 180), 'names' => $names];
         }, $items);
+    }
+
+    private function assertHistoricalBookletsUnchanged(array $editions, array $published, array $files): void
+    {
+        $previous = json_decode((string) $published['content_json'], true)['editions'] ?? [];
+        $pdfYears = array_column(array_filter($previous, static fn (array $edition): bool => $edition['type'] === 'pdf'), 'year');
+        if ($pdfYears === []) return;
+        $currentYear = max($pdfYears);
+        $submitted = [];
+        foreach ($editions as $edition) if ($edition['type'] === 'pdf') $submitted[$edition['year']] = $edition;
+        foreach ($previous as $edition) {
+            if ($edition['type'] !== 'pdf' || (int) $edition['year'] >= $currentYear) continue;
+            $original = $this->validateResourceEditions(json_encode([$edition], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))[0];
+            if (! isset($submitted[$edition['year']]) || $submitted[$edition['year']] !== $original) {
+                throw new InvalidArgumentException('Los cuadernillos del archivo histórico son de solo consulta.');
+            }
+            foreach ($files as $name => $file) {
+                if (str_starts_with((string) $name, 'booklet_' . $edition['year'] . '_') || str_starts_with((string) $name, 'booklet_image_' . $edition['year'] . '_')) {
+                    throw new InvalidArgumentException('No se pueden reemplazar archivos del archivo histórico.');
+                }
+            }
+        }
     }
 
     private function validateResourceEditions(string $json): array
@@ -423,6 +464,28 @@ class ContentService
         }, $items);
     }
 
+    private function validateIdentityImage(UploadedFile $file, string $name): void
+    {
+        $info = $file->isValid() ? @getimagesize($file->getTempName()) : false;
+        if (! is_array($info) || ! in_array($info['mime'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true) || min($info[0], $info[1]) < 256 || max($info[0], $info[1]) > 6000 || $file->getSize() < 1 || $file->getSize() > 8 * 1024 * 1024) {
+            throw new InvalidArgumentException("El logotipo {$name} debe ser JPEG, PNG o WebP, de hasta 8 MB y entre 256 y 6000 píxeles por lado.");
+        }
+    }
+
+    private function saveIdentityMepMedia(int $revisionId, array $files, ?array $sourceRevision): void
+    {
+        $sourceMedia = $sourceRevision === null ? [] : $this->repository->revisionMedia((int) $sourceRevision['id']);
+        $previous = current(array_filter($sourceMedia, static fn (array $media): bool => $media['item_key'] === 'mep-logo')) ?: null;
+        $mediaId = $previous['media_file_id'] ?? null;
+        $file = $files['mep_logo'] ?? null;
+        if ($file instanceof UploadedFile && $file->isValid()) {
+            $media = $this->storage->store($file, 'sections/institutional-identity/mep', 256);
+            $this->db->table('media_files')->insert($media);
+            $mediaId = (int) $this->db->insertID();
+        }
+        if ($mediaId !== null) $this->db->table('content_revision_media')->insert(['revision_id' => $revisionId, 'item_key' => 'mep-logo', 'media_file_id' => $mediaId, 'created_at' => date('Y-m-d H:i:s')]);
+    }
+
     private function savePartnerMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision): void
     {
         $sourceMedia = [];
@@ -507,6 +570,27 @@ class ContentService
             unset($content['bulk_href']);
         }
         $this->db->table('content_revisions')->where('id', $revisionId)->update(['content_json' => json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+    }
+
+    private function validateInteractiveBookletFiles(array $editions, array $files): void
+    {
+        foreach ($editions as $edition) {
+            if ($edition['type'] !== 'interactive') continue;
+            foreach ($edition['materials'] as $material) {
+                $file = $files['booklet_image_' . $edition['year'] . '_interactive_' . $material['key']] ?? null;
+                if ($file instanceof UploadedFile && $file->getError() !== UPLOAD_ERR_NO_FILE) $this->validateInteractiveBookletIcon($file);
+            }
+        }
+    }
+
+    private function validateInteractiveBookletIcon(UploadedFile $file): void
+    {
+        $info = @getimagesize($file->getTempName());
+        if (! is_array($info) || ! in_array($info['mime'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true)
+            || min($info[0], $info[1]) < 64 || max($info[0], $info[1]) > 512
+            || $file->getSize() < 1 || $file->getSize() > 1024 * 1024) {
+            throw new InvalidArgumentException('El ícono interactivo debe ser JPEG, PNG o WebP, de hasta 1 MB y entre 64 y 512 píxeles por lado. Se recomienda 256 × 256 píxeles.');
+        }
     }
 
     private function saveResourceBookletMedia(int $revisionId, array &$content, array $files, ?array $sourceRevision): void
@@ -651,6 +735,19 @@ class ContentService
     private function presentSection(string $key, array $revision): array
     {
         $presented = $this->present($revision);
+        if ($key === 'institutional-identity') {
+            $mepMedia = current(array_filter($this->repository->revisionMedia((int) $revision['id']), static fn (array $media): bool => $media['item_key'] === 'mep-logo')) ?: null;
+            $presented['content'] = [
+                'logo_url' => $presented['content']['image_url'] ?? '/logo-olcomep.png',
+                'logo_width' => $presented['content']['image_width'] ?? 690,
+                'logo_height' => $presented['content']['image_height'] ?? 690,
+                'media_uuid' => $revision['media_uuid'] ?? null,
+                'mep_logo_url' => $mepMedia === null ? '/logotipo%20MEP.png' : site_url('api/v1/media/' . $mepMedia['uuid']),
+                'mep_logo_width' => $mepMedia === null ? 2531 : (int) $mepMedia['width'],
+                'mep_logo_height' => $mepMedia === null ? 754 : (int) $mepMedia['height'],
+                'mep_media_uuid' => $mepMedia['uuid'] ?? null,
+            ];
+        }
         if ($key === 'general-information') {
             $presented['content'] = array_intersect_key($presented['content'], array_flip(['faq_eyebrow', 'faq_title', 'faqs']));
         }

@@ -36,6 +36,7 @@
 - Una revisión conserva los logotipos no reemplazados, las versiones históricas mantienen sus relaciones y solo los medios de publicaciones vigentes se entregan anónimamente.
 - La vista pública y la previsualización reutilizan el mismo componente y mantienen las cinco universidades y el patrocinador textual como respaldo local.
 - “Acerca de nosotros” permite administrar párrafos introductorios, hitos cronológicos y párrafos de cierre como colecciones dinámicas.
+- «Editar títulos y párrafos» muestra los textos de introducción y cierre junto a sus títulos; «Editar hitos de la historia» muestra solo la cronología. Ambos accesos conservan un borrador y una publicación de la sección.
 - Los hitos pueden agregarse, eliminarse y reordenarse y exigen periodo, título y descripción.
 - La vista pública y la previsualización comparten el componente de historia institucional y conservan el contenido confirmado como respaldo local.
 - Preguntas frecuentes permite agregar, editar, eliminar y reordenar preguntas y respuestas.
@@ -106,11 +107,16 @@
 - Cuadernillos interactivos filtra solo por edición. Cada resultado conserva su descripción de actividad o parte.
 - La colección vigente muestra un selector con Todos como opción inicial, Estudiantes y Docentes; Todos presenta todos los cuadernillos y las otras opciones filtran por rol. El archivo histórico conserva selectores de año y rol.
 - Al publicar una edición PDF posterior desde administración, la edición anterior aparece en el archivo histórico con sus materiales y destinos originales, sin una operación de traslado ni cambio de contrato API.
+- «Editar cuadernillos» aparece junto a la colección vigente; las ediciones PDF históricas se muestran como solo consulta y la API rechaza sus cambios de contenido o archivos, mientras los textos generales siguen siendo editables.
+- «Editar cuadernillos PDF» aparece junto a la colección vigente y «Editar cuadernillos interactivos» junto a su título y selector; cada acceso muestra solo las ediciones de su tipo. Cada interactivo admite enlace e ícono propio; un ícono nuevo supera 1 MB o 512 píxeles por lado es rechazado, con recomendación de 256 × 256 píxeles.
+- Los dos accesos contextuales a cuadernillos conservan el estilo de las demás acciones editoriales: forma redondeada, borde lateral amarillo, ícono de documento para PDF, ícono de internet para interactivos y estados visibles de hover y foco.
 - Cada cuadernillo PDF nuevo requiere cargar un archivo PDF válido de hasta 16 MB. El administrador puede reemplazarlo sin editar el destino; la API genera la URL a partir del UUID y conserva los enlaces heredados hasta su reemplazo.
 - La imagen decorativa opcional de cualquier material se carga o reemplaza mediante archivo JPEG, PNG o WebP; su ruta no es editable. Las imágenes heredadas se conservan al guardar sin reemplazo y pueden retirarse. Un material sin imagen se muestra correctamente.
 - La carga queda asociada al año de la edición y privada mientras está en borrador. Al publicar, el archivo se sirve públicamente y los materiales de años anteriores conservan sus archivos o enlaces sin traslado físico.
 
 # Header y Footer
+
+- La opción «Identidad institucional» se muestra solo a Master y permite reemplazar por separado los logotipos OLCOMEP y MEP, con recomendaciones de resolución visibles de 1000 × 1000 y 2400 × 720 píxeles respectivamente. Guardar deja la vista pública intacta; publicar actualiza cada imagen versionada en sus ubicaciones. Administrador y Editor reciben 403 al consultar o modificar el borrador.
 
 - Publicar un nuevo año en Edición vigente actualiza la etiqueta «Edición AAAA» del menú público. Guardar un borrador mantiene el año público anterior y el destino sigue siendo `#edicion-vigente`.
 

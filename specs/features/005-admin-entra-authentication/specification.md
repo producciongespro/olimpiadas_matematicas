@@ -49,10 +49,16 @@ Los claims validados y el usuario local se conservan durante la solicitud en un 
 ## Roles locales
 
 - `master`: edita contenido y gestiona masters, administradores y editores.
-- `admin`: edita contenido y no gestiona usuarios.
+- `admin`: edita contenido y gestiona únicamente editores.
 - `editor`: edita contenido y no gestiona usuarios.
 
-La consulta y modificación de autorizaciones es exclusiva de Master; ocultar el control en la SPA no sustituye esta autorización en la API. Un Master puede crear otro Master. Ninguna operación puede desactivar, degradar o eliminar al último Master activo. La validación se realiza dentro de una transacción y la API impide que una persona modifique su propio rol o estado.
+Master consulta y administra los tres roles. Administrador consulta solo editores y puede crearlos y actualizar sus datos y estado; no puede consultar ni modificar masters o administradores, ni promover a un editor. Editor no gestiona usuarios. La API aplica estas reglas aunque se invoque sin la SPA. Un Master puede crear otro Master. Ninguna operación puede desactivar, degradar o eliminar al último Master activo. La validación se realiza dentro de una transacción y la API impide que una persona modifique su propio rol o estado.
+
+La vista «Usuarios autorizados» explica brevemente las funciones de cada rol en líneas separadas, con el nombre en negrita. Master ve las descripciones de Master, Administrador y Editor, además de la gestión de los tres roles. Administrador ve las descripciones de Administrador y Editor y los controles de gestión de editores. Editor no tiene acceso a esta vista.
+
+Al crear una autorización, Master escribe solo la parte local del correo. El formulario muestra `@mep.go.cr` como sufijo fijo y envía el correo completo. La API recibe un correo completo y solo permite crear autorizaciones con el dominio exacto `mep.go.cr`, aun si la solicitud se realiza fuera de la SPA. El inicio de sesión conserva su validación de dominios configurados.
+
+Master puede corregir el nombre de referencia y el correo de otra autorización desde «Editar datos»; Administrador puede hacerlo solo con editores. El formulario conserva el sufijo fijo `@mep.go.cr`; la API valida dominio y unicidad. Si cambia el correo, la API borra el `entra_oid` anterior para que la identidad vieja deje de coincidir y la cuenta corregida se vincule al iniciar sesión. La SPA pide confirmación cuando la cuenta ya inició sesión. El correo de la sesión actual no se puede modificar desde esta vista. Tampoco puede cambiarse el correo del último Master activo; las protecciones de rol y estado se mantienen. No existe eliminación de usuarios en este módulo.
 
 El primer Master se declara mediante `auth.bootstrapMasterEmail` en el `.env` privado de la API. `BootstrapMasterSeeder` crea la autorización únicamente cuando la tabla está vacía y es idempotente para esa misma cuenta. El primer inicio de sesión cuyo correo coincide exactamente vincula el `oid` de Microsoft. La variable no otorga privilegios adicionales después del bootstrap.
 

@@ -10,6 +10,7 @@ Administrar los textos y catálogos de cuadernillos recientes, archivo históric
 - colección ordenada de ediciones;
 - por edición: año, tipo `pdf` o `interactive` y materiales ordenados;
 - por material: clave estable, grado, rol, parte opcional, título, descripción e imagen decorativa opcional que se puede cargar, reemplazar o retirar; los PDF permiten cargar o reemplazar el archivo, y las actividades interactivas conservan un enlace externo editable.
+- La edición contextual se separa en dos accesos: PDF junto a los cuadernillos vigentes e interactivos junto al título y selector de «Cuadernillos interactivos». Ambos usan el formato compartido de acción editorial: botón redondeado y borde lateral amarillo; el PDF lleva ícono de documento y el interactivo, de internet. Los interactivos permiten crear ediciones y actividades con enlace e ícono individual, sin solicitar PDF.
 
 ## Campos protegidos
 
@@ -24,18 +25,20 @@ Administrar los textos y catálogos de cuadernillos recientes, archivo históric
 - rol limitado a `estudiante`, `docente` o `general`;
 - enlaces interactivos internos o HTTP(S), sin credenciales ni JavaScript; archivos PDF reales de hasta 16 MB;
 - grado entre 1 y 6 cuando corresponda;
+- el ícono nuevo de una actividad interactiva debe ser JPEG, PNG o WebP, pesar como máximo 1 MB y medir entre 64 y 512 píxeles por lado; se recomiendan 256 × 256 píxeles. Las imágenes heredadas conservan sus dimensiones originales mientras no sean reemplazadas;
 - colecciones vacías muestran un estado explícito;
 - borrador y publicación siguen la regla transaccional general.
 
 ## Criterios de aceptación
 
-- administración permite agregar, eliminar, editar y reordenar ediciones y materiales;
+- administración permite agregar, eliminar, editar y reordenar la edición PDF vigente y las ediciones interactivas; las ediciones PDF anteriores a la vigente publicada son de solo consulta y la API rechaza cambios o sustituciones de sus archivos;
+- el acceso contextual de interactivos permite agregar una edición posterior y materiales con enlace e ícono individual; muestra la recomendación y los límites de carga junto al campo de imagen;
 - un material PDF nuevo exige cargar un archivo; reemplazarlo crea un UUID nuevo, y guardar sin reemplazar conserva el archivo o enlace heredado de esa edición;
 - una imagen decorativa nueva o reemplazada se valida como JPEG, PNG o WebP, se asocia al material y al año de edición y permanece privada mientras la revisión es borrador. Guardar sin reemplazo conserva la imagen administrada o la ruta heredada; retirarla elimina la relación de la nueva revisión sin borrar archivos históricos. Un material sin imagen conserva su presentación textual;
 - vista pública y previsualización comparten componentes;
 - Cuadernillos interactivos ofrece solo el selector de edición y muestra todos los materiales de la edición elegida, con su actividad o parte en la descripción;
 - la edición PDF más reciente muestra un selector de Todos, Estudiantes y Docentes sin selector de año; Todos es la opción inicial y muestra todos los materiales vigentes, mientras las opciones por rol muestran únicamente sus materiales; una selección vacía comunica su estado;
-- al agregar y publicar una edición PDF de un año posterior, la anterior pasa automáticamente al archivo histórico con sus materiales, roles, claves y destinos intactos, sin traslado manual ni modificación de archivos físicos;
+- al agregar y publicar una edición PDF de un año posterior, la anterior pasa automáticamente al archivo histórico con sus materiales, roles, claves y destinos intactos, sin traslado manual ni modificación de archivos físicos; la acción de edición se ubica junto a los cuadernillos vigentes y propone el año siguiente o el año actual, el que sea mayor;
 - el contenido inicial conserva todos los recursos vigentes;
 - pruebas cubren validación, colecciones vacías y publicación.
 
@@ -49,6 +52,6 @@ Administrar los textos y catálogos de cuadernillos recientes, archivo históric
 - Las imágenes decorativas de cualquier tipo de edición se cargan como campos multipart `booklet_image_{año}_{tipo}_{clave}` y se almacenan bajo el año. La relación usa la pareja año/tipo y la clave del material para distinguir ediciones PDF e interactivas. La API expone `image_uuid`, `image_name` e `image` generado para los medios administrados. `remove_image` retira la imagen solo en la nueva revisión. Las rutas históricas en `image` permanecen compatibles mientras no exista reemplazo ni retiro.
 - La vista pública y la copia administrativa usan `ResourceBookletsSection` de `packages/ui`; si una colección está vacía muestran un mensaje explícito.
 - La colección PDF vigente se determina por el año mayor publicado, independientemente del orden de las ediciones. En ella el selector de tipo usa los roles presentes. El archivo histórico muestra todas las demás ediciones PDF y conserva sus selectores de año y rol. El administrador puede agregar una nueva edición PDF con materiales de ambos roles y publicarla; esa acción desplaza automáticamente la edición anterior al histórico sin reescribirla.
-- El editor explica este cambio automático junto a la colección de ediciones y permite cargar PDF sin escribir destinos. La revisión histórica conserva sus relaciones de medios y el paso al archivo histórico no mueve los archivos físicos.
+- El editor explica este cambio automático junto a la colección de ediciones y permite cargar PDF sin escribir destinos. Las ediciones PDF históricas se muestran deshabilitadas para consulta. La revisión histórica conserva sus relaciones de medios y el paso al archivo histórico no mueve los archivos físicos. Los textos generales de la sección siguen siendo editables.
 
 - Acciones administrativas: textos y ediciones con cuadernillos se editan desde accesos separados y guardan un único borrador de la sección.

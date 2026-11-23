@@ -3,6 +3,7 @@
 namespace App\Controllers\Api\Admin;
 
 use App\Controllers\BaseController;
+use App\Exceptions\ForbiddenException;
 use App\Services\ContentService;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\Exceptions\HTTPException;
@@ -31,13 +32,18 @@ class ContentAdminController extends BaseController
     private function run(callable $action): ResponseInterface
     {
         try { return $action(); }
+        catch (ForbiddenException $e) { return $this->response->setStatusCode(403)->setJSON(['message' => $e->getMessage()]); }
         catch (InvalidArgumentException $e) { return $this->response->setStatusCode(422)->setJSON(['message' => $e->getMessage()]); }
         catch (Throwable $e) { log_message('error', 'Error de contenido: {message}', ['message' => $e->getMessage()]); return $this->response->setStatusCode(500)->setJSON(['message' => 'No fue posible completar la operación.']); }
     }
     private function ok(mixed $data): ResponseInterface { return $this->response->setJSON(['data' => $data]); }
+    private function authorizeIdentity(string $key): void
+    {
+        if ($key === 'institutional-identity' && (service('adminAuthContext')->user()['role'] ?? null) !== 'master') throw new ForbiddenException('Solo Master puede gestionar la identidad institucional.');
+    }
 
     public function sections(): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->adminSections())); }
-    public function section(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->adminSection($key))); }
-    public function saveDraft(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->saveDraft($key, $this->input(), $this->image(), service('adminAuthContext')->user()['email'] ?? null, $this->request->getFiles()))); }
-    public function publish(string $key): ResponseInterface { return $this->run(fn () => $this->ok($this->service()->publish($key))); }
+    public function section(string $key): ResponseInterface { return $this->run(function () use ($key) { $this->authorizeIdentity($key); return $this->ok($this->service()->adminSection($key)); }); }
+    public function saveDraft(string $key): ResponseInterface { return $this->run(function () use ($key) { $this->authorizeIdentity($key); return $this->ok($this->service()->saveDraft($key, $this->input(), $this->image(), service('adminAuthContext')->user()['email'] ?? null, $this->request->getFiles())); }); }
+    public function publish(string $key): ResponseInterface { return $this->run(function () use ($key) { $this->authorizeIdentity($key); return $this->ok($this->service()->publish($key)); }); }
 }

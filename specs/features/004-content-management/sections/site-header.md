@@ -1,6 +1,6 @@
 # Header y navegación
 
-El encabezado es parte fija del sitio. La vista pública y la copia administrativa comparten el componente `SiteHeader`, los logotipos, el lema, el nombre accesible del inicio, los enlaces y su orden. En la copia se muestra sin acción de edición.
+El encabezado es parte fija del sitio. La vista pública y la copia administrativa comparten el componente `SiteHeader`, el lema, el nombre accesible del inicio, los enlaces y su orden. Los logotipos MEP y OLCOMEP provienen de la publicación global de «Identidad institucional», cada uno con respaldo estático. En la copia se muestra sin acción de edición propia.
 
 Las dos vistas comparten las alturas de los logotipos. El del MEP mide 2,6 rem y el de OLCOMEP 3 rem en móvil. A partir de 640 píxeles miden 3,45 y 3,75 rem respectivamente, con el ancho proporcional.
 

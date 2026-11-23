@@ -8,6 +8,11 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class SiteContentController extends BaseController
 {
+    public function identity(): ResponseInterface
+    {
+        return $this->response->setHeader('Cache-Control', 'public, max-age=0, must-revalidate')->setJSON(['data' => (new ContentService())->publicIdentity()]);
+    }
+
     public function home(): ResponseInterface
     {
         $snapshot = (new ContentService())->publicHomeSnapshot();

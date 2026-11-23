@@ -7,8 +7,8 @@ import { createApiClient } from '@olcomep/api-client'
 import { AdminApp } from '../App.jsx'
 import { entraConfigurationError, loginRequest } from './msal.js'
 
-function AccessScreen({ error, onLogin, pending }) {
-  return <main className="access-screen"><section className="access-card" aria-labelledby="access-title"><img alt="" height="690" src="/logo-olcomep.png" width="690"/><p className="text-xs font-black uppercase tracking-[.16em] text-brand-primary">Administración OLCOMEP</p><h1 id="access-title">Acceso institucional</h1><p>Ingrese con su cuenta del Ministerio de Educación Pública. Solo las identidades con un rol administrativo asignado podrán gestionar contenido.</p>{error && <p className="notice notice-error" role="alert">{error}</p>}<button className="button mt-5 w-full" disabled={pending || Boolean(error)} onClick={onLogin} type="button"><LogIn aria-hidden="true"/>{pending ? 'Procesando acceso…' : 'Ingresar con cuenta MEP'}</button></section></main>
+function AccessScreen({ error, logoUrl, onLogin, pending }) {
+  return <main className="access-screen"><section className="access-card" aria-labelledby="access-title"><img alt="" height="690" src={logoUrl} width="690"/><p className="text-xs font-black uppercase tracking-[.16em] text-brand-primary">Administración OLCOMEP</p><h1 id="access-title">Acceso institucional</h1><p>Ingrese con su cuenta del Ministerio de Educación Pública. Solo las identidades con un rol administrativo asignado podrán gestionar contenido.</p>{error && <p className="notice notice-error" role="alert">{error}</p>}<button className="button mt-5 w-full" disabled={pending || Boolean(error)} onClick={onLogin} type="button"><LogIn aria-hidden="true"/>{pending ? 'Procesando acceso…' : 'Ingresar con cuenta MEP'}</button></section></main>
 }
 
 export function AuthGate({ initializationError = null }) {
@@ -19,6 +19,13 @@ export function AuthGate({ initializationError = null }) {
   const pending = inProgress !== InteractionStatus.None
   const [profile, setProfile] = useState(null)
   const [profileError, setProfileError] = useState(null)
+  const [identity, setIdentity] = useState({ logo_url: '/logo-olcomep.png', mep_logo_url: '/logotipo%20MEP.png' })
+
+  useEffect(() => {
+    let active = true
+    createApiClient().siteIdentity().then((result) => { if (active && result?.logo_url) setIdentity(result) }).catch(() => {})
+    return () => { active = false }
+  }, [])
 
   const login = async () => {
     if (!entraConfigurationError && !pending) await instance.loginRedirect(loginRequest)
@@ -49,9 +56,9 @@ export function AuthGate({ initializationError = null }) {
     return () => { active = false }
   }, [accountId, authenticated, getAccessToken])
 
-  if (initializationError || entraConfigurationError) return <AccessScreen error={initializationError || entraConfigurationError} pending={false}/>
-  if (!authenticated || !account) return <AccessScreen onLogin={login} pending={pending}/>
+  if (initializationError || entraConfigurationError) return <AccessScreen error={initializationError || entraConfigurationError} logoUrl={identity.logo_url} pending={false}/>
+  if (!authenticated || !account) return <AccessScreen logoUrl={identity.logo_url} onLogin={login} pending={pending}/>
   if (profileError) return <main className="access-screen"><section className="access-card"><h1>Acceso no autorizado</h1><p>{profileError}</p><button className="button mt-5 w-full" onClick={logout} type="button">Cerrar sesión</button></section></main>
-  if (!profile) return <AccessScreen pending={true}/>
-  return <AdminApp account={account} getAccessToken={getAccessToken} onLogout={logout} profile={profile}/>
+  if (!profile) return <AccessScreen logoUrl={identity.logo_url} pending={true}/>
+  return <AdminApp account={account} getAccessToken={getAccessToken} identity={identity} onIdentityPublished={setIdentity} onLogout={logout} profile={profile}/>
 }

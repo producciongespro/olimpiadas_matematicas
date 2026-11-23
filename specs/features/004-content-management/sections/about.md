@@ -6,4 +6,4 @@
 - Protegidos: ancla `#acerca-de-nosotros`, composición y jerarquía de encabezados.
 - No admite HTML libre ni imágenes.
 
-- Acciones administrativas: títulos e historia con párrafos e hitos se editan desde accesos separados y guardan un único borrador de la sección.
+- Acciones administrativas: «Editar títulos y párrafos» reúne antetítulo, título, párrafos introductorios, título de cierre y párrafos finales; «Editar hitos de la historia» reúne únicamente la cronología. Ambos accesos guardan un único borrador de la sección.

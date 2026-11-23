@@ -1,14 +1,14 @@
 import { ExternalLink } from 'lucide-react'
 
-export function SiteFooter({ content, preview = false }) {
+export function SiteFooter({ content, logoUrl = '/logo-olcomep.png', mepLogoUrl = '/logotipo%20MEP.png', preview = false }) {
   return (
     <footer className="bg-slate-950 py-10 text-white">
       <div className="mx-auto grid max-w-content gap-8 px-5 sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
         <div>
           <div className="inline-flex max-w-full items-center gap-3" aria-hidden="true">
-            <img alt="" className="h-11 w-auto sm:h-14" height="79" src="/logotipo%20MEP.png" width="288" />
+            <img alt="" className="h-11 w-auto sm:h-14" height="79" src={mepLogoUrl} width="288" />
             <span className="h-12 w-px bg-white/25 sm:h-16" />
-            <img alt="" className="h-16 w-auto rounded-sm sm:h-20" height="690" src="/logo-olcomep.png" width="690" />
+            <img alt="" className="h-16 w-auto rounded-sm sm:h-20" height="690" src={logoUrl} width="690" />
           </div>
           <p className="mt-4 font-black">{content.program_name}</p>
           <p className="mt-1 text-sm text-slate-300">{content.organization}</p>

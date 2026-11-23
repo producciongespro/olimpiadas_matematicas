@@ -12,7 +12,12 @@
 - La API valida firma, vigencia, tenant, emisor v1/v2, audiencia, scope y aplicación cliente.
 - La API comparte la identidad validada entre filtros, auditoría y controladores sin propiedades dinámicas ni advertencias `DEPRECATED` de PHP 8.2, y reinicia ese contexto para cada solicitud.
 - Las rutas administrativas responden 401 ante identidad inválida y 403 ante identidad válida sin autorización local activa.
-- Solo Master consulta y administra los tres roles; Administrador y Editor reciben 403 en las rutas de gestión de usuarios y no ven su control en la SPA.
+- Master consulta y administra los tres roles. Administrador consulta solo editores y puede crearlos y actualizarlos, sin acceso a otros roles ni promoción. Editor recibe 403 en las rutas de gestión y no ve el control en la SPA.
+- Master ve descripciones breves de los tres roles en «Usuarios autorizados», incluida su capacidad de crear otros Masters. Administrador ve solo Administrador y Editor y gestiona editores en esa vista.
+- El campo de creación acepta solo la parte local del correo, presenta el sufijo fijo `@mep.go.cr` y envía la dirección completa. La API rechaza la creación con cualquier otro dominio, incluso cuando se omite la interfaz.
+- Los campos Correo institucional, Nombre de referencia y Rol tienen la misma altura; la ayuda del correo ocupa una línea separada antes del botón Crear autorización.
+- Master puede corregir nombre y correo de otro usuario; Administrador puede hacerlo solo para editores. El correo corregido debe ser único y `@mep.go.cr`. El cambio limpia el vínculo `oid` anterior y exige una nueva vinculación al iniciar sesión. La SPA confirma el cambio para cuentas que ya ingresaron.
+- No se puede cambiar el correo propio ni el del último Master activo. Desactivar o degradar al último Master activo continúa prohibido; no hay acción de eliminación.
 - Un Master puede crear otro Master y ninguna operación puede dejar cero Masters activos.
 - El rol o estado propio no puede modificarse.
 - El primer Master solo se crea cuando no existen usuarios y el correo autenticado coincide con `auth.bootstrapMasterEmail`.
@@ -20,3 +25,4 @@
 - La configuración versionada contiene solo nombres y valores de ejemplo, nunca identificadores reales ni secretos.
 - Vite y CodeIgniter cargan sus archivos privados `.env.development` en desarrollo; producción selecciona `.env.production` sin renombrados manuales.
 - Las pruebas de autenticación de la API y el build administrativo finalizan correctamente.
+- El acceso y la administración usan los mismos tonos institucionales primario, acento, realce y fondo suave que la vista pública; botones, foco, estados y diálogos conservan contraste legible en móvil y escritorio.

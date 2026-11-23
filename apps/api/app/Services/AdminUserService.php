@@ -37,18 +37,20 @@ class AdminUserService
 
     public function all(array $actor): array
     {
-        $this->requireMaster($actor);
+        $this->requireUserManager($actor);
         $builder = $this->db->table('admin_users');
+        if ($actor['role'] === 'admin') $builder->where('role', 'editor');
         return array_map([$this, 'profile'], $builder->orderBy('role')->orderBy('email')->get()->getResultArray());
     }
 
     public function create(array $actor, array $input): array
     {
-        $this->requireMaster($actor);
+        $this->requireUserManager($actor);
         $role = $this->role($input['role'] ?? 'editor');
+        if ($actor['role'] === 'admin' && $role !== 'editor') throw new ForbiddenException('Administrador solo puede crear editores.');
         $email = mb_strtolower(trim((string) ($input['email'] ?? '')));
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('El correo institucional no es válido.');
-        $this->validateDomain($email);
+        if (! str_ends_with($email, '@mep.go.cr')) throw new InvalidArgumentException('Solo se permiten correos @mep.go.cr.');
         if ($this->db->table('admin_users')->where('email', $email)->countAllResults() > 0) throw new InvalidArgumentException('La cuenta ya está registrada.');
         $now = date('Y-m-d H:i:s');
         $this->db->table('admin_users')->insert(['email' => $email, 'display_name' => $this->nullable($input['display_name'] ?? null), 'role' => $role, 'status' => 'active', 'created_by' => $actor['id'], 'updated_by' => $actor['id'], 'created_at' => $now, 'updated_at' => $now]);
@@ -57,19 +59,28 @@ class AdminUserService
 
     public function update(array $actor, int $id, array $input): array
     {
-        $this->requireMaster($actor);
+        $this->requireUserManager($actor);
         $target = $this->find($id);
-        if ((int) $actor['id'] === $id && (array_key_exists('role', $input) || array_key_exists('status', $input))) throw new ForbiddenException('No puede modificar su propio rol o estado.');
+        if ($actor['role'] === 'admin' && ($target['role'] !== 'editor' || (array_key_exists('role', $input) && $input['role'] !== 'editor'))) throw new ForbiddenException('Administrador solo puede gestionar editores.');
+        if ((int) $actor['id'] === $id && (array_key_exists('role', $input) || array_key_exists('status', $input) || array_key_exists('email', $input))) throw new ForbiddenException('No puede modificar su propio rol, estado o correo.');
         $role = array_key_exists('role', $input) ? $this->role($input['role']) : $target['role'];
         $status = array_key_exists('status', $input) ? $this->status($input['status']) : $target['status'];
+        $email = array_key_exists('email', $input) ? mb_strtolower(trim((string) $input['email'])) : $target['email'];
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL) || ! str_ends_with($email, '@mep.go.cr')) throw new InvalidArgumentException('Solo se permiten correos @mep.go.cr.');
+        if ($email !== $target['email'] && $this->db->table('admin_users')->where('email', $email)->where('id !=', $id)->countAllResults() > 0) throw new InvalidArgumentException('La cuenta ya está registrada.');
         $this->db->transStart();
         $this->lockMasters();
+        if ($email !== $target['email'] && $target['role'] === 'master' && $target['status'] === 'active' && $this->activeMasterCount() <= 1) {
+            $this->db->transRollback();
+            throw new InvalidArgumentException('No puede cambiar el correo del último Master activo.');
+        }
         if ($target['role'] === 'master' && $target['status'] === 'active' && ($role !== 'master' || $status !== 'active') && $this->activeMasterCount() <= 1) {
             $this->db->transRollback();
             throw new InvalidArgumentException('El sistema debe conservar al menos un Master activo.');
         }
         $changes = ['role' => $role, 'status' => $status, 'updated_by' => $actor['id'], 'updated_at' => date('Y-m-d H:i:s')];
         if (array_key_exists('display_name', $input)) $changes['display_name'] = $this->nullable($input['display_name']);
+        if ($email !== $target['email']) { $changes['email'] = $email; $changes['entra_oid'] = null; }
         $this->db->table('admin_users')->where('id', $id)->update($changes);
         $this->db->transComplete();
         if (! $this->db->transStatus()) throw new RuntimeException('No fue posible actualizar la autorización.');
@@ -78,11 +89,11 @@ class AdminUserService
 
     public function profile(array $user): array
     {
-        return ['id' => (int) $user['id'], 'email' => $user['email'], 'display_name' => $user['display_name'], 'role' => $user['role'], 'status' => $user['status'], 'last_login_at' => $user['last_login_at'], 'can_manage_users' => $user['role'] === 'master', 'assignable_roles' => $user['role'] === 'master' ? self::ROLES : []];
+        return ['id' => (int) $user['id'], 'email' => $user['email'], 'display_name' => $user['display_name'], 'role' => $user['role'], 'status' => $user['status'], 'last_login_at' => $user['last_login_at'], 'can_manage_users' => in_array($user['role'], ['master', 'admin'], true), 'assignable_roles' => $user['role'] === 'master' ? self::ROLES : ($user['role'] === 'admin' ? ['editor'] : [])];
     }
 
     private function find(int $id): array { $user = $this->db->table('admin_users')->where('id', $id)->get()->getRowArray(); if ($user === null) throw new InvalidArgumentException('La autorización no existe.'); return $user; }
-    private function requireMaster(array $actor): void { if (($actor['role'] ?? '') !== 'master') throw new ForbiddenException('Solo un Master puede gestionar usuarios.'); }
+    private function requireUserManager(array $actor): void { if (! in_array($actor['role'] ?? '', ['master', 'admin'], true)) throw new ForbiddenException('Su rol no permite gestionar usuarios.'); }
     private function role(mixed $value): string { $value = (string) $value; if (! in_array($value, self::ROLES, true)) throw new InvalidArgumentException('El rol no es válido.'); return $value; }
     private function status(mixed $value): string { $value = (string) $value; if (! in_array($value, self::STATUSES, true)) throw new InvalidArgumentException('El estado no es válido.'); return $value; }
     private function activeMasterCount(): int { return $this->db->table('admin_users')->where('role', 'master')->where('status', 'active')->countAllResults(); }

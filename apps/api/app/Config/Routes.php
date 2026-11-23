@@ -18,6 +18,7 @@ $routes->options('api/v1/(:any)', 'Api\\HealthController::options', ['filter' =>
 $routes->group('api/v1', ['filter' => 'cors'], static function (RouteCollection $routes): void {
     $routes->get('health', 'Api\\HealthController::index');
     $routes->get('site/home', 'Api\\SiteContentController::home');
+    $routes->get('site/identity', 'Api\\SiteContentController::identity');
     $routes->get('carousel', 'Api\\MediaController::carousel');
     $routes->get('events', 'Api\\MediaController::events');
     $routes->get('events/(:segment)', 'Api\\MediaController::event/$1');

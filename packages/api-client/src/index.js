@@ -50,6 +50,7 @@ export function createApiClient({ baseUrl = import.meta.env?.VITE_API_URL || DEF
 
   return {
     siteHome,
+    siteIdentity: () => request('/site/identity'),
     adminSiteSections: () => request('/admin/site/sections'),
     adminProfile: () => request('/admin/profile'),
     adminUsers: () => request('/admin/users'),

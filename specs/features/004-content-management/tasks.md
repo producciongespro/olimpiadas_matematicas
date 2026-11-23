@@ -46,6 +46,8 @@
 - [x] Agregar selector Todos/Estudiantes/Docentes a los cuadernillos vigentes y comprobar la transición automática de una edición anterior al archivo histórico.
 - [x] Sustituir el destino editable de los cuadernillos PDF por carga de archivos por edición, conservar enlaces heredados y documentar la publicación versionada.
 - [x] Sustituir la ruta editable de imágenes decorativas de cuadernillos por carga opcional, reemplazo y retiro, manteniendo las rutas históricas.
+- [x] Situar la edición de cuadernillos junto a la colección vigente y proteger los materiales PDF históricos en el editor y la API.
+- [x] Dar acceso contextual propio a los cuadernillos interactivos, separar sus ediciones de las PDF y limitar sus íconos nuevos a 1 MB y 512 píxeles por lado.
 - [x] Implementar y verificar Header y navegación.
 - [x] Fijar el encabezado y sus enlaces, retirar su edición y rechazar sus escrituras en la API.
 - [x] Derivar el año de la etiqueta de Edición del año publicado en Edición vigente.
@@ -56,3 +58,6 @@
 - [x] Mantener abierto el diálogo tras guardar un borrador y permitir publicarlo o cerrarlo desde allí.
 - [x] Ocultar las claves internas de enlaces y créditos del Footer y generarlas automáticamente al agregar elementos.
 - [x] Colocar las acciones en posiciones contextuales de cada vista previa y ofrecer una disposición en flujo para móvil.
+- [x] Retirar «Actualizar contenido» de la barra de sesión; mantener las cargas iniciales y posteriores a las acciones.
+- [x] Implementar la identidad institucional global con edición independiente de los logotipos OLCOMEP y MEP, exclusiva de Master, con resoluciones recomendadas, borrador, publicación y consumo en ambas aplicaciones.
+- [x] Separar en «Acerca de nosotros» la edición de títulos y párrafos de la edición de hitos, conservando un solo borrador y publicación.

@@ -28,6 +28,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 const REFRESH_INTERVAL_MS = 30_000
 
 const sectionDefinitions = {
+  'institutional-identity': { fallback: { logo_url: '/logo-olcomep.png', mep_logo_url: '/logotipo%20MEP.png' }, merge: (value) => ({ logo_url: value.logo_url || '/logo-olcomep.png', mep_logo_url: value.mep_logo_url || '/logotipo%20MEP.png' }) },
   'site-footer': { fallback: defaultSiteFooterContent, merge: mergeSiteFooterContent },
   'resource-booklets': { fallback: defaultResourceBookletsContent, merge: mergeResourceBookletsContent },
   hero: { fallback: defaultHeroContent, merge: mergeHeroContent },

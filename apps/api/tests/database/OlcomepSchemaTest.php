@@ -7,10 +7,12 @@ use App\Database\Migrations\CreateMediaGalleryDomain;
 use App\Database\Migrations\CreateContentManagement;
 use App\Database\Migrations\CreateAdminUsers;
 use App\Database\Migrations\CreateContentRevisionMedia;
+use App\Database\Migrations\AddInstitutionalIdentity;
 use App\Database\Seeds\OlcomepInitialSeeder;
 use App\Services\GalleryService;
 use App\Services\ContentService;
 use App\Controllers\Api\Admin\ContentAdminController;
+use App\Controllers\Api\Admin\MediaAdminController;
 use App\Services\AdminUserService;
 use App\Exceptions\ForbiddenException;
 use CodeIgniter\Database\Config as DatabaseConfig;
@@ -29,6 +31,7 @@ require_once APPPATH . 'Database/Migrations/2026-09-08-120000_CreateMediaGallery
 require_once APPPATH . 'Database/Migrations/2026-09-14-120000_CreateContentManagement.php';
 require_once APPPATH . 'Database/Migrations/2026-09-14-130000_CreateAdminUsers.php';
 require_once APPPATH . 'Database/Migrations/2026-09-18-120000_CreateContentRevisionMedia.php';
+require_once APPPATH . 'Database/Migrations/2026-11-23-120000_AddInstitutionalIdentity.php';
 
 /**
  * @internal
@@ -54,6 +57,7 @@ final class OlcomepSchemaTest extends CIUnitTestCase
             new CreateContentManagement($forge),
             new CreateAdminUsers($forge),
             new CreateContentRevisionMedia($forge),
+            new AddInstitutionalIdentity($forge),
         ];
 
         foreach ($this->domainMigrations as $migration) {
@@ -117,7 +121,7 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(0, $this->db->table('educational_regions')->countAllResults());
         $this->assertSame(0, $this->db->table('events')->countAllResults());
         $this->assertSame(15, $this->db->table('carousel_slides')->countAllResults());
-        $this->assertSame(12, $this->db->table('content_sections')->countAllResults());
+        $this->assertSame(13, $this->db->table('content_sections')->countAllResults());
     }
 
     public function testPublishedLegacyCarouselIsAvailableThroughService(): void
@@ -133,6 +137,76 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame('Actividad educativa de OLCOMEP, fotografía 1', $slides[0]['alt_text']);
         $this->assertCount(0, $events);
         $this->assertNotNull($service->media($slides[0]['media_uuid']));
+    }
+
+    public function testInstitutionalLogoDraftPublishesOnlyAfterConfirmation(): void
+    {
+        $service = new ContentService($this->db);
+        $this->assertSame('/logo-olcomep.png', $service->publicIdentity()['logo_url']);
+        $this->assertArrayNotHasKey('institutional-identity', array_column($service->adminSections(), null, 'key'));
+
+        $fixture = ROOTPATH . '../../apps/public-web/public/logo-olcomep.png';
+        $image = $this->createMock(UploadedFile::class);
+        $image->method('isValid')->willReturn(true);
+        $image->method('hasMoved')->willReturn(false);
+        $image->method('getSize')->willReturn(filesize($fixture));
+        $image->method('getTempName')->willReturn($fixture);
+        $image->method('getClientName')->willReturn('logo-prueba.png');
+        $image->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($fixture): bool {
+            return copy($fixture, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+        });
+
+        $draft = $service->saveDraft('institutional-identity', [], $image)['draft']['content'];
+        $this->assertStringContainsString('/api/v1/media/', $draft['logo_url']);
+        $this->assertSame('/logo-olcomep.png', $service->publicIdentity()['logo_url']);
+        $this->assertNull((new GalleryService($this->db))->media($draft['media_uuid']));
+        service('adminAuthContext')->authenticate([], ['role' => 'admin', 'email' => 'admin@mep.go.cr'], null);
+        try { $this->controller(MediaAdminController::class)->execute('file', $draft['media_uuid'])->assertStatus(403); }
+        finally { service('adminAuthContext')->reset(); }
+        $service->publish('institutional-identity');
+        $this->assertSame($draft['logo_url'], $service->publicIdentity()['logo_url']);
+        $this->assertNotNull((new GalleryService($this->db))->media($draft['media_uuid']));
+        $replacement = $service->saveDraft('institutional-identity', [], $image)['draft']['content'];
+        $this->assertNotSame($draft['logo_url'], $replacement['logo_url']);
+        $service->publish('institutional-identity');
+        $this->assertSame($replacement['logo_url'], $service->publicIdentity()['logo_url']);
+        $this->assertNotNull((new GalleryService($this->db))->media($draft['media_uuid']));
+    }
+
+    public function testMepLogoCanBeReplacedIndependently(): void
+    {
+        $service = new ContentService($this->db);
+        $fixture = ROOTPATH . '../../apps/public-web/public/logotipo MEP.png';
+        $image = $this->createMock(UploadedFile::class);
+        $image->method('isValid')->willReturn(true);
+        $image->method('hasMoved')->willReturn(false);
+        $image->method('getSize')->willReturn(filesize($fixture));
+        $image->method('getTempName')->willReturn($fixture);
+        $image->method('getClientName')->willReturn('mep-prueba.png');
+        $image->method('move')->willReturnCallback(static function (string $target, ?string $name) use ($fixture): bool {
+            return copy($fixture, rtrim($target, '/\\') . DIRECTORY_SEPARATOR . $name);
+        });
+
+        $draft = $service->saveDraft('institutional-identity', [], null, null, ['mep_logo' => $image])['draft']['content'];
+        $this->assertSame('/logo-olcomep.png', $draft['logo_url']);
+        $this->assertStringContainsString('/api/v1/media/', $draft['mep_logo_url']);
+        $this->assertSame('/logotipo%20MEP.png', $service->publicIdentity()['mep_logo_url']);
+        $this->assertNull((new GalleryService($this->db))->media($draft['mep_media_uuid']));
+
+        $service->publish('institutional-identity');
+        $this->assertSame($draft['mep_logo_url'], $service->publicIdentity()['mep_logo_url']);
+        $this->assertSame('/logo-olcomep.png', $service->publicIdentity()['logo_url']);
+        $this->assertNotNull((new GalleryService($this->db))->media($draft['mep_media_uuid']));
+    }
+
+    public function testOnlyMasterCanAccessInstitutionalIdentityEditor(): void
+    {
+        service('adminAuthContext')->authenticate([], ['role' => 'admin', 'email' => 'admin@mep.go.cr'], null);
+        try {
+            $this->controller(ContentAdminController::class)->execute('section', 'institutional-identity')->assertStatus(403);
+            $this->controller(ContentAdminController::class)->execute('saveDraft', 'institutional-identity')->assertStatus(403);
+            $this->controller(ContentAdminController::class)->execute('publish', 'institutional-identity')->assertStatus(403);
+        } finally { service('adminAuthContext')->reset(); }
     }
 
     public function testEmptyEventCannotBePublished(): void
@@ -661,12 +735,97 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertSame(2, $this->db->table('admin_users')->where('role', 'master')->where('status', 'active')->countAllResults());
     }
 
-    public function testAdministratorCannotManageUsers(): void
+    public function testMasterCannotCreateAuthorizationOutsideMepDomain(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $this->expectException(\InvalidArgumentException::class);
+        $service->create($master, ['email' => 'persona@externo.org', 'role' => 'editor']);
+    }
+
+    public function testAdministratorCanManageOnlyEditors(): void
     {
         $service = new AdminUserService($this->db);
         $admin = $this->adminUser('admin@mep.go.cr', 'admin');
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $editor = $service->create($admin, ['email' => 'editor@mep.go.cr', 'role' => 'editor']);
+        $this->assertSame('editor', $editor['role']);
+        $this->assertSame([$editor['id']], array_column($service->all($admin), 'id'));
+        $updated = $service->update($admin, $editor['id'], ['display_name' => 'Editora', 'status' => 'inactive']);
+        $this->assertSame('Editora', $updated['display_name']);
+        $this->assertSame('inactive', $updated['status']);
+        foreach ([
+            fn () => $service->create($admin, ['email' => 'otro@mep.go.cr', 'role' => 'master']),
+            fn () => $service->update($admin, $editor['id'], ['role' => 'admin']),
+            fn () => $service->update($admin, $master['id'], ['display_name' => 'Otro']),
+        ] as $operation) {
+            try { $operation(); $this->fail('Administrador no debe gestionar otros roles.'); }
+            catch (ForbiddenException $exception) { $this->assertStringContainsString('solo', $exception->getMessage()); }
+        }
+        $this->assertSame(['editor'], $admin['assignable_roles']);
+    }
+
+    public function testEditorCannotManageUsers(): void
+    {
+        $service = new AdminUserService($this->db);
+        $editor = $this->adminUser('editor@mep.go.cr', 'editor');
         $this->expectException(ForbiddenException::class);
-        $service->create($admin, ['email' => 'editor@mep.go.cr', 'role' => 'editor']);
+        $service->all($editor);
+    }
+
+    public function testMasterCanCorrectAnotherUsersNameAndEmail(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $editor = $this->adminUser('equivocado@mep.go.cr', 'editor');
+        $this->db->table('admin_users')->where('id', $editor['id'])->update(['entra_oid' => 'oid-anterior']);
+        $updated = $service->update($master, (int) $editor['id'], ['email' => 'correcto@mep.go.cr', 'display_name' => 'Nombre corregido']);
+        $this->assertSame('correcto@mep.go.cr', $updated['email']);
+        $this->assertSame('Nombre corregido', $updated['display_name']);
+        $this->assertNull($this->db->table('admin_users')->where('id', $editor['id'])->get()->getRow('entra_oid'));
+        try {
+            $service->authenticate(['preferred_username' => 'equivocado@mep.go.cr', 'oid' => 'oid-anterior']);
+            $this->fail('La identidad anterior no debe conservar acceso.');
+        } catch (ForbiddenException $exception) {
+            $this->assertStringContainsString('no está autorizada', $exception->getMessage());
+        }
+        $rebound = $service->authenticate(['preferred_username' => 'correcto@mep.go.cr', 'oid' => 'oid-nuevo']);
+        $this->assertSame($editor['id'], $rebound['id']);
+    }
+
+    public function testMasterCannotAssignDuplicateEmail(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $editor = $this->adminUser('editor@mep.go.cr', 'editor');
+        $this->expectException(InvalidArgumentException::class);
+        $service->update($master, (int) $editor['id'], ['email' => 'master@mep.go.cr']);
+    }
+
+    public function testMasterCannotAssignExternalEmail(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $editor = $this->adminUser('editor@mep.go.cr', 'editor');
+        $this->expectException(InvalidArgumentException::class);
+        $service->update($master, (int) $editor['id'], ['email' => 'editor@externo.org']);
+    }
+
+    public function testMasterCannotChangeOwnEmail(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $this->expectException(ForbiddenException::class);
+        $service->update($master, (int) $master['id'], ['email' => 'otro.master@mep.go.cr']);
+    }
+
+    public function testCannotChangeLastActiveMastersEmail(): void
+    {
+        $service = new AdminUserService($this->db);
+        $master = $this->adminUser('master@mep.go.cr', 'master');
+        $other = $this->adminUser('admin@mep.go.cr', 'admin');
+        $this->expectException(InvalidArgumentException::class);
+        $service->update(array_merge($other, ['role' => 'master']), (int) $master['id'], ['email' => 'otro.master@mep.go.cr']);
     }
 
     public function testResourceCatalogPreservesSeedAndPublishesOnlyAfterConfirmation(): void
@@ -685,6 +844,46 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $this->assertNotSame('Materiales revisados', $service->publicHome()['resource-booklets']['content']['title']);
         $service->publish('resource-booklets');
         $this->assertSame('Materiales revisados', $service->publicHome()['resource-booklets']['content']['title']);
+    }
+
+    public function testHistoricalBookletMaterialsCannotBeChanged(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $historicalIndex = array_key_first(array_filter($content['editions'], static fn (array $edition): bool => $edition['type'] === 'pdf' && (int) $edition['year'] < 2025));
+        $this->assertNotNull($historicalIndex);
+        $content['editions'][$historicalIndex]['materials'][0]['title'] = 'Cambio indebido';
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('archivo histórico');
+        $service->saveDraft('resource-booklets', [
+            'eyebrow' => $content['eyebrow'], 'title' => $content['title'], 'description' => $content['description'],
+            'editions_json' => json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ]);
+    }
+
+    public function testInteractiveBookletIconRejectsOversizedDimensions(): void
+    {
+        $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
+        $seeder->setSilent(true)->run();
+        $service = new ContentService($this->db);
+        $content = $service->adminSection('resource-booklets')['published']['content'];
+        $content['editions'][] = ['year' => 2026, 'type' => 'interactive', 'materials' => [[
+            'key' => 'guia-3a', 'grade' => 3, 'role' => 'estudiante', 'title' => 'Guía 3A',
+            'description' => 'Actividad interactiva', 'href' => 'https://example.org/guia-3a',
+        ]]];
+        $fixture = ROOTPATH . '../../apps/public-web/public/logo-olcomep.png';
+        $image = $this->createMock(UploadedFile::class);
+        $image->method('isValid')->willReturn(true);
+        $image->method('getSize')->willReturn(filesize($fixture));
+        $image->method('getTempName')->willReturn($fixture);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('512');
+        $service->saveDraft('resource-booklets', [
+            'eyebrow' => $content['eyebrow'], 'title' => $content['title'], 'description' => $content['description'],
+            'editions_json' => json_encode($content['editions'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ], null, null, ['booklet_image_2026_interactive_guia-3a' => $image]);
     }
 
     public function testResourceCatalogAcceptsNextYearWithoutLosingPreviousEdition(): void

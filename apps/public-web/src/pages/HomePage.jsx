@@ -9,11 +9,13 @@ import { HowToParticipateSection } from '../components/HowToParticipateSection.j
 export function HomePage() {
   const { content, initialLoading, version } = usePublishedSiteContent()
   const currentEdition = content['current-edition']
+  const logoUrl = content['institutional-identity']?.logo_url || '/logo-olcomep.png'
+  const mepLogoUrl = content['institutional-identity']?.mep_logo_url || '/logotipo%20MEP.png'
 
   return (
     <div className="olcomep-site min-h-screen bg-white text-ink">
       <a className="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
-      <SiteHeader content={defaultSiteHeaderContent} currentEdition={version ? currentEdition : undefined} />
+      <SiteHeader content={defaultSiteHeaderContent} currentEdition={version ? currentEdition : undefined} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} />
 
       <main id="contenido-principal">
         <MainCarousel />
@@ -33,13 +35,13 @@ export function HomePage() {
         ) : <CurrentEditionSection content={currentEdition} />}
         <ResourceBookletsSection content={content['resource-booklets']} />
         <PhotoGallery />
-        <OlcomepIntroductionSection content={content['olcomep-introduction']} />
+        <OlcomepIntroductionSection content={content['olcomep-introduction']} logoUrl={logoUrl} />
         <AboutUsSection content={content.about} />
         <PartnersSection content={content.partners} />
         <ContactSection content={content.contact} />
       </main>
 
-      <SiteFooter content={content['site-footer']} />
+      <SiteFooter content={content['site-footer']} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} />
     </div>
   )
 }

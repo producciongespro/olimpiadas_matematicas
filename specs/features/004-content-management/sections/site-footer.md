@@ -12,7 +12,7 @@ Administrar los textos institucionales, enlaces y créditos del cierre del sitio
 
 ## Campos protegidos
 
-- logotipos oficiales, composición responsive, elemento `footer` y enlace estructural de regreso al contenido;
+- logotipos oficiales dentro del editor del Footer, composición responsive, elemento `footer` y enlace estructural de regreso al contenido; ambos logotipos provienen de «Identidad institucional»;
 - estilos, iconografía y tratamiento seguro de enlaces externos.
 - claves internas de enlaces y grupos de créditos, generadas al agregarlos y conservadas al editar textos o destinos.
 

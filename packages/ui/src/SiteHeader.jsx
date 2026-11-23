@@ -8,7 +8,7 @@ const informationDestinations = [
   { key: 'preguntas', label: 'Preguntas frecuentes', href: '#preguntas-frecuentes' },
 ]
 
-export function SiteHeader({ content, currentEdition, preview = false }) {
+export function SiteHeader({ content, currentEdition, logoUrl = '/logo-olcomep.png', mepLogoUrl = '/logotipo%20MEP.png', preview = false }) {
   const [open, setOpen] = useState(false)
   const [informationOpen, setInformationOpen] = useState(false)
   const headerRef = useRef(null)
@@ -53,8 +53,8 @@ export function SiteHeader({ content, currentEdition, preview = false }) {
   return <header ref={headerRef} className={`${preview ? '' : 'sticky top-0 z-50'} border-b border-white/15 bg-brand-primary text-white shadow-header`}>
     <div className="mx-auto flex min-h-20 max-w-[1500px] items-center justify-between gap-6 px-5 sm:px-8">
       <a className="flex shrink-0 items-center gap-2 rounded-sm sm:gap-3" href="#contenido-principal" aria-label={content.home_label} tabIndex={preview ? -1 : undefined} onClick={closeNavigation}>
-        <img alt="" className="header-logo w-auto" height="79" src="/logotipo%20MEP.png" width="288" />
-        <img alt="" className="header-olcomep-logo w-auto" height="690" src="/logo-olcomep.png" width="690" />
+        <img alt="" className="header-logo w-auto" height="79" src={mepLogoUrl} width="288" />
+        <img alt="" className="header-olcomep-logo w-auto" height="690" src={logoUrl} width="690" />
         <span className="hidden max-w-40 border-l border-white/35 pl-3 text-sm font-bold uppercase leading-tight tracking-[0.14em] sm:block">{content.slogan}</span>
       </a>
 

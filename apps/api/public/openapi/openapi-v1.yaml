@@ -37,6 +37,15 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/PublicHome' }
         '304': { $ref: '#/components/responses/NotModified' }
+  /site/identity:
+    get:
+      tags: [Contenido público]
+      operationId: getInstitutionalIdentity
+      summary: Obtiene los logotipos institucionales publicados
+      description: Entrega los logotipos OLCOMEP y MEP publicados; usa los archivos estáticos iniciales como respaldo.
+      security: []
+      responses:
+        '200': { $ref: '#/components/responses/InstitutionalIdentity' }
   /carousel:
     get:
       tags: [Carrusel y galería]
@@ -99,7 +108,7 @@ paths:
       tags: [Medios]
       operationId: getAdminMediaPreview
       summary: Entrega un medio para previsualización administrativa
-      description: Permite revisar medios de borradores sin hacerlos públicos. La respuesta no se almacena en caché.
+      description: Permite revisar medios de borradores sin hacerlos públicos. Los logotipos de identidad institucional nunca publicados solo pueden verlos Master. La respuesta no se almacena en caché.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/Uuid' }]
       responses:
@@ -111,8 +120,8 @@ paths:
     get:
       tags: [Usuarios administrativos]
       operationId: listAdminUsers
-      summary: Lista las autorizaciones para una identidad Master
-      description: Operación exclusiva del rol local `master`.
+      summary: Lista autorizaciones según el rol de la identidad
+      description: Master recibe los tres roles; Administrador recibe solo editores. Editor obtiene 403.
       security: [{ entraBearer: [] }]
       responses:
         '200': { $ref: '#/components/responses/AdminUsers' }
@@ -120,8 +129,8 @@ paths:
     post:
       tags: [Usuarios administrativos]
       operationId: createAdminUser
-      summary: Crea una autorización local como Master
-      description: Operación exclusiva del rol local `master`; permite asignar master, admin o editor.
+      summary: Crea una autorización local según el rol de la identidad
+      description: Master puede crear master, admin o editor; Administrador solo editor. Editor obtiene 403.
       security: [{ entraBearer: [] }]
       requestBody: { $ref: '#/components/requestBodies/AdminUser' }
       responses:
@@ -132,8 +141,8 @@ paths:
     put:
       tags: [Usuarios administrativos]
       operationId: updateAdminUser
-      summary: Modifica una autorización como Master
-      description: Operación exclusiva del rol local `master`.
+      summary: Modifica una autorización según el rol de la identidad
+      description: Master puede actualizar los tres roles; Administrador solo editores y no puede promoverlos. El cambio de correo desvincula el oid anterior. El último Master activo conserva su correo.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/Id' }]
       requestBody: { $ref: '#/components/requestBodies/AdminUser' }
@@ -146,7 +155,7 @@ paths:
       tags: [Gestión editorial]
       operationId: listEditorialSections
       summary: Lista el estado editorial de las secciones
-      description: El encabezado fijo queda fuera de esta lista.
+      description: El encabezado fijo y la identidad institucional global quedan fuera de esta lista.
       security: [{ entraBearer: [] }]
       responses:
         '200': { $ref: '#/components/responses/EditorialSections' }
@@ -155,34 +164,37 @@ paths:
       tags: [Gestión editorial]
       operationId: getEditorialSection
       summary: Obtiene el borrador y la publicación de una sección
-      description: Para site-header devuelve el encabezado fijo y un borrador nulo.
+      description: Para site-header devuelve el encabezado fijo y un borrador nulo. La identidad institucional solo puede consultarla Master.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:
         '200': { $ref: '#/components/responses/EditorialSection' }
+        '403': { $ref: '#/components/responses/Error' }
         '422': { $ref: '#/components/responses/Error' }
   /admin/site/sections/{key}/draft:
     post:
       tags: [Gestión editorial]
       operationId: saveEditorialDraft
       summary: Guarda el contenido completo como borrador
-      description: Guardar no modifica la publicación vigente. Los campos dependen de la clave de sección. Se leen como formulario multipart o como objeto JSON según Content-Type. Un JSON inválido devuelve 422. La clave site-header devuelve 422 porque es de solo lectura.
+      description: Guardar no modifica la publicación vigente. Los campos dependen de la clave de sección. Se leen como formulario multipart o como objeto JSON según Content-Type. Un JSON inválido devuelve 422. La clave site-header devuelve 422 porque es de solo lectura. Para institutional-identity solo Master puede cargar una imagen válida como borrador.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       requestBody: { $ref: '#/components/requestBodies/EditorialDraft' }
       responses:
         '200': { $ref: '#/components/responses/EditorialSection' }
+        '403': { $ref: '#/components/responses/Error' }
         '422': { $ref: '#/components/responses/Error' }
   /admin/site/sections/{key}/publish:
     post:
       tags: [Gestión editorial]
       operationId: publishEditorialSection
       summary: Publica el borrador vigente de una sección
-      description: La clave site-header devuelve 422, incluso si existe un borrador anterior.
+      description: La clave site-header devuelve 422, incluso si existe un borrador anterior. La identidad institucional solo puede publicarla Master.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:
         '200': { $ref: '#/components/responses/EditorialSection' }
+        '403': { $ref: '#/components/responses/Error' }
         '422': { $ref: '#/components/responses/Error' }
   /admin/carousel:
     get:
@@ -332,7 +344,7 @@ components:
       required: true
       schema:
         type: string
-        enum: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact, resource-booklets, site-header, site-footer]
+        enum: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact, resource-booklets, site-header, site-footer, institutional-identity]
   requestBodies:
     AdminUser: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/AdminUserInput' } } } }
     Order: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/OrderInput' } } } }
@@ -350,10 +362,11 @@ components:
           schema: { $ref: '#/components/schemas/EditorialDraftInput' }
   responses:
     Health: { description: Servicio disponible, content: { application/json: { schema: { type: object, required: [data], properties: { data: { type: object, required: [service, status], properties: { service: { type: string, const: olcomep-api }, status: { type: string, const: ok } } } } } } } }
-    PublicHome: { description: Mapa de las doce publicaciones vigentes, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } }, content: { application/json: { schema: { $ref: '#/components/schemas/PublicHomeResponse' } } } }
+    PublicHome: { description: Mapa de las publicaciones vigentes, incluida la identidad institucional, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } }, content: { application/json: { schema: { $ref: '#/components/schemas/PublicHomeResponse' } } } }
+    InstitutionalIdentity: { description: Logotipos institucionales publicados, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/InstitutionalIdentityContent' } } } } } }
     NotModified: { description: La representación no cambió, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/RevalidateCache' } } }
     ImmutableNotModified: { description: El archivo coincide con el ETag enviado, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/ImmutableCache' } } }
-    MediaFile: { description: Imagen JPEG, PNG o WebP, o documento PDF, asociado con una publicación vigente, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/ImmutableCache' } }, content: { image/jpeg: { schema: { type: string, contentEncoding: binary } }, image/png: { schema: { type: string, contentEncoding: binary } }, image/webp: { schema: { type: string, contentEncoding: binary } }, application/pdf: { schema: { type: string, contentEncoding: binary } } } }
+    MediaFile: { description: Imagen JPEG, PNG o WebP, o documento PDF, asociado con una publicación vigente o un logotipo institucional previamente publicado, headers: { ETag: { $ref: '#/components/headers/ETag' }, Cache-Control: { $ref: '#/components/headers/ImmutableCache' } }, content: { image/jpeg: { schema: { type: string, contentEncoding: binary } }, image/png: { schema: { type: string, contentEncoding: binary } }, image/webp: { schema: { type: string, contentEncoding: binary } }, application/pdf: { schema: { type: string, contentEncoding: binary } } } }
     AdminMediaFile: { description: Imagen o documento PDF administrativo sin caché compartida, headers: { Cache-Control: { schema: { type: string, const: 'private, no-store' } } }, content: { image/jpeg: { schema: { type: string, contentEncoding: binary } }, image/png: { schema: { type: string, contentEncoding: binary } }, image/webp: { schema: { type: string, contentEncoding: binary } }, application/pdf: { schema: { type: string, contentEncoding: binary } } } }
     Carousel: { description: Colección de diapositivas, content: { application/json: { schema: { $ref: '#/components/schemas/SlidesResponse' } } } }
     Slide: { description: Diapositiva, content: { application/json: { schema: { type: object, required: [data], properties: { data: { $ref: '#/components/schemas/Slide' } } } } } }
@@ -385,8 +398,8 @@ components:
     EventImage: { allOf: [{ $ref: '#/components/schemas/ImageUpdate' }, { type: object, properties: { id: { type: integer }, sort_order: { type: integer }, media_uuid: { type: string, format: uuid }, media_url: { type: string, format: uri-reference }, width: { type: [integer, 'null'] }, height: { type: [integer, 'null'] } } }] }
     OrderInput: { type: object, required: [ids], properties: { ids: { type: array, minItems: 1, uniqueItems: true, items: { type: integer, minimum: 1 } } }, additionalProperties: false }
     VersionMeta: { type: object, required: [version], properties: { version: { type: string } }, additionalProperties: false }
-    AdminUserInput: { type: object, properties: { email: { type: string, format: email }, display_name: { type: [string, 'null'], maxLength: 180 }, role: { type: string, enum: [master, admin, editor] }, status: { type: string, enum: [active, inactive] } }, additionalProperties: false }
-    AdminUser: { allOf: [{ $ref: '#/components/schemas/AdminUserInput' }, { type: object, required: [id, email, role, status], properties: { id: { type: integer }, oid: { type: [string, 'null'] }, created_at: { type: [string, 'null'], format: date-time }, updated_at: { type: [string, 'null'], format: date-time } } }] }
+    AdminUserInput: { type: object, properties: { email: { type: string, format: email, pattern: '^[A-Za-z0-9._%+-]+@mep\.go\.cr$', example: 'persona@mep.go.cr', description: 'La creación y corrección de correo aceptan únicamente el dominio mep.go.cr.' }, display_name: { type: [string, 'null'], maxLength: 180 }, role: { type: string, enum: [master, admin, editor] }, status: { type: string, enum: [active, inactive] } }, additionalProperties: false }
+    AdminUser: { allOf: [{ $ref: '#/components/schemas/AdminUserInput' }, { type: object, required: [id, email, role, status, can_manage_users, assignable_roles], properties: { id: { type: integer }, last_login_at: { type: [string, 'null'] }, can_manage_users: { type: boolean, description: 'Verdadero para Master y Administrador.' }, assignable_roles: { type: array, items: { type: string, enum: [master, admin, editor] }, description: 'Master puede asignar los tres roles; Administrador solo editor; Editor ninguno.' } } }] }
     AdminProfile: { allOf: [{ $ref: '#/components/schemas/AdminUser' }, { type: object, properties: { capabilities: { type: array, items: { type: string } } } }] }
     Link: { type: object, required: [label, href], properties: { label: { type: string }, href: { type: string, maxLength: 2048 } }, additionalProperties: true }
     HeroContent: { type: object, required: [eyebrow, title, audience, description, primary_label, primary_href, secondary_label, secondary_href, image_alt], properties: { eyebrow: { type: string, maxLength: 80 }, title: { type: string, maxLength: 120 }, audience: { type: string, maxLength: 100 }, description: { type: string, maxLength: 420 }, primary_label: { type: string, maxLength: 60 }, primary_href: { type: string, const: '#edicion-vigente', readOnly: true, description: Destino estructural protegido del botón principal. }, secondary_label: { type: string, maxLength: 60 }, secondary_href: { type: string, const: '#olimpiadas', readOnly: true, description: Destino estructural protegido del botón secundario. }, image_alt: { type: string, maxLength: 255 }, image: { $ref: '#/components/schemas/MediaReference' } }, additionalProperties: false }
@@ -407,8 +420,9 @@ components:
     EditorialCredit: { type: object, required: [key, title, names], properties: { key: { type: string, pattern: '^[a-z0-9-]{3,80}$' }, title: { type: string, maxLength: 180 }, names: { type: array, items: { type: string, maxLength: 180 } } }, additionalProperties: false }
     SiteHeaderContent: { type: object, readOnly: true, description: Encabezado fijo con enlaces y etiquetas definidos por el sitio. Las revisiones anteriores del encabezado no cambian su contenido. La etiqueta Edición AAAA deriva del año publicado de Edición vigente y lleva al ancla de Edición vigente. Sin un año válido se usa Edición vigente. Información agrupa Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Reglamento sigue el PDF publicado en Edición vigente., required: [home_label, slogan, links], properties: { home_label: { type: string, maxLength: 120 }, slogan: { type: string, maxLength: 120 }, links: { type: array, items: { $ref: '#/components/schemas/EditorialLink' } } }, additionalProperties: false }
     SiteFooterContent: { type: object, required: [program_name, organization, links, credits], properties: { program_name: { type: string, maxLength: 180 }, organization: { type: string, maxLength: 180 }, links: { type: array, items: { $ref: '#/components/schemas/EditorialLink' } }, credits: { type: array, items: { $ref: '#/components/schemas/EditorialCredit' } } }, additionalProperties: false }
-    SectionContent: { oneOf: [{ $ref: '#/components/schemas/HeroContent' }, { $ref: '#/components/schemas/PresentationContent' }, { $ref: '#/components/schemas/CalendarContent' }, { $ref: '#/components/schemas/PartnersContent' }, { $ref: '#/components/schemas/AboutContent' }, { $ref: '#/components/schemas/GeneralInformationContent' }, { $ref: '#/components/schemas/RegionalCoordinationsContent' }, { $ref: '#/components/schemas/CurrentEditionContent' }, { $ref: '#/components/schemas/ContactContent' }, { $ref: '#/components/schemas/ResourceBookletsContent' }, { $ref: '#/components/schemas/SiteFooterContent' }] }
-    EditorialDraftInput: { type: object, description: Campos directos de la sección. Los archivos requieren multipart., properties: { editions_json: { type: string, contentMediaType: application/json, description: Catálogo ordenado de Recursos y cuadernillos. }, links_json: { type: string, contentMediaType: application/json, description: Enlaces ordenados del Footer. }, credits_json: { type: string, contentMediaType: application/json, description: Grupos ordenados de créditos del Footer. }, image: { type: string, contentEncoding: binary }, manual: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: Manual anual del calendario en PDF, con un máximo de 16 MB. }, document_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Los documentos de Edición vigente se envían como campos dinámicos document_{key}; cada PDF admite hasta 16 MB y se almacena bajo el año editorial.' }, bulk_template: { type: string, contentEncoding: binary, contentMediaType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, description: Plantilla XLSX de inscripción masiva de hasta 16 MB; sustituye la relación de la nueva revisión. }, bulk_remove: { type: boolean, description: Retira la plantilla de la nueva revisión sin modificar revisiones anteriores. }, booklet_year_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Cuadernillos PDF como campos dinámicos booklet_{año}_{key}; hasta 16 MB. Los archivos nuevos son obligatorios y reemplazar genera un UUID nuevo.' }, booklet_image_year_type_key: { type: string, contentEncoding: binary, description: 'Imagen decorativa opcional de cuadernillo como campo dinámico booklet_image_{año}_{tipo}_{key}; JPEG, PNG o WebP de hasta 8 MB. Reemplazar crea un UUID nuevo.' }, photo_contact_key: { type: string, contentEncoding: binary, description: 'Las fotografías regionales se envían como campos dinámicos photo_{key}; reemplazar crea un medio UUID nuevo.' } } }
+    InstitutionalIdentityContent: { type: object, required: [logo_url, logo_width, logo_height, mep_logo_url, mep_logo_width, mep_logo_height], properties: { logo_url: { type: string, format: uri-reference, description: URL versionada del logotipo OLCOMEP publicado o respaldo local inicial. }, logo_width: { type: integer, minimum: 1 }, logo_height: { type: integer, minimum: 1 }, media_uuid: { type: [string, 'null'], format: uuid }, mep_logo_url: { type: string, format: uri-reference, description: URL versionada del logotipo MEP publicado o respaldo local inicial. }, mep_logo_width: { type: integer, minimum: 1 }, mep_logo_height: { type: integer, minimum: 1 }, mep_media_uuid: { type: [string, 'null'], format: uuid } }, additionalProperties: false }
+    SectionContent: { oneOf: [{ $ref: '#/components/schemas/InstitutionalIdentityContent' }, { $ref: '#/components/schemas/HeroContent' }, { $ref: '#/components/schemas/PresentationContent' }, { $ref: '#/components/schemas/CalendarContent' }, { $ref: '#/components/schemas/PartnersContent' }, { $ref: '#/components/schemas/AboutContent' }, { $ref: '#/components/schemas/GeneralInformationContent' }, { $ref: '#/components/schemas/RegionalCoordinationsContent' }, { $ref: '#/components/schemas/CurrentEditionContent' }, { $ref: '#/components/schemas/ContactContent' }, { $ref: '#/components/schemas/ResourceBookletsContent' }, { $ref: '#/components/schemas/SiteFooterContent' }] }
+    EditorialDraftInput: { type: object, description: Campos directos de la sección. Los archivos requieren multipart., properties: { editions_json: { type: string, contentMediaType: application/json, description: Catálogo ordenado de Recursos y cuadernillos. Las ediciones PDF anteriores a la vigente publicada son de solo consulta; cambiar sus materiales o archivos produce 422. }, links_json: { type: string, contentMediaType: application/json, description: Enlaces ordenados del Footer. }, credits_json: { type: string, contentMediaType: application/json, description: Grupos ordenados de créditos del Footer. }, image: { type: string, contentEncoding: binary }, mep_logo: { type: string, contentEncoding: binary, description: Logotipo MEP opcional en el borrador de identidad institucional; permite reemplazarlo independientemente del logotipo OLCOMEP. }, manual: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: Manual anual del calendario en PDF, con un máximo de 16 MB. }, document_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Los documentos de Edición vigente se envían como campos dinámicos document_{key}; cada PDF admite hasta 16 MB y se almacena bajo el año editorial.' }, bulk_template: { type: string, contentEncoding: binary, contentMediaType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, description: Plantilla XLSX de inscripción masiva de hasta 16 MB; sustituye la relación de la nueva revisión. }, bulk_remove: { type: boolean, description: Retira la plantilla de la nueva revisión sin modificar revisiones anteriores. }, booklet_year_key: { type: string, contentEncoding: binary, contentMediaType: application/pdf, description: 'Cuadernillos PDF como campos dinámicos booklet_{año}_{key}; hasta 16 MB. Los archivos nuevos son obligatorios y reemplazar genera un UUID nuevo.' }, booklet_image_year_type_key: { type: string, contentEncoding: binary, description: 'Imagen opcional por cuadernillo como campo dinámico booklet_image_{año}_{tipo}_{key}; JPEG, PNG o WebP. Los íconos nuevos de actividades interactivas admiten 64 a 512 píxeles por lado y hasta 1 MB (recomendado 256 × 256); las imágenes PDF conservan su límite general de 8 MB. Reemplazar crea un UUID nuevo.' }, photo_contact_key: { type: string, contentEncoding: binary, description: 'Las fotografías regionales se envían como campos dinámicos photo_{key}; reemplazar crea un medio UUID nuevo.' } } }
     EditorialRevision: { type: object, required: [id, status, content], properties: { id: { type: integer }, status: { type: string, enum: [draft, published, superseded] }, content: { oneOf: [{ $ref: '#/components/schemas/SectionContent' }, { $ref: '#/components/schemas/SiteHeaderContent' }] }, created_at: { type: [string, 'null'], format: date-time }, published_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
     EditorialSectionSummary: { type: object, required: [key, name], properties: { key: { type: string }, name: { type: string }, has_draft: { type: boolean }, has_publication: { type: boolean }, updated_at: { type: [string, 'null'], format: date-time } }, additionalProperties: true }
     EditorialSection: { type: object, required: [key], properties: { key: { type: string }, draft: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] }, published: { anyOf: [{ $ref: '#/components/schemas/EditorialRevision' }, { type: 'null' }] } }, additionalProperties: true }
@@ -418,7 +432,7 @@ components:
       properties:
         data:
           type: object
-          required: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact, resource-booklets, site-header, site-footer]
+          required: [hero, presentation, calendar, partners, about, general-information, regional-coordinations, current-edition, contact, resource-booklets, site-header, site-footer, institutional-identity]
           properties:
             hero: { $ref: '#/components/schemas/HeroContent' }
             presentation: { $ref: '#/components/schemas/PresentationContent' }
@@ -432,6 +446,7 @@ components:
             resource-booklets: { $ref: '#/components/schemas/ResourceBookletsContent' }
             site-header: { $ref: '#/components/schemas/SiteHeaderContent' }
             site-footer: { $ref: '#/components/schemas/SiteFooterContent' }
+            institutional-identity: { $ref: '#/components/schemas/InstitutionalIdentityContent' }
           additionalProperties: false
         meta: { $ref: '#/components/schemas/VersionMeta' }
       additionalProperties: false
