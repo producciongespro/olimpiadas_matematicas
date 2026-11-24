@@ -17,13 +17,14 @@ export const entraConfigurationError = !hasValidConfiguration
   : null
 
 export const loginRequest = { scopes: hasValidConfiguration ? [apiScope] : [], prompt: 'select_account' }
+export const adminRedirectUri = import.meta.env.VITE_ENTRA_REDIRECT_URI || new URL(import.meta.env.BASE_URL, window.location.origin).href
 
 export const msalInstance = new PublicClientApplication({
   auth: {
     clientId: hasValidConfiguration ? clientId : '00000000-0000-0000-0000-000000000000',
     authority: `https://login.microsoftonline.com/${hasValidConfiguration ? tenantId : 'organizations'}`,
-    redirectUri: import.meta.env.VITE_ENTRA_REDIRECT_URI || window.location.origin,
-    postLogoutRedirectUri: window.location.origin,
+    redirectUri: adminRedirectUri,
+    postLogoutRedirectUri: adminRedirectUri,
     navigateToLoginRequestUrl: false,
   },
   cache: { cacheLocation: 'sessionStorage', storeAuthStateInCookie: false },

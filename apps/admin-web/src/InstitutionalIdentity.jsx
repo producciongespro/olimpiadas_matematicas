@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { publicAssetUrl } from './publicAssetUrl.js'
 
 const KEY = 'institutional-identity'
 const logos = [
@@ -76,7 +77,7 @@ export function InstitutionalIdentity({ api, onPublished }) {
     {message && <p className={message.error ? 'notice notice-error' : 'notice notice-success'} role={message.error ? 'alert' : 'status'}>{message.text}</p>}
     <div className="grid gap-5 lg:grid-cols-2">{logos.map(({ key, label, url, fallback, recommended }) => <div className="panel grid gap-4" key={key}>
       <h3 className="text-lg font-black">Logotipo {label}</h3>
-      <div className="grid gap-3 sm:grid-cols-2"><div><p className="text-sm font-bold">Publicado</p><img alt={`Logotipo ${label} publicado`} className="mt-2 h-28 w-full object-contain" src={section?.published?.content?.[url] || fallback}/></div><div><p className="text-sm font-bold">{files[key] ? 'Vista previa local' : 'Borrador'}</p>{localPreviews[key] || draftPreviews[key] ? <img alt={`Logotipo ${label} en borrador`} className="mt-2 h-28 w-full object-contain" src={localPreviews[key] || draftPreviews[key]}/> : <p className="mt-2 text-sm text-slate-600">Sin reemplazo pendiente.</p>}</div></div>
+      <div className="grid gap-3 sm:grid-cols-2"><div><p className="text-sm font-bold">Publicado</p><img alt={`Logotipo ${label} publicado`} className="mt-2 h-28 w-full object-contain" src={publicAssetUrl(section?.published?.content?.[url] || fallback)}/></div><div><p className="text-sm font-bold">{files[key] ? 'Vista previa local' : 'Borrador'}</p>{localPreviews[key] || draftPreviews[key] ? <img alt={`Logotipo ${label} en borrador`} className="mt-2 h-28 w-full object-contain" src={localPreviews[key] || draftPreviews[key]}/> : <p className="mt-2 text-sm text-slate-600">Sin reemplazo pendiente.</p>}</div></div>
       <label className="field"><span>Reemplazar logotipo {label}</span><input accept="image/jpeg,image/png,image/webp" className="control file-control" onChange={(event) => setFiles((current) => ({ ...current, [key]: event.target.files?.[0] || null }))} type="file"/><small>Resolución recomendada: {recommended}. JPEG, PNG o WebP, hasta 8 MB; mínimo 256 píxeles por lado.</small></label>
     </div>)}</div>
     <div className="flex flex-wrap gap-3"><button className="button" disabled={!section || !hasLocalFiles || pending} onClick={save} type="button">Guardar borrador</button><button className="button publish-button" disabled={!section?.draft || hasLocalFiles || pending} onClick={publish} type="button">Publicar identidad</button></div>

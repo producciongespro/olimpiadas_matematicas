@@ -1001,16 +1001,24 @@ final class OlcomepSchemaTest extends CIUnitTestCase
         $service->saveDraft('resource-booklets', $input);
     }
 
-    public function testFooterCollectionsRemainEditable(): void
+    public function testFooterIsReadOnlyAndKeepsPublishedContent(): void
     {
         $seeder = new OlcomepInitialSeeder(config(\Config\Database::class), $this->db);
         $seeder->setSilent(true)->run();
         $service = new ContentService($this->db);
-        $footer = $service->adminSection('site-footer')['published']['content'];
-        $service->saveDraft('site-footer', ['program_name' => $footer['program_name'], 'organization' => $footer['organization'], 'links_json' => '[]', 'credits_json' => '[]']);
-        $service->publish('site-footer');
-        $this->assertSame([], $service->publicHome()['site-footer']['content']['credits']);
-        $this->assertSame([], $service->publicHome()['site-footer']['content']['links']);
+        $before = $service->publicHome()['site-footer']['content'];
+
+        $this->assertNotContains('site-footer', array_column($service->adminSections(), 'key'));
+        $this->assertNull($service->adminSection('site-footer')['draft']);
+        foreach (['saveDraft', 'publish'] as $operation) {
+            try {
+                $operation === 'saveDraft' ? $service->saveDraft('site-footer', []) : $service->publish('site-footer');
+                $this->fail('El pie del sitio debe rechazar cambios editoriales.');
+            } catch (InvalidArgumentException $exception) {
+                $this->assertStringContainsString('solo lectura', $exception->getMessage());
+            }
+        }
+        $this->assertSame($before, $service->publicHome()['site-footer']['content']);
     }
 
     public function testFixedHeaderIgnoresOldRevisionsAndRejectsEditorialWrites(): void

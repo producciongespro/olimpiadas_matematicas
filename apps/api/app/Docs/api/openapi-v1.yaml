@@ -9,6 +9,8 @@ info:
 servers:
   - url: http://localhost:3600/api/v1
     description: Desarrollo local
+  - url: https://recursos.mep.go.cr/_test/olimpiadas-matematicas-primaria-cr/webservices/api/v1
+    description: Entorno institucional de pruebas
 tags:
   - { name: Salud, description: Disponibilidad del servicio }
   - { name: Contenido público, description: Publicaciones editoriales de la vista pública }
@@ -155,7 +157,7 @@ paths:
       tags: [Gestión editorial]
       operationId: listEditorialSections
       summary: Lista el estado editorial de las secciones
-      description: El encabezado fijo y la identidad institucional global quedan fuera de esta lista.
+      description: El encabezado fijo, el pie del sitio de solo lectura y la identidad institucional global quedan fuera de esta lista.
       security: [{ entraBearer: [] }]
       responses:
         '200': { $ref: '#/components/responses/EditorialSections' }
@@ -164,7 +166,7 @@ paths:
       tags: [Gestión editorial]
       operationId: getEditorialSection
       summary: Obtiene el borrador y la publicación de una sección
-      description: Para site-header devuelve el encabezado fijo y un borrador nulo. La identidad institucional solo puede consultarla Master.
+      description: Para site-header y site-footer devuelve un borrador nulo. El pie conserva su última publicación y es de solo lectura. La identidad institucional solo puede consultarla Master.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:
@@ -176,7 +178,7 @@ paths:
       tags: [Gestión editorial]
       operationId: saveEditorialDraft
       summary: Guarda el contenido completo como borrador
-      description: Guardar no modifica la publicación vigente. Los campos dependen de la clave de sección. Se leen como formulario multipart o como objeto JSON según Content-Type. Un JSON inválido devuelve 422. La clave site-header devuelve 422 porque es de solo lectura. Para institutional-identity solo Master puede cargar una imagen válida como borrador.
+      description: Guardar no modifica la publicación vigente. Los campos dependen de la clave de sección. Se leen como formulario multipart o como objeto JSON según Content-Type. Un JSON inválido devuelve 422. Las claves site-header y site-footer devuelven 422 porque son de solo lectura. Para institutional-identity solo Master puede cargar una imagen válida como borrador.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       requestBody: { $ref: '#/components/requestBodies/EditorialDraft' }
@@ -189,7 +191,7 @@ paths:
       tags: [Gestión editorial]
       operationId: publishEditorialSection
       summary: Publica el borrador vigente de una sección
-      description: La clave site-header devuelve 422, incluso si existe un borrador anterior. La identidad institucional solo puede publicarla Master.
+      description: Las claves site-header y site-footer devuelven 422, incluso si existe un borrador anterior. La identidad institucional solo puede publicarla Master.
       security: [{ entraBearer: [] }]
       parameters: [{ $ref: '#/components/parameters/SectionKey' }]
       responses:

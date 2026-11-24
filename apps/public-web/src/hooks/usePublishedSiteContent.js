@@ -26,6 +26,18 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 const REFRESH_INTERVAL_MS = 30_000
+const publicBasePath = import.meta.env?.BASE_URL || '/'
+
+function resolvePublicAssets(value) {
+  if (typeof value === 'string') {
+    return /^\/(?:assets\/|data\/|logo-olcomep\.png$|logotipo(?:%20| )MEP\.png$)/i.test(value)
+      ? `${publicBasePath.replace(/\/$/, '')}${value}`
+      : value
+  }
+  if (Array.isArray(value)) return value.map(resolvePublicAssets)
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, resolvePublicAssets(item)]))
+  return value
+}
 
 const sectionDefinitions = {
   'institutional-identity': { fallback: { logo_url: '/logo-olcomep.png', mep_logo_url: '/logotipo%20MEP.png' }, merge: (value) => ({ logo_url: value.logo_url || '/logo-olcomep.png', mep_logo_url: value.mep_logo_url || '/logotipo%20MEP.png' }) },
@@ -43,7 +55,7 @@ const sectionDefinitions = {
 }
 
 const initialContent = Object.fromEntries(
-  Object.entries(sectionDefinitions).map(([key, definition]) => [key, definition.fallback]),
+  Object.entries(sectionDefinitions).map(([key, definition]) => [key, resolvePublicAssets(definition.fallback)]),
 )
 
 export function mergePublishedSiteContent(currentContent, sections) {
@@ -51,7 +63,7 @@ export function mergePublishedSiteContent(currentContent, sections) {
 
   return Object.entries(sectionDefinitions).reduce((nextContent, [key, definition]) => {
     const publishedContent = sections[key]?.content
-    if (publishedContent) nextContent[key] = definition.merge(publishedContent)
+    if (publishedContent) nextContent[key] = resolvePublicAssets(definition.merge(publishedContent))
     return nextContent
   }, { ...currentContent })
 }
@@ -63,6 +75,7 @@ export function usePublishedSiteContent() {
   const etag = useRef(null)
   const inFlight = useRef(null)
   const [content, setContent] = useState(initialContent)
+  const [footerLoaded, setFooterLoaded] = useState(false)
   const [status, setStatus] = useState({ initialLoading: true, refreshing: false, error: null, version: null })
 
   const refresh = useCallback(() => {
@@ -79,7 +92,10 @@ export function usePublishedSiteContent() {
       .then((result) => {
         if (!mounted.current || requestId !== requestSequence.current) return
         etag.current = result.etag
-        if (!result.notModified) setContent((current) => mergePublishedSiteContent(current, result.sections))
+        if (!result.notModified) {
+          setContent((current) => mergePublishedSiteContent(current, result.sections))
+          setFooterLoaded(Boolean(result.sections?.['site-footer']?.content))
+        }
         setStatus((current) => ({
           initialLoading: false,
           refreshing: false,
@@ -144,5 +160,5 @@ export function usePublishedSiteContent() {
     }
   }, [refresh])
 
-  return { content, ...status, refresh }
+  return { content, footerLoaded, ...status, refresh }
 }

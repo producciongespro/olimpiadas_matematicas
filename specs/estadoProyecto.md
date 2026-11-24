@@ -4,7 +4,31 @@
 
 Este archivo permite retomar la reingeniería de OLCOMEP desde otra computadora o una nueva conversación sin depender del historial de chats. Debe actualizarse después de cambios relevantes en arquitectura, configuración, funcionalidades, verificaciones, despliegue o prioridades.
 
-Última actualización: **23-11-2026**.
+Última actualización: **24-11-2026**.
+
+## Actualización del 24-11-2026 — Rutas del entorno institucional `_test`
+
+- Se recibieron las rutas de vista pública `/app/`, administración `/admin/` y API `/webservices/` bajo `https://recursos.mep.go.cr/_test/olimpiadas-matematicas-primaria-cr/`. Los archivos privados `.env.production` de ambas SPA y la API contienen esas bases; `.env.development` permanece separado. Vite usa bases por modo, React Router respeta la subruta pública, MSAL retorna a `/admin/` y la vista pública resuelve medios heredados bajo `/app/`.
+- La documentación de despliegue y OpenAPI incluyen el servidor `_test`. La infraestructura institucional aún debe servir los artefactos en esos directorios, establecer credenciales privadas y persistencia de `writable/uploads`, y registrar la URI de retorno exacta en Entra. No se ha desplegado.
+- Se confirmó HTTPS para las tres rutas. `php apps/api/spark docs:sync` regeneró la copia OpenAPI; `composer --working-dir=apps/api verify` pasó con 66 pruebas y 279 aserciones. Los builds públicos (1 616 módulos) y administrativos (1 757 módulos) pasaron; los HTML generados apuntan a sus subrutas y ambos bundles contienen la API HTTPS sin `localhost:3600`. Los `.env` privados permanecen ignorados por Git y `git diff --check` no encontró errores.
+- Antes del commit se corrigió el estado vacío de «Otros recursos» cuando `calificame` es el único elemento de Contacto; los builds público (1 616 módulos) y administrativo (1 757 módulos) volvieron a pasar. La revisión visual móvil y escritorio del botón y del Footer y la comprobación de las rutas en el servidor institucional continúan pendientes.
+
+## Actualización del 24-11-2026 — Botón de calificación
+
+- El recurso `calificame` de Contacto presenta el botón visual «¡Califícame!» adaptado del proyecto de Artes Industriales, en lugar del título, descripción e icono de enlace. Conserva el destino editorial vigente `id_app=15`, la apertura en pestaña nueva y un nombre accesible. Se actualizaron la especificación individual, criterios y tareas; los builds de vista pública (1 615 módulos) y administración (1 755 módulos) terminaron correctamente. Queda pendiente inspección visual móvil y escritorio.
+- El editor de Contacto ya no muestra los campos ni la acción de eliminación del recurso `calificame`; permanece en el contenido al editar y guardar los demás recursos.
+- Los recursos nuevos de Contacto se insertan debajo del canal de OLCOMEP en YouTube; la vista pública y la vista previa sitúan «¡Califícame!» después de todos los recursos ordinarios, incluso con publicaciones anteriores.
+- El Footer compartido presenta identidad, enlaces y créditos en una sola franja horizontal en escritorio, sin el divisor superior de créditos; en móvil se apila según el espacio disponible.
+- Los créditos del Footer ahora usan columnas independientes en escritorio: «Diseño gráfico» se acerca a «Asesoría curricular» sin depender de la altura de GESPRO; en móvil se mantiene el orden editorial.
+- El botón «¡Califícame!» pasó de «Otros recursos» al final de la navegación del encabezado, después de Contacto. Usa el destino publicado del recurso `calificame` y aparece también en el menú móvil y en la copia administrativa.
+- El Footer omite el rótulo visible «Créditos» y alinea los grupos de créditos con la parte superior de los enlaces institucionales; conserva el nombre accesible del grupo.
+- El Footer de escritorio ubica los créditos en la columna central y «Sitio oficial del MEP», «Conozca GESPRO» y «Volver al inicio» al extremo derecho.
+- El Footer queda de solo lectura: la administración muestra la publicación vigente sin controles editoriales, el catálogo de secciones editables lo omite y la API rechaza guardar o publicar `site-footer` con 422. Se conserva la última publicación sin migrar datos.
+- `php apps/api/spark docs:sync` regeneró OpenAPI en ambiente de pruebas; `composer --working-dir=apps/api verify` confirmó 66 pruebas, 279 aserciones y correspondencia exacta entre OpenAPI y `/api/v1`. Los builds de administración (1 756 módulos) y vista pública (1 616 módulos) finalizaron correctamente; `git diff --check` no detectó errores.
+- El Footer de escritorio amplio distribuye identidad, dos columnas independientes de créditos y enlaces en cuatro columnas; en anchos intermedios usa dos y en móvil una para evitar desbordamientos.
+- Los builds de vista pública (1 616 módulos) y administración (1 756 módulos) terminaron correctamente después del ajuste a cuatro columnas; `git diff --check` no encontró errores. Queda pendiente inspección visual de esta disposición en escritorio y móvil.
+- El Footer público espera su publicación desde la API antes de mostrarse; durante la carga o un fallo inicial informa el estado y ya no muestra textos locales desactualizados que luego cambian en pantalla. La publicación ya reside en MySQL, por lo que no se requiere una migración ni volver a sembrar la base.
+- `npm run build --workspace=@olcomep/public-web` finalizó con 1 616 módulos después del cambio de carga; `git diff --check` no detectó errores. Sigue pendiente comprobar el refresco visual en navegador con la API activa.
 
 ## Actualización del 23-11-2026 — Administración, identidad institucional y contenido editorial
 

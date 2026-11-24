@@ -41,6 +41,16 @@
 - [x] Abrir directamente el PDF vigente desde Reglamento y retirar su tarjeta intermedia de Información general, incluidas revisiones anteriores.
 - [x] Retirar el bloque de Información general y sus tarjetas, y mantener Preguntas frecuentes como sección y editor propios bajo la clave de API existente.
 - [x] Mover Acerca entre Galería y Contacto en el Header, incluidos borradores y publicaciones anteriores, conservando destinos.
+- [x] Sustituir la presentación textual del recurso `calificame` por el botón institucional CSS en Contacto, conservando el enlace editorial.
+- [x] Retirar del editor de Contacto los controles del recurso `calificame` sin eliminarlo del contenido publicado o del borrador.
+- [x] Insertar los recursos nuevos debajo del canal de YouTube y mantener el botón «¡Califícame!» al final de la presentación pública y la vista previa.
+- [x] Unificar identidad, enlaces y créditos del Footer en una franja sin divisor horizontal, con adaptación móvil.
+- [x] Trasladar «¡Califícame!» desde Otros recursos al final de la navegación del encabezado, con el destino publicado de Contacto.
+- [x] Omitir el título visible «Créditos» y alinear los grupos con la parte superior de los enlaces del Footer.
+- [x] Reordenar el Footer de escritorio con créditos al centro y enlaces institucionales al extremo derecho.
+- [x] Convertir el Footer en sección de solo lectura, retirar sus acciones administrativas y bloquear borrador y publicación en la API.
+- [x] Distribuir el Footer en cuatro columnas en escritorio amplio y reorganizarlo de forma adaptable en anchos menores.
+- [x] Evitar que el Footer muestre datos locales anteriores durante la carga inicial de la publicación vigente.
 - [x] Implementar y verificar Recursos y cuadernillos.
 - [x] Mostrar todos los cuadernillos interactivos de la edición seleccionada con un único selector de edición.
 - [x] Agregar selector Todos/Estudiantes/Docentes a los cuadernillos vigentes y comprobar la transición automática de una edición anterior al archivo histórico.

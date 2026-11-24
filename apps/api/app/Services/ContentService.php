@@ -66,7 +66,7 @@ class ContentService
 
     public function adminSections(): array
     {
-        $editable = array_filter($this->repository->sections(), static fn (array $section): bool => ! in_array($section['section_key'], ['site-header', 'institutional-identity'], true));
+        $editable = array_filter($this->repository->sections(), static fn (array $section): bool => ! in_array($section['section_key'], ['site-header', 'site-footer', 'institutional-identity'], true));
         return array_values(array_map(fn (array $section): array => $this->adminSection($section['section_key']), $editable));
     }
 
@@ -82,7 +82,7 @@ class ContentService
         }
         return [
             'key' => $section['section_key'], 'label' => $key === 'general-information' ? 'Preguntas frecuentes' : $section['label'], 'schema_version' => (int) $section['schema_version'],
-            'draft' => $key === 'site-header' ? null : $this->nullablePresent($key, $this->repository->revision((int) $section['id'], 'draft')),
+            'draft' => in_array($key, ['site-header', 'site-footer'], true) ? null : $this->nullablePresent($key, $this->repository->revision((int) $section['id'], 'draft')),
             'published' => $published,
         ];
     }
@@ -155,7 +155,7 @@ class ContentService
 
     private function requireEditableSection(string $key): void
     {
-        if ($key === 'site-header') throw new InvalidArgumentException('El encabezado y la navegación son de solo lectura.');
+        if (in_array($key, ['site-header', 'site-footer'], true)) throw new InvalidArgumentException('El encabezado y el pie del sitio son de solo lectura.');
     }
 
     private function validate(string $key, array $input): array

@@ -1,5 +1,6 @@
 import { ChevronDown, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { CalificameButton } from './CalificameButton.jsx'
 
 const informationDestinations = [
   { key: 'reglamento', label: 'Reglamento' },
@@ -8,7 +9,7 @@ const informationDestinations = [
   { key: 'preguntas', label: 'Preguntas frecuentes', href: '#preguntas-frecuentes' },
 ]
 
-export function SiteHeader({ content, currentEdition, logoUrl = '/logo-olcomep.png', mepLogoUrl = '/logotipo%20MEP.png', preview = false }) {
+export function SiteHeader({ content, currentEdition, calificameHref, logoUrl = '/logo-olcomep.png', mepLogoUrl = '/logotipo%20MEP.png', preview = false }) {
   const [open, setOpen] = useState(false)
   const [informationOpen, setInformationOpen] = useState(false)
   const headerRef = useRef(null)
@@ -76,6 +77,7 @@ export function SiteHeader({ content, currentEdition, logoUrl = '/logo-olcomep.p
           </nav>
         </div> : <a className="flex min-h-11 items-center rounded-md px-4 py-3 text-sm font-bold uppercase tracking-[0.08em] text-white/90 hover:bg-white/10 hover:text-white" href={item.href} key={item.key} onClick={closeNavigation} tabIndex={preview ? -1 : undefined} {...(/^https?:\/\//i.test(item.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{item.key === 'edicion' ? editionLabel : item.label}</a>)}
         {content.links.length === 0 && <span className="px-4 py-3 text-sm">No hay enlaces de navegación publicados.</span>}
+        {calificameHref && <div className="header-calificame"><CalificameButton href={calificameHref} preview={preview}/></div>}
       </nav>
     </div>
   </header>

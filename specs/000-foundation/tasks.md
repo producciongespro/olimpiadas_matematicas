@@ -23,3 +23,4 @@
 - [x] Empaquetar Swagger UI localmente y verificar que `/docs` renderice el contrato sin conectividad externa.
 - [x] Definir Docker Compose para MySQL y phpMyAdmin y documentar el entorno local.
 - [x] Levantar los contenedores, aplicar las migraciones y comprobar la conexión de la API en un equipo con Docker Engine activo.
+- [x] Configurar las bases de build y URL de API del entorno `_test` en archivos `.env.production` privados, manteniendo `.env.development` para desarrollo.

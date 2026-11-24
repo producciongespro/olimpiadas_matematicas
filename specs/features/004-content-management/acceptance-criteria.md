@@ -14,7 +14,7 @@
 - La imagen solo es accesible públicamente cuando pertenece a una revisión publicada o a otro recurso público autorizado.
 - La copia editorial reutiliza el componente de portada y responde al ancho real del navegador; no presenta controles para simular móvil o escritorio.
 - Cada sección presenta acciones con nombres concretos según sus contenidos; la portada separa textos, nombres de botones e imagen. Cada acción muestra solo los campos relacionados, conserva los demás valores del borrador y mantiene los controles de guardar y publicar.
-- En Footer y créditos, las claves de enlaces y grupos son internas: el editor no las muestra, genera una al agregar cada elemento y conserva la misma al modificar etiqueta, destino, título o nombres.
+- En Footer y créditos, las claves de enlaces y grupos publicados son internas; la sección se muestra sin controles de edición.
 - Las acciones editoriales distinguen visualmente su tipo mediante icono y texto, admiten foco visible y tamaño táctil, se distribuyen sin desbordamiento en móvil y respetan la preferencia de movimiento reducido.
 - En escritorio, las acciones de la portada se ubican cerca de sus textos, botones e imagen; cada sección presenta sus acciones dentro de su propia vista previa. En móvil, los controles aparecen antes del contenido y no lo cubren.
 - La vista previa administrativa muestra el activo de respaldo aunque la vista pública no esté levantada.
@@ -58,6 +58,9 @@
 - La imagen promocional se valida, almacena en la API y permanece asociada a la revisión; si no se reemplaza, el borrador conserva el medio vigente.
 - La vista pública y la previsualización comparten el componente de edición vigente y conservan contenido local de respaldo cuando la API no responde.
 - Contacto permite administrar textos institucionales, teléfonos, correos y recursos adicionales mediante campos estructurados.
+- El recurso `calificame` muestra el botón visual «¡Califícame!» en el encabezado después de Contacto, usa el destino editorial publicado y conserva nombre accesible y apertura en pestaña nueva; no aparece en «Otros recursos».
+- El editor de Contacto oculta los controles del recurso `calificame` y lo conserva al guardar cambios en otros recursos.
+- Un recurso nuevo de Contacto se inserta debajo del canal de OLCOMEP en YouTube; el botón «¡Califícame!» permanece en el encabezado.
 - Los correos se normalizan, los teléfonos generan enlaces `tel:` saneados y los recursos aceptan únicamente rutas internas o HTTP(S).
 - La vista pública y la previsualización comparten el componente de contacto y muestran estados explícitos para colecciones vacías.
 - La página pública usa un único flujo de carga para las ocho secciones, sin duplicar estados y condiciones de integración en `HomePage`.
@@ -124,7 +127,12 @@
 - Calendario aparece una sola vez, dentro del submenú de Información, incluso al leer publicaciones anteriores con el enlace principal heredado o con otra clave que apunta a `#calendario`.
 - `Acerca` aparece entre `Galería` y `Contacto` en el encabezado público y la copia administrativa; se conservan sus destinos y el orden relativo de los demás enlaces.
 - “Cómo participar” lleva directamente a Edición vigente; las tarjetas heredadas de Información general se omiten en las respuestas y no pueden editarse.
-- El Footer permite editar nombre institucional, enlaces y créditos ordenados, con nombres en texto plano y destinos seguros.
+- El Footer conserva nombre institucional, enlaces y créditos de la última publicación; no ofrece edición desde administración y la API rechaza guardar o publicar `site-footer` con HTTP 422.
+- Al recargar la vista pública, el Footer no muestra textos locales antiguos antes de recibir la publicación de la API; comunica carga o error mientras no haya datos confirmados.
+- El Footer presenta identidad, enlaces y créditos en una sola franja en escritorio, sin la barra horizontal que separaba los créditos; en móvil conserva lectura y orden al apilarse.
+- Los créditos de escritorio no dejan una fila vacía debajo de «Asesoría curricular» por la altura de GESPRO; «Diseño gráfico» aparece cerca de la asesoría.
+- El Footer no muestra el rótulo «Créditos» y los grupos de créditos se alinean arriba con los enlaces institucionales.
+- En escritorio amplio, el Footer distribuye identidad, dos columnas de créditos y enlaces en cuatro columnas equilibradas; en móvil se conservan todos los enlaces y créditos sin desbordamiento.
 - Ambas secciones utilizan el componente público en la copia administrativa; las colecciones vacías conservan un estado legible y el borrador no cambia la publicación hasta confirmar.
 
 - Los campos de imagen indican dimensiones recomendadas según su uso. Portada 1500 × 500, promoción 740 × 600, logotipos 600 × 600, retratos 500 × 700 e imágenes decorativas de cuadernillos 256 × 256 píxeles.

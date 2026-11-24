@@ -6,6 +6,7 @@
 - La aplicación administrativa puede evolucionar sin depender de la vista pública.
 - La API de CodeIgniter está integrada sin historial Git anidado y tiene un límite de responsabilidad documentado.
 - La estrategia de migración y continuidad está documentada.
+- Los builds productivos apuntan a los subdirectorios `_test` de cada SPA y consumen la API bajo `/webservices/api/v1`; el desarrollo local conserva sus rutas y puertos propios.
 - No se instalan dependencias ni se aplican cambios de despliegue en esta etapa.
 
 ## Entorno local con Docker

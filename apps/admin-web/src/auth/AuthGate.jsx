@@ -5,7 +5,8 @@ import { useCallback } from 'react'
 import { useEffect, useState } from 'react'
 import { createApiClient } from '@olcomep/api-client'
 import { AdminApp } from '../App.jsx'
-import { entraConfigurationError, loginRequest } from './msal.js'
+import { publicAssetUrl } from '../publicAssetUrl.js'
+import { adminRedirectUri, entraConfigurationError, loginRequest } from './msal.js'
 
 function AccessScreen({ error, logoUrl, onLogin, pending }) {
   return <main className="access-screen"><section className="access-card" aria-labelledby="access-title"><img alt="" height="690" src={logoUrl} width="690"/><p className="text-xs font-black uppercase tracking-[.16em] text-brand-primary">Administración OLCOMEP</p><h1 id="access-title">Acceso institucional</h1><p>Ingrese con su cuenta del Ministerio de Educación Pública. Solo las identidades con un rol administrativo asignado podrán gestionar contenido.</p>{error && <p className="notice notice-error" role="alert">{error}</p>}<button className="button mt-5 w-full" disabled={pending || Boolean(error)} onClick={onLogin} type="button"><LogIn aria-hidden="true"/>{pending ? 'Procesando acceso…' : 'Ingresar con cuenta MEP'}</button></section></main>
@@ -19,11 +20,11 @@ export function AuthGate({ initializationError = null }) {
   const pending = inProgress !== InteractionStatus.None
   const [profile, setProfile] = useState(null)
   const [profileError, setProfileError] = useState(null)
-  const [identity, setIdentity] = useState({ logo_url: '/logo-olcomep.png', mep_logo_url: '/logotipo%20MEP.png' })
+  const [identity, setIdentity] = useState(publicAssetUrl({ logo_url: '/logo-olcomep.png', mep_logo_url: '/logotipo%20MEP.png' }))
 
   useEffect(() => {
     let active = true
-    createApiClient().siteIdentity().then((result) => { if (active && result?.logo_url) setIdentity(result) }).catch(() => {})
+    createApiClient().siteIdentity().then((result) => { if (active && result?.logo_url) setIdentity(publicAssetUrl(result)) }).catch(() => {})
     return () => { active = false }
   }, [])
 
@@ -31,7 +32,7 @@ export function AuthGate({ initializationError = null }) {
     if (!entraConfigurationError && !pending) await instance.loginRedirect(loginRequest)
   }
   const logout = async () => {
-    if (account) await instance.logoutRedirect({ account, postLogoutRedirectUri: window.location.origin })
+    if (account) await instance.logoutRedirect({ account, postLogoutRedirectUri: adminRedirectUri })
   }
   const getAccessToken = useCallback(async () => {
     const tokenAccount = instance.getActiveAccount() || (accountId ? instance.getAccountByHomeId(accountId) : null)

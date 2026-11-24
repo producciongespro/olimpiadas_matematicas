@@ -12,6 +12,7 @@ Las dos vistas comparten las alturas de los logotipos. El del MEP mide 2,6 rem y
 - Información agrupa Reglamento, Cómo participar, Calendario y Preguntas frecuentes. Cómo participar lleva a `#como-participar`, Calendario a `#calendario` y Preguntas frecuentes a `#preguntas-frecuentes`; estas tres secciones aparecen consecutivamente en el cuerpo antes de Regionales.
 - Reglamento abre en otra pestaña el PDF publicado en Edición vigente. Si falta el documento, el menú muestra una opción inactiva.
 - Acerca aparece entre Galería y Contacto. El menú funciona con teclado, informa su estado mediante `aria-expanded` y se cierra con Escape.
+- El botón visual «¡Califícame!» aparece inmediatamente después de Contacto, al extremo derecho del menú de escritorio y después de Contacto en el menú móvil. Usa el destino `calificame` del contenido publicado de Contacto, abre una pestaña nueva y conserva nombre accesible. No aparece entre los recursos del cuerpo.
 
 ## Contrato y aceptación
 

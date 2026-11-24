@@ -1,0 +1,190 @@
+/* Botón institucional de calificación, adaptado del diccionario bribri. */
+.calificame-button {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 13.25rem;
+  height: 5.5rem;
+  color: #fff;
+  cursor: pointer;
+  isolation: isolate;
+  transform: scale(.72);
+  transform-origin: left center;
+  filter: drop-shadow(0 8px 9px rgb(2 26 83 / 18%));
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.calificame-button::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  inset: -.75rem -.75rem -1.25rem -.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.calificame-button * {
+  pointer-events: none;
+}
+
+.calificame-button:hover {
+  transform: translateY(-3px) rotate(-1deg) scale(.72);
+  filter: drop-shadow(0 12px 13px rgb(2 26 83 / 24%));
+}
+
+.calificame-button:focus-visible {
+  outline: 3px solid var(--color-accent, #0093d6);
+  outline-offset: 4px;
+}
+
+.calificame-banner {
+  position: absolute;
+  inset: .55rem .55rem .7rem 0;
+  display: block;
+  border: .16rem solid #164687;
+  border-radius: .38rem .58rem .55rem .45rem;
+  background: linear-gradient(160deg, #4169d7 0%, #2e55c1 70%);
+  box-shadow: inset .22rem .23rem 0 #6590ed, inset -.2rem -.22rem 0 #164687;
+  transform: rotate(2deg);
+}
+
+.calificame-banner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 1.2rem;
+  bottom: -1.12rem;
+  width: 2.1rem;
+  height: 1.8rem;
+  background: #2e55c1;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  filter: drop-shadow(-.12rem .12rem 0 #164687);
+}
+
+.calificame-title {
+  position: absolute;
+  top: 1.15rem;
+  left: .85rem;
+  color: #fff;
+  font-size: 1.58rem;
+  font-weight: 900;
+  letter-spacing: -.09em;
+  line-height: 1;
+  text-shadow: .12rem .14rem 0 #164687;
+}
+
+.calificame-star {
+  position: absolute;
+  z-index: 3;
+  color: #ffcd27;
+  font-size: 2.4rem;
+  line-height: 1;
+  text-shadow: .14rem .16rem 0 #d88c17;
+}
+
+.calificame-star-one { top: -.2rem; left: -.35rem; transform: rotate(-18deg); }
+.calificame-star-two { top: -.55rem; right: .55rem; font-size: 2.05rem; transform: rotate(12deg); }
+.calificame-star-three { right: -.12rem; bottom: .48rem; font-size: 1.45rem; transform: rotate(17deg); }
+
+.calificame-chat {
+  position: absolute;
+  z-index: 2;
+  right: 2.2rem;
+  bottom: -.27rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .18rem;
+  width: 2.65rem;
+  height: 1.75rem;
+  border: .14rem solid #c1c5c8;
+  border-radius: 48%;
+  background: #fff;
+  box-shadow: .12rem .15rem 0 #164687;
+  transform: rotate(11deg);
+}
+
+.calificame-chat::after {
+  content: "";
+  position: absolute;
+  bottom: -.42rem;
+  left: .45rem;
+  width: .7rem;
+  height: .6rem;
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 25% 100%);
+}
+
+.calificame-chat i { width: .25rem; height: .25rem; border-radius: 50%; background: #53616f; }
+
+.calificame-like {
+  position: absolute;
+  right: .15rem;
+  bottom: -.66rem;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 1.95rem;
+  border: .16rem solid #d39d13;
+  border-radius: .35rem;
+  background: #ffcf28;
+  box-shadow: inset .13rem .12rem 0 #ffe77c, .12rem .16rem 0 #d39d13;
+  transform: rotate(10deg);
+}
+
+.calificame-like i {
+  position: relative;
+  display: block;
+  width: .95rem;
+  height: .88rem;
+  margin-top: .22rem;
+  border-radius: .18rem .22rem .18rem .15rem;
+  background: #fff;
+}
+
+.calificame-like i::before {
+  content: "";
+  position: absolute;
+  width: .42rem;
+  height: .78rem;
+  top: -.52rem;
+  left: .38rem;
+  border-radius: .3rem .3rem .1rem .1rem;
+  background: #fff;
+  transform: rotate(-17deg);
+}
+
+.calificame-like i::after {
+  content: "";
+  position: absolute;
+  width: .22rem;
+  height: 1.12rem;
+  top: -.05rem;
+  right: -.36rem;
+  border-radius: .08rem;
+  background: #d2255d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calificame-button { transition: none; }
+}
+
+.header-calificame {
+  flex: none;
+  width: 7rem;
+  height: 3rem;
+  margin: .5rem 1rem;
+}
+
+.header-calificame .calificame-button {
+  transform: scale(.5);
+  transform-origin: left top;
+}
+
+.header-calificame .calificame-button:hover {
+  transform: translateY(-3px) rotate(-1deg) scale(.5);
+}
+
+@media (min-width: 1536px) {
+  .header-calificame { margin: 0 0 0 .25rem; }
+}

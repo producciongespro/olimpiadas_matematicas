@@ -13,7 +13,7 @@ Permitir que el equipo autorizado mantenga la información institucional de cont
 - cargo o descripción funcional;
 - teléfonos como colección ordenada;
 - correos institucionales como colección ordenada;
-- recursos adicionales como colección ordenada con título, descripción y destino.
+- recursos adicionales como colección ordenada con título, descripción y destino, excepto el recurso institucional `calificame`, que se conserva en el contenido sin controles de edición en la administración.
 
 ## Campos protegidos
 
@@ -41,14 +41,17 @@ Permitir que el equipo autorizado mantenga la información institucional de cont
 - la vista pública conserva el contenido local confirmado como respaldo cuando la API no responde;
 - las colecciones vacías muestran un estado explícito y no rompen la composición;
 - la copia editorial reutiliza el componente público y responde al ancho real del navegador.
+- el recurso con clave `calificame` se conserva como fuente del destino del botón en el encabezado y no aparece en «Otros recursos»; los demás recursos mantienen su presentación textual;
+- al agregar un recurso desde administración se inserta inmediatamente después del canal de OLCOMEP en YouTube;
 
 ## Criterios de aceptación
 
-- la administración permite editar los campos y reordenar, agregar o eliminar teléfonos, correos y recursos;
+- la administración permite editar los campos y reordenar, agregar o eliminar teléfonos, correos y recursos ordinarios; no presenta controles para modificar o eliminar `calificame`;
 - los valores inválidos se rechazan con mensajes asociados al campo;
 - los enlaces telefónicos, de correo y de recursos se generan únicamente después de validar y normalizar sus valores;
 - guardar y publicar son acciones claramente diferenciadas;
 - la vista pública y la vista previa reutilizan el mismo componente;
+- al agregar y publicar recursos, estos aparecen debajo del canal de YouTube y el botón «¡Califícame!» permanece en el encabezado;
 - las rutas administrativas conservan JWT, roles y auditoría;
 - las pruebas de API cubren validación, borrador, publicación y colecciones vacías;
 - los builds de ambas SPA y las pruebas de API finalizan correctamente.

@@ -7,7 +7,7 @@ import { PublicTaskNavigation } from '../components/PublicTaskNavigation.jsx'
 import { HowToParticipateSection } from '../components/HowToParticipateSection.jsx'
 
 export function HomePage() {
-  const { content, initialLoading, version } = usePublishedSiteContent()
+  const { content, footerLoaded, initialLoading, error, version } = usePublishedSiteContent()
   const currentEdition = content['current-edition']
   const logoUrl = content['institutional-identity']?.logo_url || '/logo-olcomep.png'
   const mepLogoUrl = content['institutional-identity']?.mep_logo_url || '/logotipo%20MEP.png'
@@ -15,7 +15,7 @@ export function HomePage() {
   return (
     <div className="olcomep-site min-h-screen bg-white text-ink">
       <a className="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
-      <SiteHeader content={defaultSiteHeaderContent} currentEdition={version ? currentEdition : undefined} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} />
+      <SiteHeader content={defaultSiteHeaderContent} currentEdition={version ? currentEdition : undefined} calificameHref={content.contact?.resources?.find((item) => item.key === 'calificame')?.href} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} />
 
       <main id="contenido-principal">
         <MainCarousel />
@@ -41,7 +41,7 @@ export function HomePage() {
         <ContactSection content={content.contact} />
       </main>
 
-      <SiteFooter content={content['site-footer']} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} />
+      {footerLoaded ? <SiteFooter content={content['site-footer']} logoUrl={logoUrl} mepLogoUrl={mepLogoUrl} /> : <footer className="bg-slate-950 px-5 py-10 text-center text-sm text-white" role="status">{initialLoading ? 'Cargando información institucional…' : error ? 'No fue posible cargar la información institucional.' : 'Información institucional no disponible.'}</footer>}
     </div>
   )
 }
